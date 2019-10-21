@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">TravelApp</string>
+
+    <string name="usernamehint">Email Address</string>
+    <string name="passwordhint">Password</string>
+    <string name="signinbutton">SIGN IN</string>
+    <string name="signupbutton">SIGN UP</string>
+    <string name="donthaveanaccount">Don\'t have account? Click on Sign up</string>
+    <string name="alreadyhaveaccount">Already have account? Click on Sign in </string>
+    <string name="Signuppasswordhint">Password </string>
+    <string name="emailhint">Email address</string>
+    <string name="signupbuttonhint">SIGN UP</string>
+    <string name="useritemupload">Upload an item you want to trade</string>
+    <string name="nameOfItem">Enter the name of item</string>
+    <string name="uploadhelp">Now click on Upload Item to add item</string>
+    <string name="showprofile">Trade Feed Page</string>
+    <string name="firstname">First name</string>
+    <string name="lastname">Last name</string>
+    <string name="gradyear">Graduation year</string>
+    <string name="enterfirstname">Enter First Name</string>
+    <string name="enterlastname">Enter Last Name</string>
+    <string name="choosebtn">Choose Image</string>
+    <string name="uploaditem">Upload Item</string>
+    <string name="chat">Chat</string>
+    <string name="enter_review_for_this_item">Enter Review for this item</string>
+    <string name="add_review">Add Review</string>
+    <string name="trade_feed">Trade Feed</string>
+    <string name="users">Users</string>
+    <string name="inventory">Inventory</string>
+    <string name="item_details">Item Details</string>
+    <string name="notifications">Notifications</string>
+    <string name="user_profile">User Profile"</string>
+    <string name="empty_message_error">Can not send empty message</string>
+    <string name="review_error">Please Enter a Review</string>
+    <string name="out_of_stock">Item successfully marked out of stock</string>
+    <string name="item_traded">Item Traded"</string>
+    <string name="verify_email_password">Please verify your e-mail and password</string>
+    <string name="already_registered">You are already registered here</string>
+    <string name="register_successful">User registration is Successful. Please verify your e-mail address.</string>
+
+
+</resources>

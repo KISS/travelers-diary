@@ -5,19 +5,19 @@ public class User {
     private String firstName;
     private String lastName;
     private String profilePictureUrl;
-    private String gradYear;
+    private Long statesInfo;
     private String uid;
 
     public User() {
 
     }
 
-    public User(String userEmail, String fName, String lName, String userProfilePictureurl, String userGradYear, String userId) {
+    public User(String userEmail, String fName, String lName, String userProfilePictureurl, Long statesInfo, String userId) {
         this.email = userEmail;
         this.firstName = fName;
         this.lastName = lName;
         this.profilePictureUrl = userProfilePictureurl;
-        this.gradYear = userGradYear;
+        this.statesInfo = statesInfo;
         this.uid = userId;
 
     }
@@ -38,8 +38,8 @@ public class User {
         return profilePictureUrl;
     }
 
-    public String getGradYear() {
-        return gradYear;
+    public long getStatesInfo() {
+        return statesInfo;
     }
 
     public String getUid() {

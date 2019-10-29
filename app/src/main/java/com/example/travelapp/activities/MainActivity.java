@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 //        recyclerView.setHasFixedSize(true);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_USERS);
         mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         getStatesInfoAndConfigureMap();
     }
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
     private List<DataEntry> getData() {
         List<DataEntry> data = new ArrayList<>();
-        for (int i = 0; i < 51; i++) {
+        for (int i = 0; i < 52; i++) {
             data.add(new CustomDataEntry(Constants.MAP_IDS[i],
                     Constants.MAP_NAMES[i],
                     getMapColor(i),

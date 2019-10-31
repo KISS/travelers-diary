@@ -70,7 +70,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     ImageView photo;
-    TextView mfirstname, mlastname, memail, mgradyear;
+    TextView mfirstname, mlastname, memail, mStateInfo, mPhoneNum;
     FloatingActionButton fab;
     FloatingActionButton logoutBtn;
 
@@ -110,7 +110,9 @@ public class ProfileActivity extends AppCompatActivity {
         mfirstname = findViewById(R.id.userAddFirstName);
         mlastname = findViewById(R.id.userAddLastName);
         memail = findViewById(R.id.ShowEmail);
-        mgradyear = findViewById(R.id.userAddGradYear);
+        mStateInfo = findViewById(R.id.userAddStateInfo);
+        mPhoneNum = findViewById(R.id.userAddPhoneNum);
+
         fab = findViewById(R.id.fbtn);
         logoutBtn = findViewById(R.id.logoutBtn);
 
@@ -169,17 +171,19 @@ public class ProfileActivity extends AppCompatActivity {
                     String firstname = "" + ds.child("firstName").getValue();
                     String lastname = "" + ds.child("lastName").getValue();
                     String email = "" + ds.child("email").getValue();
-                    String gradyear = "Grad year:" + ds.child("gradYear").getValue();
+                    String stateinfo = "State Info: " + ds.child("stateInfo").getValue();
+                    String phonenum = "Phone Num: " + ds.child("phoneNum").getValue();
 
                     mfirstname.setText(firstname);
                     mlastname.setText(lastname);
                     memail.setText(email);
-                    mgradyear.setText(gradyear);
+                    mStateInfo.setText(stateinfo);
+                    mPhoneNum.setText(phonenum);
 
                     if (!image.isEmpty()) {
                         Picasso.get().load(image).into(photo);
                     } else {
-                        Picasso.get().load(R.drawable.ic_add_circle_black_24dp).into(photo);
+                        Picasso.get().load(R.drawable.ic_person).into(photo);
                     }
 
                 }
@@ -225,9 +229,9 @@ public class ProfileActivity extends AppCompatActivity {
          *
          * */
         private void showEditProfilePopup () {
-            String options[] = {"Edit Profile Picture", "Edit First Name", "Edit Last Name", "Edit Grad Year"};
+            String options[] = {"Edit Profile Picture", "Edit First Name", "Edit Last Name", "Edit State Info", "Edit Phone Number"};
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Choose action");
+            builder.setTitle("Choose ");
             builder.setItems(options, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -243,8 +247,12 @@ public class ProfileActivity extends AppCompatActivity {
                         showEditInfoUpdatePopup("lastName");
 
                     } else if (which == 3) {
-                        pd.setMessage("Updating Grad Year");
-                        showEditInfoUpdatePopup("gradYear");
+                        pd.setMessage("Updating State Info");
+                        showEditInfoUpdatePopup("stateInfo");
+
+                    } else if (which == 4) {
+                        pd.setMessage("Updating Phone Num");
+                        showEditInfoUpdatePopup("phoneNum");
 
                     }
                 }

@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.anychart.AnyChart;
@@ -18,6 +18,13 @@ import com.anychart.enums.HAlign;
 import com.anychart.enums.SelectionMode;
 import com.anychart.scales.LinearColor;
 import com.example.travelapp.R;
+import com.example.travelapp.configs.Constants;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,24 +32,93 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    private AnyChartView anyChartView;
+
+    public List<DataEntry> data;
+    DatabaseReference mDatabaseReference;
+    String mUid;
+    long visitedStates;
+
+    private static final String TAG = "Travelers-diary:MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        anyChartView = findViewById(R.id.any_chart_view);
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
 
-
-        recyclerView = findViewById(R.id.recyclerView);
+//        recyclerView = findViewById(R.id.recyclerView);
 //        recyclerView.setHasFixedSize(true);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//
 
-        AnyChartView anyChartView = findViewById(R.id.any_chart_view);
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_USERS);
+        mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        getStatesInfoAndConfigureMap();
+    }
 
+    private void getStatesInfoAndConfigureMap() {
+        mDatabaseReference.child(mUid).child("statesInfo").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Long singleSnapshot = dataSnapshot.getValue(Long.class);
+                    if (singleSnapshot != null) {
+                        visitedStates = singleSnapshot;
+                        Log.d(TAG, "Visited States: " + visitedStates);
+                        configureMap();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private List<DataEntry> getData() {
+        List<DataEntry> data = new ArrayList<>();
+        for (int i = 0; i < 52; i++) {
+            data.add(new CustomDataEntry(Constants.MAP_IDS[i],
+                    Constants.MAP_NAMES[i],
+                    getMapColor(i),
+                    new LabelDataEntry(false)));
+        }
+        return data;
+    }
+
+    class CustomDataEntry extends DataEntry {
+        public CustomDataEntry(String id, String name, Number value) {
+            setValue("id", id);
+            setValue("name", name);
+            setValue("value", value);
+        }
+        public CustomDataEntry(String id, String name, Number value, LabelDataEntry label) {
+            setValue("id", id);
+            setValue("name", name);
+            setValue("value", value);
+            setValue("label", label);
+        }
+    }
+
+    class LabelDataEntry extends DataEntry {
+        LabelDataEntry(Boolean enabled) {
+            setValue("enabled", enabled);
+        }
+    }
+
+    private int getMapColor(int index) {
+        // bit manipulation; get the digit at index index of visitedStates
+        return (visitedStates & (1L << index)) == 0 ? 0 : 1;
+    }
+
+    private void configureMap() {
         Map map = AnyChart.map();
 
         map.title()
@@ -84,9 +160,10 @@ public class MainActivity extends AppCompatActivity {
         map.interactivity().selectionMode(SelectionMode.NONE);
         map.padding(0, 0, 0, 0);
 
+
         Choropleth series = map.choropleth(getData());
         LinearColor linearColor = LinearColor.instantiate();
-        linearColor.colors(new String[]{ "#81d4fa", "#81d4fa", "#81d4fa", "#81d4fa"});
+        linearColor.colors(new String[]{ "#979ea1", "#81d4fa"});
         series.colorScale(linearColor);
         series.hovered()
                 .fill("#2E6171")
@@ -109,141 +186,6 @@ public class MainActivity extends AppCompatActivity {
         anyChartView.addScript("file:///android_asset/united_states_of_america.js");
         anyChartView.addScript("file:///android_asset/proj4.js");
         anyChartView.setChart(map);
-
-
-
-    }
-
-    private List<DataEntry> getData() {
-        List<DataEntry> data = new ArrayList<>();
-
-//        data.add(new CustomDataEntry("US.MN", "Minnesota", 8.4));
-//        data.add(new CustomDataEntry("US.MT", "Montana", 8.5));
-//        data.add(new CustomDataEntry("US.ND", "North Dakota", 5.1));
-//        data.add(new CustomDataEntry("US.ID", "Idaho", 8));
-//        data.add(new CustomDataEntry("US.WA", "Washington", 13.1));
-//        data.add(new CustomDataEntry("US.AZ", "Arizona", 9.7));
-//        data.add(new CustomDataEntry("US.CA", "California", 14));
-//        data.add(new CustomDataEntry("US.CO", "Colorado", 8.7));
-//        data.add(new CustomDataEntry("US.NV", "Nevada", 14.7));
-//        data.add(new CustomDataEntry("US.NM", "New Mexico", 6.9));
-//        data.add(new CustomDataEntry("US.OR", "Oregon", 12.2));
-//        data.add(new CustomDataEntry("US.UT", "Utah", 3.2));
-//        data.add(new CustomDataEntry("US.WY", "Wyoming", 5.2));
-//        data.add(new CustomDataEntry("US.AR", "Arkansas", 4.2));
-//        data.add(new CustomDataEntry("US.IA", "Iowa", 4.7));
-//        data.add(new CustomDataEntry("US.KS", "Kansas", 3.2));
-//        data.add(new CustomDataEntry("US.MO", "Missouri", 7.2));
-//        data.add(new CustomDataEntry("US.NE", "Nebraska", 5));
-//        data.add(new CustomDataEntry("US.OK", "Oklahoma", 4.5));
-//        data.add(new CustomDataEntry("US.SD", "South Dakota", 5));
-//        data.add(new CustomDataEntry("US.LA", "Louisiana", 5.7));
-//        data.add(new CustomDataEntry("US.TX", "Texas", 5));
-//        data.add(new CustomDataEntry("US.CT", "Connecticut", 14.4, new LabelDataEntry(false)));
-//        data.add(new CustomDataEntry("US.MA", "Massachusetts", 16.9, new LabelDataEntry(false)));
-//        data.add(new CustomDataEntry("US.NH", "New Hampshire", 19.6));
-//        data.add(new CustomDataEntry("US.RI", "Rhode Island", 14, new LabelDataEntry(false)));
-//        data.add(new CustomDataEntry("US.VT", "Vermont", 17.5));
-//        data.add(new CustomDataEntry("US.AL", "Alabama", 6));
-//        data.add(new CustomDataEntry("US.FL", "Florida", 12.4));
-//        data.add(new CustomDataEntry("US.GA", "Georgia", 5.9));
-//        data.add(new CustomDataEntry("US.MS", "Mississippi", 2.8));
-//        data.add(new CustomDataEntry("US.SC", "South Carolina", 6.1));
-//        data.add(new CustomDataEntry("US.IL", "Illinois", 10.2));
-//        data.add(new CustomDataEntry("US.IN", "Indiana", 6.1));
-//        data.add(new CustomDataEntry("US.KY", "Kentucky", 3.9));
-//        data.add(new CustomDataEntry("US.NC", "North Carolina", 6.6));
-//        data.add(new CustomDataEntry("US.OH", "Ohio", 7.2));
-//        data.add(new CustomDataEntry("US.TN", "Tennessee", 5.4));
-//        data.add(new CustomDataEntry("US.VA", "Virginia", 10.7));
-//        data.add(new CustomDataEntry("US.WI", "Wisconsin", 9.1));
-//        data.add(new CustomDataEntry("US.WY", "Wyoming", 5.2, new LabelDataEntry(false)));
-//        data.add(new CustomDataEntry("US.WV", "West Virginia", 2.4));
-//        data.add(new CustomDataEntry("US.DE", "Delaware", 13.5, new LabelDataEntry(false)));
-//        data.add(new CustomDataEntry("US.DC", "District of Columbia", 25.7, new LabelDataEntry(false)));
-//        data.add(new CustomDataEntry("US.MD", "Maryland", 8.9, new LabelDataEntry(false)));
-//        data.add(new CustomDataEntry("US.NJ", "New Jersey", 14.9, new LabelDataEntry(false)));
-//        data.add(new CustomDataEntry("US.NY", "New York", 11.9));
-//        data.add(new CustomDataEntry("US.PA", "Pennsylvania", 5.6));
-//        data.add(new CustomDataEntry("US.ME", "Maine", 10.4));
-//        data.add(new CustomDataEntry("US.HI", "Hawaii", 13.1));
-//        data.add(new CustomDataEntry("US.AK", "Alaska", 10.9));
-//        data.add(new CustomDataEntry("US.MI", "Michigan", 7.6));
-
-        data.add(new CustomDataEntry("US.MN", "Minnesota", 8.4,new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.MT", "Montana", 8.5, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.ND", "North Dakota", 5.1, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.ID", "Idaho", 8, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.WA", "Washington", 13.1, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.AZ", "Arizona", 9.7, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.CA", "California", 14, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.CO", "Colorado", 8.7, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.NV", "Nevada", 14.7, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.NM", "New Mexico", 6.9, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.OR", "Oregon", 12.2, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.UT", "Utah", 3.2, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.WY", "Wyoming", 5.2, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.AR", "Arkansas", 4.2, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.IA", "Iowa", 4.7, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.KS", "Kansas", 3.2, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.MO", "Missouri", 7.2, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.NE", "Nebraska", 5, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.OK", "Oklahoma", 4.5, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.SD", "South Dakota", 5, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.LA", "Louisiana", 5.7, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.TX", "Texas", 5, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.CT", "Connecticut", 14.4, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.MA", "Massachusetts", 16.9, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.NH", "New Hampshire", 19.6, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.RI", "Rhode Island", 14, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.VT", "Vermont", 17.5, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.AL", "Alabama", 6, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.FL", "Florida", 12.4, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.GA", "Georgia", 5.9, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.MS", "Mississippi", 2.8, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.SC", "South Carolina", 6.1, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.IL", "Illinois", 10.2, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.IN", "Indiana", 6.1, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.KY", "Kentucky", 3.9, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.NC", "North Carolina", 6.6, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.OH", "Ohio", 7.2, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.TN", "Tennessee", 5.4, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.VA", "Virginia", 10.7, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.WI", "Wisconsin", 9.1, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.WY", "Wyoming", 5.2, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.WV", "West Virginia", 2.4, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.DE", "Delaware", 13.5, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.DC", "District of Columbia", 25.7, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.MD", "Maryland", 8.9, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.NJ", "New Jersey", 14.9, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.NY", "New York", 11.9, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.PA", "Pennsylvania", 5.6, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.ME", "Maine", 10.4, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.HI", "Hawaii", 13.1, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.AK", "Alaska", 10.9, new LabelDataEntry(false)));
-        data.add(new CustomDataEntry("US.MI", "Michigan", 7.6, new LabelDataEntry(false)));
-
-        return data;
-    }
-
-    class CustomDataEntry extends DataEntry {
-        public CustomDataEntry(String id, String name, Number value) {
-            setValue("id", id);
-            setValue("name", name);
-            setValue("value", value);
-        }
-        public CustomDataEntry(String id, String name, Number value, LabelDataEntry label) {
-            setValue("id", id);
-            setValue("name", name);
-            setValue("value", value);
-            setValue("label", label);
-        }
-    }
-
-    class LabelDataEntry extends DataEntry {
-        LabelDataEntry(Boolean enabled) {
-            setValue("enabled", enabled);
-        }
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -268,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent4);
                     break;
                 case R.id.nav_profile:
-                    Intent intent5 = new Intent(MainActivity.this, MainActivity.class);
+                    Intent intent5 = new Intent(MainActivity.this, ProfileActivity.class);
                     startActivity(intent5);
                     break;
 
@@ -277,6 +219,119 @@ public class MainActivity extends AppCompatActivity {
         }
 
     };
+
+//    private List<DataEntry> getData() {
+//        List<DataEntry> data = new ArrayList<>();
+//
+////        data.add(new CustomDataEntry("US.MN", "Minnesota", 8.4));
+////        data.add(new CustomDataEntry("US.MT", "Montana", 8.5));
+////        data.add(new CustomDataEntry("US.ND", "North Dakota", 5.1));
+////        data.add(new CustomDataEntry("US.ID", "Idaho", 8));
+////        data.add(new CustomDataEntry("US.WA", "Washington", 13.1));
+////        data.add(new CustomDataEntry("US.AZ", "Arizona", 9.7));
+////        data.add(new CustomDataEntry("US.CA", "California", 14));
+////        data.add(new CustomDataEntry("US.CO", "Colorado", 8.7));
+////        data.add(new CustomDataEntry("US.NV", "Nevada", 14.7));
+////        data.add(new CustomDataEntry("US.NM", "New Mexico", 6.9));
+////        data.add(new CustomDataEntry("US.OR", "Oregon", 12.2));
+////        data.add(new CustomDataEntry("US.UT", "Utah", 3.2));
+////        data.add(new CustomDataEntry("US.WY", "Wyoming", 5.2));
+////        data.add(new CustomDataEntry("US.AR", "Arkansas", 4.2));
+////        data.add(new CustomDataEntry("US.IA", "Iowa", 4.7));
+////        data.add(new CustomDataEntry("US.KS", "Kansas", 3.2));
+////        data.add(new CustomDataEntry("US.MO", "Missouri", 7.2));
+////        data.add(new CustomDataEntry("US.NE", "Nebraska", 5));
+////        data.add(new CustomDataEntry("US.OK", "Oklahoma", 4.5));
+////        data.add(new CustomDataEntry("US.SD", "South Dakota", 5));
+////        data.add(new CustomDataEntry("US.LA", "Louisiana", 5.7));
+////        data.add(new CustomDataEntry("US.TX", "Texas", 5));
+////        data.add(new CustomDataEntry("US.CT", "Connecticut", 14.4, new LabelDataEntry(false)));
+////        data.add(new CustomDataEntry("US.MA", "Massachusetts", 16.9, new LabelDataEntry(false)));
+////        data.add(new CustomDataEntry("US.NH", "New Hampshire", 19.6));
+////        data.add(new CustomDataEntry("US.RI", "Rhode Island", 14, new LabelDataEntry(false)));
+////        data.add(new CustomDataEntry("US.VT", "Vermont", 17.5));
+////        data.add(new CustomDataEntry("US.AL", "Alabama", 6));
+////        data.add(new CustomDataEntry("US.FL", "Florida", 12.4));
+////        data.add(new CustomDataEntry("US.GA", "Georgia", 5.9));
+////        data.add(new CustomDataEntry("US.MS", "Mississippi", 2.8));
+////        data.add(new CustomDataEntry("US.SC", "South Carolina", 6.1));
+////        data.add(new CustomDataEntry("US.IL", "Illinois", 10.2));
+////        data.add(new CustomDataEntry("US.IN", "Indiana", 6.1));
+////        data.add(new CustomDataEntry("US.KY", "Kentucky", 3.9));
+////        data.add(new CustomDataEntry("US.NC", "North Carolina", 6.6));
+////        data.add(new CustomDataEntry("US.OH", "Ohio", 7.2));
+////        data.add(new CustomDataEntry("US.TN", "Tennessee", 5.4));
+////        data.add(new CustomDataEntry("US.VA", "Virginia", 10.7));
+////        data.add(new CustomDataEntry("US.WI", "Wisconsin", 9.1));
+////        data.add(new CustomDataEntry("US.WY", "Wyoming", 5.2, new LabelDataEntry(false)));
+////        data.add(new CustomDataEntry("US.WV", "West Virginia", 2.4));
+////        data.add(new CustomDataEntry("US.DE", "Delaware", 13.5, new LabelDataEntry(false)));
+////        data.add(new CustomDataEntry("US.DC", "District of Columbia", 25.7, new LabelDataEntry(false)));
+////        data.add(new CustomDataEntry("US.MD", "Maryland", 8.9, new LabelDataEntry(false)));
+////        data.add(new CustomDataEntry("US.NJ", "New Jersey", 14.9, new LabelDataEntry(false)));
+////        data.add(new CustomDataEntry("US.NY", "New York", 11.9));
+////        data.add(new CustomDataEntry("US.PA", "Pennsylvania", 5.6));
+////        data.add(new CustomDataEntry("US.ME", "Maine", 10.4));
+////        data.add(new CustomDataEntry("US.HI", "Hawaii", 13.1));
+////        data.add(new CustomDataEntry("US.AK", "Alaska", 10.9));
+////        data.add(new CustomDataEntry("US.MI", "Michigan", 7.6));
+//
+//        data.add(new CustomDataEntry("US.MN", "Minnesota", 8.4,new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.MT", "Montana", 8.5, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.ND", "North Dakota", 5.1, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.ID", "Idaho", 8, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.WA", "Washington", 13.1, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.AZ", "Arizona", 9.7, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.CA", "California", 14, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.CO", "Colorado", 8.7, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.NV", "Nevada", 14.7, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.NM", "New Mexico", 6.9, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.OR", "Oregon", 12.2, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.UT", "Utah", 3.2, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.WY", "Wyoming", 5.2, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.AR", "Arkansas", 4.2, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.IA", "Iowa", 4.7, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.KS", "Kansas", 3.2, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.MO", "Missouri", 7.2, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.NE", "Nebraska", 5, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.OK", "Oklahoma", 4.5, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.SD", "South Dakota", 5, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.LA", "Louisiana", 5.7, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.TX", "Texas", 5, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.CT", "Connecticut", 14.4, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.MA", "Massachusetts", 16.9, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.NH", "New Hampshire", 19.6, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.RI", "Rhode Island", 14, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.VT", "Vermont", 17.5, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.AL", "Alabama", 6, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.FL", "Florida", 12.4, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.GA", "Georgia", 5.9, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.MS", "Mississippi", 2.8, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.SC", "South Carolina", 6.1, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.IL", "Illinois", 10.2, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.IN", "Indiana", 6.1, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.KY", "Kentucky", 3.9, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.NC", "North Carolina", 6.6, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.OH", "Ohio", 7.2, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.TN", "Tennessee", 5.4, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.VA", "Virginia", 10.7, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.WI", "Wisconsin", 9.1, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.WY", "Wyoming", 5.2, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.WV", "West Virginia", 2.4, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.DE", "Delaware", 13.5, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.DC", "District of Columbia", 25.7, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.MD", "Maryland", 8.9, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.NJ", "New Jersey", 14.9, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.NY", "New York", 11.9, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.PA", "Pennsylvania", 5.6, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.ME", "Maine", 10.4, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.HI", "Hawaii", 13.1, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.AK", "Alaska", 10.9, new LabelDataEntry(false)));
+//        data.add(new CustomDataEntry("US.MI", "Michigan", 7.6, new LabelDataEntry(false)));
+//
+//        return data;
+//    }
+
 
 }
 

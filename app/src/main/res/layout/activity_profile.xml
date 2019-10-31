@@ -38,7 +38,7 @@
     <RelativeLayout
         android:id="@+id/rel2"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="260dp"
         android:layout_below="@+id/rel1"
         android:padding="8dp">
 
@@ -82,7 +82,7 @@
             android:textColor="@color/lightgrey" />
 
         <TextView
-            android:id="@+id/userAddGradYear"
+            android:id="@+id/userAddStateInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ShowEmail"
@@ -91,11 +91,22 @@
             android:layout_toRightOf="@+id/userAddPhoto"
             android:textColor="@color/lightgrey" />
 
+        <TextView
+            android:id="@+id/userAddPhoneNum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/userAddStateInfo"
+            android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@+id/userAddPhoto"
+            android:layout_toRightOf="@+id/userAddPhoto"
+            android:textColor="@color/lightgrey" />
+
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/logoutBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/userAddGradYear"
+            android:layout_below="@+id/userAddPhoneNum"
             android:layout_alignParentRight="true"
             android:layout_centerInParent="true"
             android:layout_marginLeft="15dp"
@@ -105,7 +116,7 @@
             android:id="@+id/fbtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/userAddGradYear"
+            android:layout_below="@+id/userAddPhoneNum"
             android:layout_toLeftOf="@id/logoutBtn"
             android:src="@drawable/ic_wpen" />
 

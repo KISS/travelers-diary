@@ -104,19 +104,19 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     String email = user.getEmail();
                     String uid = user.getUid();
 
-                    HashMap<Object, String> hashMap = new HashMap<>();
-
-                    hashMap.put("email", email);
-                    hashMap.put("uid", uid);
-                    hashMap.put("firstname", firstName);
-                    hashMap.put("lastname", lastName);
-                    hashMap.put("gradyear", "");
-                    hashMap.put("image", "");
+//                    HashMap<Object, String> hashMap = new HashMap<>();
+//
+//                    hashMap.put("email", email);
+//                    hashMap.put("uid", uid);
+//                    hashMap.put("firstname", firstName);
+//                    hashMap.put("lastname", lastName);
+//                    hashMap.put("gradyear", ""); // need revision
+//                    hashMap.put("image", "");
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference reference = database.getReference(Constants.DATABASE_PATH_USERS);
 
-                    User userObj = new User(email, firstName, lastName, "", "", uid);
+                    User userObj = new User(email, firstName, lastName, "", 0L, uid);
                     reference.child(uid).setValue(userObj);
 
                     mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {

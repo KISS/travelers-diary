@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:paddingTop="5dp"
+    tools:context=".activities.ProfileActivity">
+
+    <RelativeLayout
+        android:id="@+id/rel1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tradeTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/user_profile"
+            android:textAlignment="center"
+            android:textColor="@color/grey"
+            android:textSize="25sp" />
+
+        <ImageView
+            android:id="@+id/line"
+            android:layout_width="wrap_content"
+            android:layout_height="7dp"
+            android:layout_below="@+id/tradeTV"
+            android:layout_margin="15dp"
+            android:background="@drawable/wline" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rel2"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_below="@+id/rel1"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/userAddPhoto"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginRight="5dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_waddphoto" />
+
+        <TextView
+            android:id="@+id/userAddFirstName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@+id/userAddPhoto"
+            android:layout_toRightOf="@+id/userAddPhoto"
+            android:textColor="@color/lightgrey" />
+
+        <TextView
+            android:id="@+id/userAddLastName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@+id/userAddFirstName"
+            android:layout_toRightOf="@+id/userAddFirstName"
+            android:textColor="@color/lightgrey" />
+
+        <TextView
+            android:id="@+id/ShowEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/userAddFirstName"
+            android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@+id/userAddPhoto"
+            android:layout_toRightOf="@+id/userAddPhoto"
+            android:textColor="@color/lightgrey" />
+
+        <TextView
+            android:id="@+id/userAddGradYear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ShowEmail"
+            android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@+id/userAddPhoto"
+            android:layout_toRightOf="@+id/userAddPhoto"
+            android:textColor="@color/lightgrey" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/logoutBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/userAddGradYear"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/ic_wlogoutt" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/userAddGradYear"
+            android:layout_toLeftOf="@id/logoutBtn"
+            android:src="@drawable/ic_wpen" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_below="@+id/rel2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottom_nav">
+
+        </android.support.v7.widget.RecyclerView>
+
+
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/bottom_nav"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:background="#404041"
+            app:menu="@menu/bottom_navigation">
+
+        </android.support.design.widget.BottomNavigationView>
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

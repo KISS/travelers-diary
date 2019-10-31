@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent4);
                     break;
                 case R.id.nav_profile:
-                    Intent intent5 = new Intent(MainActivity.this, MainActivity.class);
+                    Intent intent5 = new Intent(MainActivity.this, ProfileActivity.class);
                     startActivity(intent5);
                     break;
 

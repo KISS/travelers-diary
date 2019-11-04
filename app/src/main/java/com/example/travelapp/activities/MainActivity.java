@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 //                .position("outside")
 //                .length(5);
 
-        map.interactivity().selectionMode(SelectionMode.NONE);
+        map.interactivity().selectionMode(SelectionMode.MULTI_SELECT);
         map.padding(0, 0, 0, 0);
 
 

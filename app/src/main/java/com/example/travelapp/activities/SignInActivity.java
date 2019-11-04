@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -93,5 +94,17 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 startActivity(new Intent(this, SignUpActivity.class));
                 break;
         }
+    }
+
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            // get which view was focused
+            View v = getCurrentFocus();
+
+            if (HideKeyboard.getInstance().isTouchOutsideView(v, ev)) {
+                HideKeyboard.getInstance().hideSoftInput(v.getWindowToken(), this);
+            }
+        }
+        return super.dispatchTouchEvent(ev);
     }
 }

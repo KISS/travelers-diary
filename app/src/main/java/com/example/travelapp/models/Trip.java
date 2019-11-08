@@ -5,24 +5,26 @@ public class Trip {
     private String trip_id;
     private String user_id;
     private String image;
+    private String title;
     private String city;
     private int state;
-//    private String arrivalDate;
-//    private String departureDate;
-    private String tags;
+    private String date;
+    private int days;
     private String description;
 
     public Trip() {
 
     }
 
-    public Trip(String trip_id, String user_id, String image, String city, int state, String tags, String description) {
+    public Trip(String trip_id, String user_id, String image, String title, String city, int state, String date, int days, String description) {
         this.trip_id = trip_id;
         this.user_id = user_id;
         this.image = image;
+        this.title = title;
         this.city = city;
         this.state = state;
-        this.tags = tags;
+        this.date = date;
+        this.days = days;
         this.description = description;
     }
 
@@ -50,6 +52,14 @@ public class Trip {
         this.image = image;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getCity() {
         return city;
     }
@@ -66,12 +76,20 @@ public class Trip {
         this.state = state;
     }
 
-    public String getTags() {
-        return tags;
+    public String getDate() {
+        return date;
     }
 
-    public void setTags(String tags) {
-        this.tags = tags;
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public int getDays() {
+        return days;
+    }
+
+    public void setDays(int days) {
+        this.days = days;
     }
 
     public String getDescription() {
@@ -88,9 +106,11 @@ public class Trip {
                 "trip_id='" + trip_id + '\'' +
                 ", user_id='" + user_id + '\'' +
                 ", image='" + image + '\'' +
+                ", title='" + title + '\'' +
                 ", city='" + city + '\'' +
                 ", state=" + state +
-                ", tags='" + tags + '\'' +
+                ", date='" + date + '\'' +
+                ", days=" + days +
                 ", description='" + description + '\'' +
                 '}';
     }

@@ -1,7 +1,9 @@
 package com.example.travelapp.Fragment;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,15 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.travelapp.R;
-import com.example.travelapp.activities.TravelHistoryActivity;
-import com.example.travelapp.configs.Constants;
 import com.example.travelapp.models.Trip;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,7 +32,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -41,6 +40,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -58,7 +59,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
 
     private ImageView mImage;
     private Spinner mSpinner;
-    private EditText mCity, mTags, mDescription;
+    private EditText mTitle, mCity, mDate, mDays, mDescription;
     private Button mPost;
     private double mProgress = 0;
 
@@ -82,10 +83,11 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_trip, container, false);
         mImage = view.findViewById(R.id.post_image);
+        mTitle = view.findViewById(R.id.input_title);
         mCity = view.findViewById(R.id.input_city);
         mSpinner = view.findViewById(R.id.input_state);
-        // ADD dates later!!!!!
-        mTags = view.findViewById(R.id.input_tags);
+        mDate = view.findViewById(R.id.input_date);
+        mDays = view.findViewById(R.id.input_number_of_days);
         mDescription = view.findViewById(R.id.input_description);
         mPost = view.findViewById(R.id.post_button);
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -124,16 +126,39 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
             }
         });
 
+        final Calendar myCalendar = Calendar.getInstance();
+        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
+                mDate.setText(sdf.format(myCalendar.getTime()));
+            }
+        };
+
+        mDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(AddTripFragment.this.getContext(), date,
+                        myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
         mPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: attempting to post...");
-                // Add restrictions on date inputs!!!!!!!!!!!!!!!!!!!!!!!!1
                 if (mState < 0) {
                     Toast.makeText(getActivity(), R.string.please_choose_a_state,
                             Toast.LENGTH_SHORT).show();
                 } else if (isEmpty(mCity.getText().toString().trim())) {
                     Toast.makeText(getActivity(), R.string.please_specify_a_city,
+                            Toast.LENGTH_SHORT).show();
+                } else if (isEmpty(mDays.getText().toString().trim())) {
+                    Toast.makeText(getActivity(), R.string.please_specify_a_number_of_days,
                             Toast.LENGTH_SHORT).show();
                 } else {
                     if (mSelectedBitmap == null && mSelectedUri == null) {
@@ -253,9 +278,9 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
 
     private void uploadNewTrip() {
         String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Trip trip = new Trip(mTripId, user_id, mImageUrl,
-                mCity.getText().toString(), mState, mTags.getText().toString(),
-                mDescription.getText().toString());
+        Trip trip = new Trip(mTripId, user_id, mImageUrl, mTitle.getText().toString(),
+                mCity.getText().toString(), mState, mDate.getText().toString(),
+                Integer.parseInt(mDays.getText().toString().trim()), mDescription.getText().toString());
 
         // Add record in Trips
         mDatabaseReference.child("Trips")
@@ -269,16 +294,39 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                 .child("tripId")
                 .setValue(mTripId);
 
-        // Update stateInfos in Users!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+        // Update stateInfos in Users
+        mDatabaseReference.child("Users").child(user_id).child("statesInfo").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Long singleSnapshot = dataSnapshot.getValue(Long.class);
+                    if (singleSnapshot != null) {
+                        Log.d(TAG, "Visited States: " + singleSnapshot);
+                        if ((singleSnapshot & (1L << mState)) == 0) {
+                            mDatabaseReference.child("Users")
+                                    .child(user_id)
+                                    .child("statesInfo")
+                                    .setValue(singleSnapshot | (1L << mState));
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void resetFields(){
         mImage.setImageURI(null);
         mImage.setImageBitmap(null);
+        mTitle.setText("");
         mCity.setText("");
         mSpinner.setSelection(0);
-        // Reset days as well!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
-        mTags.setText("");
+        mDate.setText("");
+        mDays.setText("");
         mDescription.setText("");
     }
 

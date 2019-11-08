@@ -61,6 +61,18 @@
 
             </RelativeLayout>
 
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/input_title"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:maxLines="2"
+                android:background="@null"
+                android:hint="@string/hint_title"
+                android:gravity="start"
+                android:padding="10dp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
@@ -78,8 +90,6 @@
                     android:maxLines="2"
                     android:hint="@string/hint_city_town"
                     android:padding="10dp" />
-
-                <!-- Change State to drop down list-->
 
                 <Spinner
                     android:layout_width="0dp"
@@ -103,49 +113,41 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/input_arrival_date"
+                    android:id="@+id/input_date"
                     android:layout_marginStart="10dp"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:inputType="date"
                     android:background="@null"
                     android:maxLines="2"
-                    android:hint="@string/hint_city_town"
+                    android:hint="@string/hint_date"
                     android:padding="10dp" />
 
                 <EditText
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/input_departure_date"
+                    android:id="@+id/input_number_of_days"
                     android:layout_marginStart="10dp"
+                    android:inputType="number"
                     android:background="@null"
                     android:maxLines="2"
-                    android:hint="@string/hint_city_town"
+                    android:hint="@string/hint_number_of_days"
                     android:padding="10dp" />
 
             </LinearLayout>
 
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/input_tags"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="30dp"
-                android:maxLines="2"
-                android:background="@null"
-                android:hint="@string/hint_tags"
-                android:gravity="start" />
-
-            <EditText
-                android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:id="@+id/input_description"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="30dp"
                 android:maxLines="20"
                 android:background="@null"
                 android:hint="@string/hint_description"
-                android:gravity="start" />
+                android:gravity="start"
+                android:padding="10dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"

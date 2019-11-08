@@ -37,6 +37,36 @@
     <string name="verify_email_password">Please verify your e-mail and password</string>
     <string name="already_registered">You are already registered here</string>
     <string name="register_successful">User registration is Successful. Please verify your e-mail address.</string>
-
+    <string name="travel_history">Travel History</string>
+    <string name="post_button">Post Trip</string>
+    <string name="hint_city_town">City/Town</string>
+    <string name="hint_tags">Tags (separated by \',\' eg. NY, June)</string>
+    <string name="hint_description">Description</string>
+    <string name="toast_uploading_photo">Uploading photo...</string>
+    <string name="dialog_select_photo_choose_photo_from_memory">Choose photo from memory</string>
+    <string name="dialog_select_photo_take_a_photo">Take a photo</string>
+    <string name="dialog_select_photo">Select photo</string>
+    <string name="add_a_trip">Add a trip</string>
+    <string name="please_choose_a_state">Please choose a state!</string>
+    <string name="please_specify_a_city">Please specify a city!</string>
+    <string name="please_select_a_photo">Please select a photo!</string>
+    <string name="toast_compressing_photo">Compressing photo...</string>
+    <string name="toast_photo_uploaded_successfully">Photo uploaded successfully!</string>
+    <string name="toast_could_not_upload_photo">Could not uploade photo</string>
+    <string-array name="state">
+        <item>State</item>
+        <item>New York</item>
+        <item>New Jersey</item>
+        <item>New York</item>
+        <item>New Jersey</item>
+        <item>New York</item>
+        <item>New Jersey</item>
+        <item>New York</item>
+        <item>New Jersey</item>
+        <item>New York</item>
+        <item>New Jersey</item>
+        <item>New York</item>
+        <item>New Jersey</item>
+    </string-array>
 
 </resources>

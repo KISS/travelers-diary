@@ -1,5 +1,7 @@
 package com.example.travelapp.configs;
 
+import android.Manifest;
+
 public class Constants {
     public static final String STORAGE_PATH_UPLOADS = "uploads/";
     public static final String DATABASE_PATH_UPLOADS = "uploads";
@@ -22,4 +24,7 @@ public class Constants {
             "Connecticut", "Massachusetts", "New Hampshire", "Rhode Island", "Vermont", "Alabama", "Florida", "Georgia", "Mississippi", "South Carolina",
             "Illinois", "Indiana", "Kentucky", "North Carolina", "Ohio", "Tennessee", "Virginia", "Wisconsin", "Wyoming", "West Virginia",
             "Delaware", "District of Columbia", "Maryland", "New Jersey", "New York", "Pennsylvania", "Maine", "Hawaii", "Alaska", "Michigan"};
+
+    public static String[] CAMERA_PERMISSION = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    public static String[] STORAGE_PERMISSION = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 }

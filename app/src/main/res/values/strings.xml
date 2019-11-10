@@ -37,6 +37,31 @@
     <string name="verify_email_password">Please verify your e-mail and password</string>
     <string name="already_registered">You are already registered here</string>
     <string name="register_successful">User registration is Successful. Please verify your e-mail address.</string>
-
-
+    <string name="travel_history">Travel History</string>
+    <string name="post_button">Post Trip</string>
+    <string name="hint_city_town">City/Town</string>
+    <string name="hint_title">Title (optional)</string>
+    <string name="hint_description">Description (optional)</string>
+    <string name="toast_uploading_photo">Uploading photo...</string>
+    <string name="dialog_select_photo_choose_photo_from_memory">Choose photo from memory</string>
+    <string name="dialog_select_photo_take_a_photo">Take a photo</string>
+    <string name="dialog_select_photo">Select photo</string>
+    <string name="add_a_trip">Add a trip</string>
+    <string name="please_choose_a_state">Please choose a state!</string>
+    <string name="please_specify_a_city">Please specify a city!</string>
+    <string name="please_select_a_photo">Please select a photo!</string>
+    <string name="toast_compressing_photo">Compressing photo...</string>
+    <string name="toast_photo_uploaded_successfully">Photo uploaded successfully!</string>
+    <string name="toast_could_not_upload_photo">Could not uploade photo</string>
+    <string name="hint_number_of_days">Number of days</string>
+    <string name="hint_date">Date (optional)</string>
+    <string name="please_specify_a_number_of_days">Please specify a number of days!</string>
+    <string-array name="state">
+        <item>State</item><item>Minnesota</item><item>Montana</item>
+        <item>North Dakota</item><item>Idaho</item><item>Washington</item><item>Arizona</item><item>California</item><item>Colorado</item><item>Nevada</item><item>New Mexico</item><item>Oregon</item><item>Utah</item>
+        <item>Wyoming</item><item>Arkansas</item><item>Iowa</item><item>Kansas</item><item>Missouri</item><item>Nebraska</item><item>Oklahoma</item><item>South Dakota</item><item>Louisiana</item><item>Texas</item>
+        <item>Connecticut</item><item>Massachusetts</item><item>New Hampshire</item><item>Rhode Island</item><item>Vermont</item><item>Alabama</item><item>Florida</item><item>Georgia</item><item>Mississippi</item><item>South Carolina</item>
+        <item>Illinois</item><item>Indiana</item><item>Kentucky</item><item>North Carolina</item><item>Ohio</item><item>Tennessee</item><item>Virginia</item><item>Wisconsin</item><item>Wyoming</item><item>West Virginia</item>
+        <item>Delaware</item><item>District of Columbia</item><item>Maryland</item><item>New Jersey</item><item>New York</item><item>Pennsylvania</item><item>Maine</item><item>Hawaii</item><item>Alaska</item><item>Michigan</item>
+    </string-array>
 </resources>

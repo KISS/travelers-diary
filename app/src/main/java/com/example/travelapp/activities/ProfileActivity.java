@@ -501,8 +501,8 @@ public class ProfileActivity extends AppCompatActivity {
                                 Intent intent2 = new Intent(ProfileActivity.this, MainActivity.class);
                                 startActivity(intent2);
                                 break;
-                            case R.id.nav_inventory:
-                                Intent intent3 = new Intent(ProfileActivity.this, MainActivity.class);
+                            case R.id.nav_travel_history:
+                                Intent intent3 = new Intent(ProfileActivity.this, TravelHistoryActivity.class);
                                 startActivity(intent3);
                                 break;
                             case R.id.nav_wishlist:

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:paddingTop="5dp"
+    tools:context=".activities.TravelHistoryActivity">
+
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/travel_history_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/add_a_trip"
+            android:textAlignment="center"
+            android:textColor="@color/grey"
+            android:textSize="25sp" />
+
+        <ImageView
+            android:id="@+id/line"
+            android:layout_width="wrap_content"
+            android:layout_height="7dp"
+            android:layout_below="@+id/travel_history_title"
+            android:layout_margin="15dp"
+            android:background="@drawable/wline" />
+
+    </RelativeLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/header">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/photo"
+                android:layout_margin="15dp">
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/post_image"
+                    android:layout_marginTop="15dp"
+                    android:layout_centerHorizontal="true"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/grey_bg_add_white_plus" />
+
+            </RelativeLayout>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/input_title"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:maxLines="2"
+                android:background="@null"
+                android:hint="@string/hint_title"
+                android:gravity="start"
+                android:padding="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/location"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/input_city"
+                    android:layout_marginStart="10dp"
+                    android:background="@null"
+                    android:maxLines="2"
+                    android:hint="@string/hint_city_town"
+                    android:padding="10dp" />
+
+                <Spinner
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/input_state"
+                    android:layout_marginStart="10dp"
+                    android:background="@null"
+                    android:entries="@array/state"
+                    android:padding="10dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/dates"
+                android:layout_marginTop="30dp">
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/input_date"
+                    android:layout_marginStart="10dp"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:inputType="date"
+                    android:background="@null"
+                    android:maxLines="2"
+                    android:hint="@string/hint_date"
+                    android:padding="10dp" />
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/input_number_of_days"
+                    android:layout_marginStart="10dp"
+                    android:inputType="number"
+                    android:background="@null"
+                    android:maxLines="2"
+                    android:hint="@string/hint_number_of_days"
+                    android:padding="10dp" />
+
+            </LinearLayout>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:id="@+id/input_description"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="30dp"
+                android:maxLines="20"
+                android:background="@null"
+                android:hint="@string/hint_description"
+                android:gravity="start"
+                android:padding="10dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/info"
+                android:background="@color/white"
+                android:layout_marginTop="10dp"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/post_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginBottom="35dp"
+                    android:text="@string/post_button"
+                    android:layout_marginEnd="100dp"
+                    android:layout_marginStart="100dp"
+                    android:background="@color/grey" />
+
+<!--                <Button-->
+<!--                    android:id="@+id/btn_save"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="35dp"-->
+<!--                    android:layout_marginBottom="35dp"-->
+<!--                    android:text="@string/save_button"-->
+<!--                    android:textColor="@color/White"-->
+<!--                    android:background="@drawable/post_bt_ui"-->
+<!--                    android:visibility="invisible"/>-->
+
+<!--                <Button-->
+<!--                    android:id="@+id/btn_cancel"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_toEndOf="@id/btn_save"-->
+<!--                    android:layout_marginTop="35dp"-->
+<!--                    android:layout_marginBottom="35dp"-->
+<!--                    android:layout_marginStart="15dp"-->
+<!--                    android:text="@string/cancel_button"-->
+<!--                    android:textColor="@color/White"-->
+<!--                    android:background="@drawable/post_bt_ui"-->
+<!--                    android:visibility="invisible"/>-->
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible" />
+
+</RelativeLayout>

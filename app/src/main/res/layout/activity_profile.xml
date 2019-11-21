@@ -38,7 +38,7 @@
     <RelativeLayout
         android:id="@+id/rel2"
         android:layout_width="match_parent"
-        android:layout_height="260dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/rel1"
         android:padding="8dp">
 
@@ -127,12 +127,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/bottom_nav">
+            android:layout_above="@+id/bottom_nav"
+            android:padding="5dp">
 
         </android.support.v7.widget.RecyclerView>
 

@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.travelapp.Fragment.MyAdapter;
+import com.example.travelapp.Fragment.ViewTripFragment;
 import com.example.travelapp.R;
 import com.example.travelapp.configs.Constants;
 import com.example.travelapp.models.Trip;
@@ -194,8 +196,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                     if (!image.isEmpty()) {
                         Picasso.get().load(image).into(photo);
-                    } else {
-                        Picasso.get().load(R.drawable.ic_person).into(photo);
                     }
 
                 }
@@ -429,17 +429,18 @@ public class ProfileActivity extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
 
-            }
-            if (requestCode == IMAGE_PICK_GALLERY_CODE) {
-                image_uri = data.getData();
+                if (requestCode == IMAGE_PICK_GALLERY_CODE) {
+                    image_uri = data.getData();
 
-                uploadProfilePhoto(image_uri);
+                    uploadProfilePhoto(image_uri);
 
-            }
-            if (requestCode == IMAGE_PICK_CAMERA_CODE) {
+                }
+                if (requestCode == IMAGE_PICK_CAMERA_CODE) {
 
-                uploadProfilePhoto(image_uri);
+                    uploadProfilePhoto(image_uri);
 
+
+                }
 
             }
 
@@ -542,10 +543,18 @@ public class ProfileActivity extends AppCompatActivity {
         mAdapter = new MyAdapter(this, mTrips, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Add see details of trip!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//                int position = (int) v.getTag();
-//                Post post = mMyAdapter.getItem(position);
-//                mClickHandler.viewPost(post.getPost_id(), post.getUser_id(), post.getStatus());
+                int position = (int) v.getTag();
+                Trip trip = mAdapter.getItem(position);
+
+                Bundle args = new Bundle();
+                args.putString(ViewTripFragment.ARGUMENT_TRIPID, trip.getTrip_id());
+                ViewTripFragment fragment = new ViewTripFragment();
+                fragment.setArguments(args);
+
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, fragment, "Trip_Info");
+                fragmentTransaction.addToBackStack("Trip_Info");
+                fragmentTransaction.commit();
             }
         });
         mRecyclerView.setAdapter(mAdapter);

@@ -44,22 +44,15 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/photo"
-                android:layout_margin="15dp">
-
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:id="@+id/post_image"
-                    android:layout_marginTop="15dp"
-                    android:layout_centerHorizontal="true"
-                    android:scaleType="centerCrop"
-                    android:background="@drawable/grey_bg_add_white_plus" />
-
-            </RelativeLayout>
+                android:id="@+id/post_image"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_waddphoto" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -77,8 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:id="@+id/location"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
+                android:layout_marginTop="30dp">
 
                 <EditText
                     android:layout_width="0dp"

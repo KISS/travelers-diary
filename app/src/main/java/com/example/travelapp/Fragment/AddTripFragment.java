@@ -320,8 +320,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     }
 
     private void resetFields(){
-        mImage.setImageURI(null);
-        mImage.setImageBitmap(null);
+        mImage.setImageResource(R.drawable.ic_waddphoto);
         mTitle.setText("");
         mCity.setText("");
         mSpinner.setSelection(0);

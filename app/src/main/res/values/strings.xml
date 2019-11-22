@@ -56,6 +56,8 @@
     <string name="hint_number_of_days">Number of days</string>
     <string name="hint_date">Date (optional)</string>
     <string name="please_specify_a_number_of_days">Please specify a number of days!</string>
+    <string name="Trip">Trip</string>
+    <string name="text_days">days</string>
     <string-array name="state">
         <item>State</item><item>Minnesota</item><item>Montana</item>
         <item>North Dakota</item><item>Idaho</item><item>Washington</item><item>Arizona</item><item>California</item><item>Colorado</item><item>Nevada</item><item>New Mexico</item><item>Oregon</item><item>Utah</item>

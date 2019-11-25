@@ -37,7 +37,7 @@
     <string name="verify_email_password">Please verify your e-mail and password</string>
     <string name="already_registered">You are already registered here</string>
     <string name="register_successful">User registration is Successful. Please verify your e-mail address.</string>
-    <string name="travel_history">Travel History</string>
+    <string name="travel_feed">Travel Feed</string>
     <string name="post_button">Post Trip</string>
     <string name="hint_city_town">City/Town</string>
     <string name="hint_title">Title (optional)</string>

@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:text="@string/travel_history"
+            android:text="@string/travel_feed"
             android:textAlignment="center"
             android:textColor="@color/grey"
             android:textSize="25sp" />

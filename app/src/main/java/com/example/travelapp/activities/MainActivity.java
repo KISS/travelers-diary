@@ -3,11 +3,14 @@ package com.example.travelapp.activities;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
@@ -17,6 +20,7 @@ import com.anychart.core.map.series.Choropleth;
 import com.anychart.enums.HAlign;
 import com.anychart.enums.SelectionMode;
 import com.anychart.scales.LinearColor;
+import com.example.travelapp.Fragment.AddTripFragment;
 import com.example.travelapp.R;
 import com.example.travelapp.configs.Constants;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,10 +33,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AddTripFragment.AddTripFragmentHandler {
 
     private RecyclerView recyclerView;
     private AnyChartView anyChartView;
+    private FloatingActionButton mAddTripButton;
 
     public List<DataEntry> data;
     DatabaseReference mDatabaseReference;
@@ -47,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         anyChartView = findViewById(R.id.any_chart_view);
+        mAddTripButton = findViewById(R.id.add_trip_button);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
@@ -59,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_USERS);
         mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         getStatesInfoAndConfigureMap();
+        addClickListener();
     }
 
     private void getStatesInfoAndConfigureMap() {
@@ -186,6 +193,26 @@ public class MainActivity extends AppCompatActivity {
         anyChartView.addScript("file:///android_asset/united_states_of_america.js");
         anyChartView.addScript("file:///android_asset/proj4.js");
         anyChartView.setChart(map);
+    }
+
+    private void addClickListener() {
+        mAddTripButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().add(R.id.fragment_container, new AddTripFragment()).addToBackStack("Add a trip").commit();
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        // When there is a fragment attached, pop it and stay at the current activity, otherwise go to previous activity
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            this.finish();
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {

@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -29,8 +31,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.travelapp.Fragment.MyAdapter;
+import com.example.travelapp.Fragment.ViewTripFragment;
 import com.example.travelapp.R;
 import com.example.travelapp.configs.Constants;
+import com.example.travelapp.models.Trip;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -47,12 +52,15 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import static com.google.firebase.storage.FirebaseStorage.getInstance;
 
 public class ProfileActivity extends AppCompatActivity {
+
+    private final String TAG = "Profile Activity";
 
     FirebaseAuth firebaseAuth;
     FirebaseUser user;
@@ -91,6 +99,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     String mLooggedInUserId;
 
+    List<String> mTripIds;
+    List<Trip> mTrips;
+    MyAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +132,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         mStorage = getInstance();
         mDataRef = FirebaseDatabase.getInstance().getReference(Constants.DATABASE_PATH_UPLOADS);
@@ -140,6 +151,9 @@ public class ProfileActivity extends AppCompatActivity {
             logoutUser();
         });
 
+        mTripIds = new ArrayList<>();
+        mTrips = new ArrayList<>();
+        configureRecyclerView();
     }
 
     private void logoutUser() {
@@ -182,8 +196,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                     if (!image.isEmpty()) {
                         Picasso.get().load(image).into(photo);
-                    } else {
-                        Picasso.get().load(R.drawable.ic_person).into(photo);
                     }
 
                 }
@@ -417,17 +429,18 @@ public class ProfileActivity extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
 
-            }
-            if (requestCode == IMAGE_PICK_GALLERY_CODE) {
-                image_uri = data.getData();
+                if (requestCode == IMAGE_PICK_GALLERY_CODE) {
+                    image_uri = data.getData();
 
-                uploadProfilePhoto(image_uri);
+                    uploadProfilePhoto(image_uri);
 
-            }
-            if (requestCode == IMAGE_PICK_CAMERA_CODE) {
+                }
+                if (requestCode == IMAGE_PICK_CAMERA_CODE) {
 
-                uploadProfilePhoto(image_uri);
+                    uploadProfilePhoto(image_uri);
 
+
+                }
 
             }
 
@@ -523,5 +536,91 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    private void configureRecyclerView() {
+        Log.d(TAG, "configure recycler view");
+        mAdapter = new MyAdapter(this, mTrips, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = (int) v.getTag();
+                Trip trip = mAdapter.getItem(position);
+
+                Bundle args = new Bundle();
+                args.putString(ViewTripFragment.ARGUMENT_TRIPID, trip.getTrip_id());
+                ViewTripFragment fragment = new ViewTripFragment();
+                fragment.setArguments(args);
+
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, fragment, "Trip_Info");
+                fragmentTransaction.addToBackStack("Trip_Info");
+                fragmentTransaction.commit();
+            }
+        });
+        mRecyclerView.setAdapter(mAdapter);
+        getTripIdsAndTrips();
+    }
+
+    private void getTripIdsAndTrips(){
+        mTripIds.clear();
+        mTrips.clear();
+
+        Query query = FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_TRAVELHISTORY)
+                .orderByKey()
+                .equalTo(mLooggedInUserId);
+        
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot != null) {
+                    if (dataSnapshot.hasChildren()) {
+                        DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
+                        for (DataSnapshot snapshot: singleSnapshot.getChildren()) {
+                            String id = snapshot.child(Constants.DATABASE_FIELD_TRIPID).getValue().toString();
+                            Log.d(TAG, "onDataChange: found a post id: " + id);
+                            mTripIds.add(id);
+                        }
+                    }
+                    getTripsInTripIDList();
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getTripsInTripIDList(){
+        if (mTripIds.size() > 0) {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            for (int i  = 0; i < mTripIds.size(); i++) {
+                Log.d(TAG, "getPosts: getting post information for: " + mTripIds.get(i));
+                Query query = reference.child(Constants.DATABASE_PATH_TRIPS)
+                        .orderByKey()
+                        .equalTo(mTripIds.get(i));
+
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChildren()) {
+                            DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
+                            Trip trip = singleSnapshot.getValue(Trip.class);
+                            Log.d(TAG, "onDataChange: found a post: " + trip.getTitle());
+                            mTrips.add(trip);
+                            mAdapter.notifyDataSetChanged();
+                        } else {
+                            // If we implement delete trip in the future, update here.
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+            }
+        } else {
+            mAdapter.notifyDataSetChanged(); //still need to notify the adapter if the list is empty
+        }
     }
 }

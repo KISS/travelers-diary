@@ -1,5 +1,6 @@
 package com.example.travelapp.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,15 +9,47 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.example.travelapp.Fragment.AddTripFragment;
 import com.example.travelapp.R;
+import com.example.travelapp.adapters.TravelFeedAdapter;
+import com.example.travelapp.configs.Constants;
+import com.example.travelapp.models.Trip;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TravelHistoryActivity extends AppCompatActivity implements AddTripFragment.AddTripFragmentHandler {
 
+    private RecyclerView recyclerView;
+
+    private TravelFeedAdapter adapter;
+
+    private DatabaseReference mDatabase;
+
+    private ProgressDialog progressDialog;
+
+
     FloatingActionButton mAddTripButton;
+
+    //progress dialog
+
+    //list to hold all the uploaded images
+    private List<Trip> trips;
+
+    FirebaseUser fUser;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,13 +60,71 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.getMenu().findItem(R.id.nav_travel_history).setChecked(true);
 
-        mAddTripButton = findViewById(R.id.add_trip_button);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        trips = new ArrayList<>();
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        fUser = FirebaseAuth.getInstance().getCurrentUser();
+
+
+
+        mAddTripButton = findViewById(R.id.add_trip_button);
         mAddTripButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().add(R.id.fragment_container, new AddTripFragment()).addToBackStack("Add a trip").commit();
+            }
+
+
+        });
+
+        getAllItem();
+    }
+
+    private void getAllItem() {
+
+        progressDialog = new ProgressDialog(this);
+
+
+        progressDialog.setMessage("Please wait...");
+        progressDialog.show();
+
+
+        Query query = mDatabase.child(Constants.DATABASE_PATH_UPLOADS);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                trips.clear();
+
+                //dismissing the progress dialog
+                progressDialog.dismiss();
+
+                //iterating through all the values in database
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Trip upload = postSnapshot.getValue(Trip.class);
+
+                    if (!upload.getUser_id().equals(fUser.getUid())) {
+                        trips.add(upload);
+                    }
+
+                }
+
+                //creating adapter
+                adapter = new TravelFeedAdapter(getApplicationContext(), trips);
+
+                //adding adapter to
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("Error");
+                progressDialog.dismiss();
             }
         });
 

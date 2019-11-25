@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="100dp">
+
+
+        <ImageView
+            android:id="@+id/tripImage"
+            android:layout_width="match_parent"
+            android:layout_height="300dp" />
+
+        <TextView
+            android:id="@+id/titleTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tripImage"
+            android:layout_marginTop="15dp"
+            android:textAlignment="center"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="15dp"
+            android:paddingLeft="10dp"
+            android:textColor="@color/grey"
+            android:textSize="20sp" />
+
+
+        <TextView
+            android:id="@+id/cityTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titleTv"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+
+            android:layout_marginBottom="15dp"
+            android:paddingLeft="10dp"
+            android:textColor="@color/grey"
+            android:textSize="13sp" />
+
+
+
+
+        <TextView
+            android:id="@+id/dateTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cityTv"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:paddingLeft="10dp"
+            android:textColor="@color/grey"
+            android:textSize="13sp" />
+
+
+        <TextView
+            android:id="@+id/daysTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dateTv"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:paddingLeft="10dp"
+            android:textColor="@color/grey"
+            android:textSize="13sp" />
+
+
+        <TextView
+            android:id="@+id/disTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/daysTv"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:paddingLeft="10dp"
+            android:textColor="@color/grey"
+            android:textSize="13sp" />
+
+
+        <ImageView
+            android:id="@+id/line"
+            android:layout_width="wrap_content"
+            android:layout_height="2dp"
+            android:layout_below="@+id/disTv"
+            android:layout_margin="15dp"
+            android:background="@drawable/wline" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

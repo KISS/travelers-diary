@@ -71,17 +71,17 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
         fUser = FirebaseAuth.getInstance().getCurrentUser();
 
 
-
-        mAddTripButton = findViewById(R.id.add_trip_button);
-        mAddTripButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().add(R.id.fragment_container, new AddTripFragment()).addToBackStack("Add a trip").commit();
-            }
-
-
-        });
+//
+//        mAddTripButton = findViewById(R.id.add_trip_button);
+//        mAddTripButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                fragmentManager.beginTransaction().add(R.id.fragment_container, new AddTripFragment()).addToBackStack("Add a trip").commit();
+//            }
+//
+//
+//        });
 
         getAllItem();
     }

@@ -44,6 +44,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         holder.mTitle.setText(trip.getTitle());
         holder.mCity.setText(trip.getCity());
         holder.mState.setText(Constants.MAP_NAMES[trip.getState()]);
+        holder.mDate.setText(trip.getDate());
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(mListener);
     }
@@ -63,6 +64,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         TextView mTitle;
         TextView mCity;
         TextView mState;
+        TextView mDate;
 
         public MyAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -70,6 +72,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             mTitle = itemView.findViewById(R.id.trip_title);
             mCity = itemView.findViewById(R.id.trip_city);
             mState = itemView.findViewById(R.id.trip_state);
+            mDate = itemView.findViewById(R.id.trip_date);
         }
     }
 

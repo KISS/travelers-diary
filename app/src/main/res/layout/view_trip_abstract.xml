@@ -3,14 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="5dp">
+    android:padding="15dp">
 
     <ImageView
         android:id="@+id/trip_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:scaleType="fitCenter"
-        android:background="@color/white" />
+        android:background="@color/colorPrimaryDark" />
 
     <RelativeLayout
         android:id="@+id/trip_info"
@@ -24,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
+            android:textColor="@color/colorPrimary"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -33,12 +34,16 @@
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:textSize="16sp"
+            android:textColor="@color/colorPrimary"
+
             android:layout_below="@id/trip_title" />
 
         <TextView
             android:id="@+id/trip_state"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+
             android:padding="5dp"
             android:textSize="16sp"
             android:layout_below="@id/trip_title"
@@ -49,6 +54,8 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:padding="5dp"
+            android:textColor="@color/colorPrimary"
+
             android:textSize="16sp"
             android:layout_below="@id/trip_city" />
 

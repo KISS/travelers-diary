@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/wbg"
+    android:background="@color/colorPrimaryDark"
     android:orientation="vertical"
     tools:context=".activities.SignInActivity">
 
@@ -16,9 +16,9 @@
 
         <ImageView
             android:layout_width="300dp"
-            android:layout_height="200dp"
+            android:layout_height="100dp"
             android:layout_centerInParent="true"
-            android:background="@drawable/tdlogo" />
+            android:background="@drawable/tdlogoblue" />
     </RelativeLayout>
 
 
@@ -41,12 +41,10 @@
                 android:layout_marginTop="100dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/wedittext"
+                android:background="@drawable/edittextline"
                 android:hint="@string/usernamehint"
-                android:paddingStart="15dp"
-                android:paddingLeft="15dp"
-                android:textColor="@color/grey"
-                android:textColorHint="@color/etclr"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
                 android:textSize="16sp" />
 
             <EditText
@@ -54,47 +52,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/wedittext"
+                android:background="@drawable/edittextline"
                 android:hint="@string/passwordhint"
                 android:inputType="textPassword"
-                android:paddingStart="15dp"
-                android:paddingLeft="15dp"
-                android:textColor="@color/grey"
-                android:textColorHint="@color/etclr"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
                 android:textSize="16sp" />
 
             <Button
                 android:id="@+id/signinButton"
-                android:layout_width="140dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
+                android:layout_width="75dp"
+                android:layout_height="22dp"
+                android:layout_gravity="left"
                 android:layout_margin="10dp"
-                android:background="@drawable/wgreybtn"
-                android:text="@string/signinbutton"
-                android:textColor="@color/white"
-                android:textSize="18sp"
+                android:background="@drawable/signinbtnblue"
                 android:visibility="visible" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="10dp"
+                android:layout_gravity="left"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="10dp"
                 android:text="@string/donthaveanaccount"
-                android:textAlignment="center"
                 android:textColor="@color/white" />
 
 
             <Button
                 android:id="@+id/signupPage"
-                android:layout_width="120dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/wclrbtnw"
-                android:text="@string/signupbutton"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:layout_width="75dp"
+                android:layout_height="22dp"
+                android:layout_gravity="left"
+                android:layout_margin="10dp"
+                android:background="@drawable/signupbtnwhite" />
 
         </LinearLayout>
 

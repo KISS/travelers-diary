@@ -29,7 +29,7 @@
     <string name="inventory">Inventory</string>
     <string name="item_details">Item Details</string>
     <string name="notifications">Notifications</string>
-    <string name="user_profile">User Profile"</string>
+    <string name="user_profile">Profile"</string>
     <string name="empty_message_error">Can not send empty message</string>
     <string name="review_error">Please Enter a Review</string>
     <string name="out_of_stock">Item successfully marked out of stock</string>
@@ -40,8 +40,8 @@
     <string name="travel_feed">Travel Feed</string>
     <string name="post_button">Post Trip</string>
     <string name="hint_city_town">City/Town</string>
-    <string name="hint_title">Title (optional)</string>
-    <string name="hint_description">Description (optional)</string>
+    <string name="hint_title">Title </string>
+    <string name="hint_description">Description </string>
     <string name="toast_uploading_photo">Uploading photo...</string>
     <string name="dialog_select_photo_choose_photo_from_memory">Choose photo from memory</string>
     <string name="dialog_select_photo_take_a_photo">Take a photo</string>
@@ -54,7 +54,7 @@
     <string name="toast_photo_uploaded_successfully">Photo uploaded successfully!</string>
     <string name="toast_could_not_upload_photo">Could not uploade photo</string>
     <string name="hint_number_of_days">Number of days</string>
-    <string name="hint_date">Date (optional)</string>
+    <string name="hint_date">Date </string>
     <string name="please_specify_a_number_of_days">Please specify a number of days!</string>
     <string name="Trip">Trip</string>
     <string name="text_days">days</string>

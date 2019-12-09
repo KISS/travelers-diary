@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/wbg"
+    android:background="@color/colorPrimaryDark"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.SignUpActivity">
@@ -14,13 +14,13 @@
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="150dp"
+            android:layout_width="300dp"
             android:layout_height="100dp"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="5dp"
-            android:background="@drawable/tdlogo" />
+            android:background="@drawable/tdlogoblue" />
 
 
         <EditText
@@ -29,12 +29,10 @@
             android:layout_height="50dp"
             android:layout_above="@+id/lastName"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/wedittext"
+            android:background="@drawable/edittextline"
             android:hint="@string/enterfirstname"
-            android:paddingStart="15dp"
-            android:paddingLeft="15dp"
-            android:textColor="@color/grey"
-            android:textColorHint="@color/grey"
+            android:textColor="@color/colorPrimary"
+            android:textColorHint="@color/colorPrimary"
             android:textSize="16sp" />
 
         <EditText
@@ -43,12 +41,10 @@
             android:layout_height="50dp"
             android:layout_above="@+id/email"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/wedittext"
+            android:background="@drawable/edittextline"
             android:hint="@string/enterlastname"
-            android:paddingStart="15dp"
-            android:paddingLeft="15dp"
-            android:textColor="@color/grey"
-            android:textColorHint="@color/grey"
+            android:textColor="@color/colorPrimary"
+            android:textColorHint="@color/colorPrimary"
             android:textSize="16sp" />
 
         <EditText
@@ -57,12 +53,10 @@
             android:layout_height="50dp"
             android:layout_above="@+id/signupPassword"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/wedittext"
+            android:background="@drawable/edittextline"
             android:hint="@string/emailhint"
-            android:paddingStart="15dp"
-            android:paddingLeft="15dp"
-            android:textColor="@color/grey"
-            android:textColorHint="@color/grey"
+            android:textColor="@color/colorPrimary"
+            android:textColorHint="@color/colorPrimary"
             android:textSize="16sp" />
 
         <EditText
@@ -71,33 +65,30 @@
             android:layout_height="50dp"
             android:layout_above="@+id/signupBtn"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/wedittext"
+            android:background="@drawable/edittextline"
             android:hint="@string/Signuppasswordhint"
             android:inputType="textPassword"
-            android:paddingStart="15dp"
-            android:paddingLeft="15dp"
-            android:textColor="@color/lightgrey"
-            android:textColorHint="@color/lightgrey"
+            android:textColor="@color/colorPrimary"
+            android:textColorHint="@color/colorPrimary"
             android:textSize="16sp" />
 
         <Button
             android:id="@+id/signupBtn"
-            android:layout_width="120dp"
-            android:layout_height="50dp"
+            android:layout_width="75dp"
+            android:layout_height="22dp"
             android:layout_above="@+id/alreadyAccount"
-            android:layout_centerHorizontal="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="35dp"
-            android:background="@drawable/wgreybtn"
-            android:text="@string/signupbutton"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:background="@drawable/signupbtnblue" />
 
         <TextView
             android:id="@+id/alreadyAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/signinBtn"
-            android:layout_centerHorizontal="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="15dp"
             android:layout_marginBottom="8dp"
             android:text="@string/alreadyhaveaccount"
             android:textColor="@color/white" />
@@ -105,15 +96,12 @@
 
         <Button
             android:id="@+id/signinBtn"
-            android:layout_width="120dp"
-            android:layout_height="50dp"
+            android:layout_width="75dp"
+            android:layout_height="22dp"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
+            android:layout_alignParentLeft="true"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/wclrbtnw"
-            android:text="@string/signinbutton"
-            android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:background="@drawable/signinbtnwhite" />
 
 
     </RelativeLayout>

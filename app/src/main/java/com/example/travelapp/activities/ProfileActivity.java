@@ -78,8 +78,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     ImageView photo;
-    TextView mfirstname, mlastname, memail, mStateInfo, mPhoneNum;
-    FloatingActionButton fab;
+    TextView mfirstname, mlastname, memail, mStateInfo, mPhoneNum, fab;
     FloatingActionButton logoutBtn;
 
     ProgressDialog pd;
@@ -182,8 +181,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String image = "" + ds.child("profilePictureUrl").getValue();
-                    String firstname = "" + ds.child("firstName").getValue();
-                    String lastname = "" + ds.child("lastName").getValue();
+                    String firstname = "" + ds.child("First Name").getValue();
+                    String lastname = "" + ds.child("Last Name").getValue();
                     String email = "" + ds.child("email").getValue();
                     String stateinfo = "State Info: " + ds.child("stateInfo").getValue();
                     String phonenum = "Phone Num: " + ds.child("phoneNum").getValue();
@@ -241,7 +240,7 @@ public class ProfileActivity extends AppCompatActivity {
          *
          * */
         private void showEditProfilePopup () {
-            String options[] = {"Edit Profile Picture", "Edit First Name", "Edit Last Name", "Edit State Info", "Edit Phone Number"};
+            String options[] = {"Edit Profile Picture", "Edit First Name", "Edit Last Name"};
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Choose ");
             builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -253,10 +252,10 @@ public class ProfileActivity extends AppCompatActivity {
                         showImagePicDialog();
                     } else if (which == 1) {
                         pd.setMessage("Updating First Name");
-                        showEditInfoUpdatePopup("firstName");
+                        showEditInfoUpdatePopup("First Name");
                     } else if (which == 2) {
                         pd.setMessage("Updating Last Name");
-                        showEditInfoUpdatePopup("lastName");
+                        showEditInfoUpdatePopup("Last Name");
 
                     } else if (which == 3) {
                         pd.setMessage("Updating State Info");
@@ -274,7 +273,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         private void showEditInfoUpdatePopup ( final String key){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Update" + key);
+            builder.setTitle("Update " + key);
 
 
             final EditText editText = new EditText(this);

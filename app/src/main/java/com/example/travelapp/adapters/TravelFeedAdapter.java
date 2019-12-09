@@ -43,6 +43,7 @@ public class TravelFeedAdapter extends RecyclerView.Adapter<TravelFeedAdapter.Vi
         holder.textViewCity.setText(upload.getCity());
         holder.textViewDate.setText("Date: "+upload.getDate());
         holder.textViewDays.setText("Trip For "+upload.getDays()+" Days");
+
         holder.textViewDiscription.setText(upload.getDescription());
 
         Picasso.get().load(upload.getImage()).into(holder.tripImageView);
@@ -59,6 +60,7 @@ public class TravelFeedAdapter extends RecyclerView.Adapter<TravelFeedAdapter.Vi
 
         public TextView textViewTitle;
         public TextView textViewCity;
+        public TextView textViewState;
         public TextView textViewDate;
         public TextView textViewDays;
         public TextView textViewDiscription;
@@ -69,7 +71,6 @@ public class TravelFeedAdapter extends RecyclerView.Adapter<TravelFeedAdapter.Vi
             super(itemView);
 
             tripImageView = (ImageView) itemView.findViewById(R.id.tripImage);
-
             textViewTitle = (TextView) itemView.findViewById(R.id.titleTv);
             textViewCity = (TextView) itemView.findViewById(R.id.cityTv);
             textViewDate = (TextView) itemView.findViewById(R.id.dateTv);

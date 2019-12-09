@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/colorPrimaryDark"
     android:paddingTop="5dp"
     tools:context=".activities.ProfileActivity">
 
@@ -18,19 +18,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="20dp"
             android:text="@string/user_profile"
             android:textAlignment="center"
-            android:textColor="@color/grey"
+            android:paddingLeft="10dp"
+            android:textColor="@color/colorPrimaryLight"
             android:textSize="25sp" />
 
-        <ImageView
-            android:id="@+id/line"
-            android:layout_width="wrap_content"
-            android:layout_height="7dp"
-            android:layout_below="@+id/tradeTV"
-            android:layout_margin="10dp"
-            android:background="@drawable/wline" />
+        <!--<ImageView-->
+            <!--android:id="@+id/line"-->
+            <!--android:layout_width="240dp"-->
+            <!--android:layout_height="5dp"-->
+            <!--android:layout_below="@+id/tradeTV"-->
+            <!--android:layout_margin="10dp"-->
+            <!--android:background="@drawable/lineblue" />-->
 
     </RelativeLayout>
 
@@ -55,22 +57,24 @@
             android:id="@+id/userAddFirstName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp"
+            android:textSize="20sp"
             android:layout_toEndOf="@+id/userAddPhoto"
             android:layout_toRightOf="@+id/userAddPhoto"
-            android:textColor="@color/lightgrey" />
+            android:textColor="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/userAddLastName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
+            android:textSize="20sp"
             android:layout_marginBottom="10dp"
             android:layout_toEndOf="@+id/userAddFirstName"
             android:layout_toRightOf="@+id/userAddFirstName"
-            android:textColor="@color/lightgrey" />
+            android:textColor="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/ShowEmail"
@@ -78,9 +82,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/userAddFirstName"
             android:layout_marginBottom="10dp"
+            android:textSize="15sp"
             android:layout_toEndOf="@+id/userAddPhoto"
             android:layout_toRightOf="@+id/userAddPhoto"
-            android:textColor="@color/lightgrey" />
+            android:textColor="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/userAddStateInfo"
@@ -90,7 +95,7 @@
             android:layout_marginBottom="10dp"
             android:layout_toEndOf="@+id/userAddPhoto"
             android:layout_toRightOf="@+id/userAddPhoto"
-            android:textColor="@color/lightgrey" />
+            android:textColor="@color/colorPrimaryDark" />
 
         <TextView
             android:id="@+id/userAddPhoneNum"
@@ -100,7 +105,7 @@
             android:layout_marginBottom="10dp"
             android:layout_toEndOf="@+id/userAddPhoto"
             android:layout_toRightOf="@+id/userAddPhoto"
-            android:textColor="@color/lightgrey" />
+            android:textColor="@color/colorPrimaryDark" />
 
 
         <android.support.design.widget.FloatingActionButton
@@ -113,13 +118,16 @@
             android:layout_marginLeft="15dp"
             android:src="@drawable/ic_wlogoutt" />
 
-        <android.support.design.widget.FloatingActionButton
+        <TextView
             android:id="@+id/fbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="40dp"
+            android:text="Edit Profile"
+            android:textColor="@color/colorPrimaryLight"
             android:layout_below="@+id/userAddPhoneNum"
-            android:layout_toLeftOf="@id/logoutBtn"
-            android:src="@drawable/ic_wpen" />
+            android:layout_toLeftOf="@id/logoutBtn" />
 
     </RelativeLayout>
 
@@ -144,8 +152,9 @@
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        app:itemIconTint="@drawable/selector"
         android:layout_alignParentBottom="true"
-        android:background="#404041"
+        android:background="@color/colorPrimaryDark"
         app:menu="@menu/bottom_navigation">
 
     </android.support.design.widget.BottomNavigationView>

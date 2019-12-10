@@ -181,8 +181,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String image = "" + ds.child("profilePictureUrl").getValue();
-                    String firstname = "" + ds.child("First Name").getValue();
-                    String lastname = "" + ds.child("Last Name").getValue();
+                    String firstname = "" + ds.child("firstName").getValue();
+                    String lastname = "" + ds.child("lastName").getValue();
                     String email = "" + ds.child("email").getValue();
                     String stateinfo = "State Info: " + ds.child("stateInfo").getValue();
                     String phonenum = "Phone Num: " + ds.child("phoneNum").getValue();
@@ -517,10 +517,10 @@ public class ProfileActivity extends AppCompatActivity {
                                 Intent intent3 = new Intent(ProfileActivity.this, TravelHistoryActivity.class);
                                 startActivity(intent3);
                                 break;
-                            case R.id.nav_wishlist:
-                                Intent intent4 = new Intent(ProfileActivity.this, MainActivity.class);
-                                startActivity(intent4);
-                                break;
+//                            case R.id.nav_wishlist:
+//                                Intent intent4 = new Intent(ProfileActivity.this, MainActivity.class);
+//                                startActivity(intent4);
+//                                break;
                             case R.id.nav_profile:
                                 Intent intent5 = new Intent(ProfileActivity.this, ProfileActivity.class);
                                 startActivity(intent5);

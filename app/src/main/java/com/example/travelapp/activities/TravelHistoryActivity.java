@@ -147,10 +147,10 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
                     Intent intent3 = new Intent(TravelHistoryActivity.this, TravelHistoryActivity.class);
                     startActivity(intent3);
                     break;
-                case R.id.nav_wishlist:
-                    Intent intent4 = new Intent(TravelHistoryActivity.this, MainActivity.class);
-                    startActivity(intent4);
-                    break;
+//                case R.id.nav_wishlist:
+//                    Intent intent4 = new Intent(TravelHistoryActivity.this, MainActivity.class);
+//                    startActivity(intent4);
+//                    break;
                 case R.id.nav_profile:
                     Intent intent5 = new Intent(TravelHistoryActivity.this, ProfileActivity.class);
                     startActivity(intent5);

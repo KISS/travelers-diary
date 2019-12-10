@@ -24,10 +24,10 @@
         android:icon="@drawable/ic_wgroup"
         android:title="@null" />
 
-    <item
-        android:id="@+id/nav_wishlist"
-        android:icon="@drawable/ic_chat"
-        android:title="@null" />
+<!--    <item-->
+<!--        android:id="@+id/nav_wishlist"-->
+<!--        android:icon="@drawable/ic_chat"-->
+<!--        android:title="@null" />-->
 
 
 </menu>

@@ -1,16 +1,17 @@
 package com.example.travelapp.activities;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
@@ -23,6 +24,9 @@ import com.anychart.scales.LinearColor;
 import com.example.travelapp.Fragment.AddTripFragment;
 import com.example.travelapp.R;
 import com.example.travelapp.configs.Constants;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -218,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
                 startActivity(intent);
                 break;
             case R.id.nav_search:
-                Intent intent2 = new Intent(MainActivity.this, MainActivity.class);
+                Intent intent2 = new Intent(MainActivity.this, SearchActivity.class);
                 startActivity(intent2);
                 break;
             case R.id.nav_travel_history:

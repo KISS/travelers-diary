@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.SearchActivity">
+    android:background="@color/colorPrimaryDark"
+    tools:context=".activities.SearchActivity"
+    >
 
 
     <EditText
@@ -12,7 +14,10 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_margin="20dp"
-            android:hint="@string/search_hint"></EditText>
+            android:hint="@string/search_hint"
+            android:textColor="@color/colorPrimary"
+            android:textColorHint="@color/colorPrimary"
+            android:background="@drawable/edittextline"></EditText>
 
     <ImageButton
             android:id="@+id/search_btn"
@@ -20,8 +25,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_alignRight="@id/search_box"
-            android:background="#FFFFFF"
-            app:srcCompat="@drawable/ic_search_black_24dp" />
+            android:background="@color/colorPrimaryDark"
+            app:srcCompat="@drawable/ic_search_navigation" />
 
 
     <androidx.recyclerview.widget.RecyclerView

@@ -68,7 +68,8 @@ public class SearchActivity extends AppCompatActivity {
 
                 String searchText = searchField.getText().toString();
 
-                firebaseSearch(searchText);
+                if (!searchText.equals(""))
+                    firebaseSearch(searchText);
 
             }
         });
@@ -76,10 +77,12 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void firebaseSearch(String searchText) {
+
+
         Log.d(TAG, "Search started.");
 
         // SELECT * FROM Users WHERE firstName = "searchText%"
-        Query query = UsersDatabaseReference.orderByChild("firstName").startAt(searchText).endAt("\uf8ff");
+        Query query = UsersDatabaseReference.orderByChild("firstName").startAt(searchText).endAt("searchText\uf8ff");
 
         FirebaseRecyclerOptions<User> options = new FirebaseRecyclerOptions.Builder<User>()
                 .setQuery(query, new SnapshotParser<User>() {
@@ -118,7 +121,10 @@ public class SearchActivity extends AppCompatActivity {
         };
 
         resultList.setAdapter(adapter);
+        adapter.startListening();
+
     }
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -175,12 +181,18 @@ public class SearchActivity extends AppCompatActivity {
             user_name.setText(userFirstName + " " +userLastName);
             user_email.setText(userEmail);
 
-            Picasso.get().load(userImage).into(user_image);
+            if (!userImage.isEmpty()){
+                Picasso.get().load(userImage).into(user_image);
+            }
+
+
 
         }
 
 
 
     }
+
+
 
 }

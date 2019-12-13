@@ -141,7 +141,7 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
                     startActivity(intent);
                     break;
                 case R.id.nav_search:
-                    Intent intent2 = new Intent(TravelHistoryActivity.this, MainActivity.class);
+                    Intent intent2 = new Intent(TravelHistoryActivity.this, SearchActivity.class);
                     startActivity(intent2);
                     break;
                 case R.id.nav_travel_history:

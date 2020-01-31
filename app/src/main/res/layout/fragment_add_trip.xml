@@ -175,29 +175,27 @@
                     android:layout_marginStart="100dp"
                     android:background="@color/colorPrimaryLight" />
 
-<!--                <Button-->
-<!--                    android:id="@+id/btn_save"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginTop="35dp"-->
-<!--                    android:layout_marginBottom="35dp"-->
-<!--                    android:text="@string/save_button"-->
-<!--                    android:textColor="@color/White"-->
-<!--                    android:background="@drawable/post_bt_ui"-->
-<!--                    android:visibility="invisible"/>-->
+                <Button
+                    android:id="@+id/save_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginBottom="35dp"
+                    android:text="@string/save_button"
+                    android:background="@color/colorPrimaryLight"
+                    android:visibility="invisible"/>
 
-<!--                <Button-->
-<!--                    android:id="@+id/btn_cancel"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_toEndOf="@id/btn_save"-->
-<!--                    android:layout_marginTop="35dp"-->
-<!--                    android:layout_marginBottom="35dp"-->
-<!--                    android:layout_marginStart="15dp"-->
-<!--                    android:text="@string/cancel_button"-->
-<!--                    android:textColor="@color/White"-->
-<!--                    android:background="@drawable/post_bt_ui"-->
-<!--                    android:visibility="invisible"/>-->
+                <Button
+                    android:id="@+id/cancel_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/save_button"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginBottom="35dp"
+                    android:layout_marginStart="15dp"
+                    android:text="@string/cancel_button"
+                    android:background="@color/colorPrimaryLight"
+                    android:visibility="invisible"/>
 
             </RelativeLayout>
 

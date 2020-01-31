@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.travelapp.R;
+import com.example.travelapp.configs.Constants;
 import com.example.travelapp.models.Trip;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,11 +33,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -61,6 +64,8 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     private Spinner mSpinner;
     private EditText mTitle, mCity, mDate, mDays, mDescription;
     private Button mPost;
+    private Button mSave;
+    private Button mCancel;
     private double mProgress = 0;
 
     DatabaseReference mDatabaseReference;
@@ -90,8 +95,10 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
         mDays = view.findViewById(R.id.input_number_of_days);
         mDescription = view.findViewById(R.id.input_description);
         mPost = view.findViewById(R.id.post_button);
+        mSave = view.findViewById(R.id.save_button);
+        mCancel = view.findViewById(R.id.cancel_button);
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mTripId = "";
+        mTripId = getArguments() == null ? "" : getArguments().getString(ViewTripFragment.ARGUMENT_TRIPID);
         mState = -1;
 
         init();
@@ -104,6 +111,14 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     }
 
     private void init(){
+        // For edit in View Trip Fragment
+        if (!mTripId.isEmpty()) {
+            getTripInfo();
+            mPost.setVisibility(View.GONE);
+            mSave.setVisibility(View.VISIBLE);
+            mCancel.setVisibility(View.VISIBLE);
+        }
+
         mImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,16 +166,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: attempting to post...");
-                if (mState < 0) {
-                    Toast.makeText(getActivity(), R.string.please_choose_a_state,
-                            Toast.LENGTH_SHORT).show();
-                } else if (isEmpty(mCity.getText().toString().trim())) {
-                    Toast.makeText(getActivity(), R.string.please_specify_a_city,
-                            Toast.LENGTH_SHORT).show();
-                } else if (isEmpty(mDays.getText().toString().trim())) {
-                    Toast.makeText(getActivity(), R.string.please_specify_a_number_of_days,
-                            Toast.LENGTH_SHORT).show();
-                } else {
+                if (validateTextInput()) {
                     if (mSelectedBitmap == null && mSelectedUri == null) {
                         Toast.makeText(getActivity(), R.string.please_select_a_photo,
                                 Toast.LENGTH_SHORT).show();
@@ -174,6 +180,98 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                         uploadNewPhoto(mSelectedUri);
                     }
                 }
+            }
+        });
+
+        mSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: attempting to save updates...");
+                if (validateTextInput()) {
+                    // Update trip image.
+                    if (mSelectedBitmap != null && mSelectedUri == null) {
+                        deleteImage(mImageUrl);
+                        uploadNewPhoto(mSelectedBitmap);
+                    } else if (mSelectedBitmap == null && mSelectedUri != null) {
+                        deleteImage(mImageUrl);
+                        uploadNewPhoto(mSelectedUri);
+                    }
+
+                    // Update trip title.
+                    mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                            .child(mTripId)
+                            .child("title")
+                            .setValue(mTitle.getText().toString().trim());
+
+                    // Update trip city.
+                    mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                            .child(mTripId)
+                            .child("city")
+                            .setValue(mCity.getText().toString().trim());
+
+                    // Update trip state.
+                    mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                            .child(mTripId)
+                            .child("state")
+                            .setValue(mState);
+
+                    // Update statesInfo in Users!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+                    // Update trip date.
+                    mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                            .child(mTripId)
+                            .child("date")
+                            .setValue(mDate.getText().toString().trim());
+
+                    // Update trip days.
+                    mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                            .child(mTripId)
+                            .child("days")
+                            .setValue(Integer.parseInt(mDays.getText().toString().trim()));
+
+                    // Update trip description.
+                    mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                            .child(mTripId)
+                            .child("description")
+                            .setValue(mDescription.getText().toString().trim());
+
+                    Toast.makeText(getActivity(), R.string.toast_trip_updated,
+                            Toast.LENGTH_SHORT).show();
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
+            }
+        });
+
+        mCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+    }
+
+    private void getTripInfo() {
+        Query query = mDatabaseReference.child("Trips").orderByKey().equalTo(mTripId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
+                if (singleSnapshot != null) {
+                    Trip trip = singleSnapshot.getValue(Trip.class);
+                    mImageUrl = trip.getImage();
+                    Picasso.get().load(mImageUrl).into(mImage);
+                    mTitle.setText(trip.getTitle());
+                    mCity.setText(trip.getCity());
+                    mSpinner.setSelection(trip.getState() + 1);
+                    mDate.setText(trip.getDate());
+                    mDays.setText(String.valueOf(trip.getDays()));
+                    mDescription.setText(trip.getDescription());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
@@ -348,6 +446,40 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     @Override
     public void triggerImageUpload() {
 
+    }
+
+    private boolean validateTextInput() {
+        if (mState < 0) {
+            Toast.makeText(getActivity(), R.string.please_choose_a_state,
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (isEmpty(mCity.getText().toString().trim())) {
+            Toast.makeText(getActivity(), R.string.please_specify_a_city,
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (isEmpty(mDays.getText().toString().trim())) {
+            Toast.makeText(getActivity(), R.string.please_specify_a_number_of_days,
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    private void deleteImage(String imageUrl) {
+        StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
+        photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // File deleted successfully
+                Log.d(TAG, "onSuccess: deleted file");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // An error occurred!
+                Log.d(TAG, "onFailure: did not delete file");
+            }
+        });
     }
 
 }

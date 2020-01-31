@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.travelapp.Fragment.AddTripFragment;
 import com.example.travelapp.Fragment.MyAdapter;
 import com.example.travelapp.Fragment.ViewTripFragment;
 import com.example.travelapp.R;
@@ -58,7 +59,7 @@ import java.util.List;
 
 import static com.google.firebase.storage.FirebaseStorage.getInstance;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements AddTripFragment.AddTripFragmentHandler {
 
     private final String TAG = "Profile Activity";
 

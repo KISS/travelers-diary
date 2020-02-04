@@ -572,6 +572,8 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mTripIds.clear();
+                mTrips.clear();
                 if (dataSnapshot != null) {
                     if (dataSnapshot.hasChildren()) {
                         DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
@@ -607,7 +609,17 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
                             DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
                             Trip trip = singleSnapshot.getValue(Trip.class);
                             Log.d(TAG, "onDataChange: found a post: " + trip.getTitle());
-                            mTrips.add(trip);
+                            int index = 0;
+                            for (; index < mTrips.size(); index++) {
+                                // When edit a trip, find the trip and update info
+                                if (trip.getTrip_id().equals(mTripIds.get(index))) {
+                                    mTrips.set(index, trip);
+                                    break;
+                                }
+                            }
+                            if (index == mTrips.size()) {
+                                mTrips.add(trip);
+                            }
                             mAdapter.notifyDataSetChanged();
                         } else {
                             // If we implement delete trip in the future, update here.

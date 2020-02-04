@@ -44,6 +44,8 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import static android.text.TextUtils.isEmpty;
@@ -71,7 +73,8 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     DatabaseReference mDatabaseReference;
     private String mImageUrl;
     private String mTripId;
-    private int mState;
+    private int mStateSelected;
+    private int mState; // Used to store original state when updating State
 
     @Override
     public void onAttach(Context context) {
@@ -99,6 +102,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
         mCancel = view.findViewById(R.id.cancel_button);
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         mTripId = getArguments() == null ? "" : getArguments().getString(ViewTripFragment.ARGUMENT_TRIPID);
+        mStateSelected = -1;
         mState = -1;
 
         init();
@@ -132,7 +136,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mState = position - 1;
+                mStateSelected = position - 1;
             }
 
             @Override
@@ -213,9 +217,38 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                     mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
                             .child(mTripId)
                             .child("state")
-                            .setValue(mState);
+                            .setValue(mStateSelected);
 
-                    // Update statesInfo in Users!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    // Update statesInfo in Users
+                    if (mStateSelected != mState) {
+                        String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        if (stateIsVisited(mState)) {
+                            // Add visited state
+                            addVisitedState(user_id);
+                        } else {
+                            // Add and remove visited state
+                            mDatabaseReference.child("Users").child(user_id).child("statesInfo").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        Long singleSnapshot = dataSnapshot.getValue(Long.class);
+                                        if (singleSnapshot != null) {
+                                            Log.d(TAG, "Visited States: " + singleSnapshot);
+                                            mDatabaseReference.child("Users")
+                                                    .child(user_id)
+                                                    .child("statesInfo")
+                                                    .setValue((singleSnapshot | (1L << mStateSelected)) & ~(1L << mState));
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    }
 
                     // Update trip date.
                     mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
@@ -263,6 +296,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                     mTitle.setText(trip.getTitle());
                     mCity.setText(trip.getCity());
                     mSpinner.setSelection(trip.getState() + 1);
+                    mState = trip.getState();
                     mDate.setText(trip.getDate());
                     mDays.setText(String.valueOf(trip.getDays()));
                     mDescription.setText(trip.getDescription());
@@ -377,7 +411,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     private void uploadNewTrip() {
         String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Trip trip = new Trip(mTripId, user_id, mImageUrl, mTitle.getText().toString(),
-                mCity.getText().toString(), mState, mDate.getText().toString(),
+                mCity.getText().toString(), mStateSelected, mDate.getText().toString(),
                 Integer.parseInt(mDays.getText().toString().trim()), mDescription.getText().toString());
 
         // Add record in Trips
@@ -392,7 +426,11 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                 .child("tripId")
                 .setValue(mTripId);
 
-        // Update stateInfos in Users
+        // Update statesInfo in Users
+        addVisitedState(user_id);
+    }
+
+    private void addVisitedState(String user_id) {
         mDatabaseReference.child("Users").child(user_id).child("statesInfo").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -400,11 +438,12 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                     Long singleSnapshot = dataSnapshot.getValue(Long.class);
                     if (singleSnapshot != null) {
                         Log.d(TAG, "Visited States: " + singleSnapshot);
-                        if ((singleSnapshot & (1L << mState)) == 0) {
+                        if ((singleSnapshot & (1L << mStateSelected)) == 0) {
                             mDatabaseReference.child("Users")
                                     .child(user_id)
                                     .child("statesInfo")
-                                    .setValue(singleSnapshot | (1L << mState));
+                                    .setValue(singleSnapshot | (1L << mStateSelected));
+
                         }
                     }
                 }
@@ -412,6 +451,64 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private boolean stateIsVisited(int state) {
+        List<String> tripIds = new ArrayList<>();
+        boolean[] isVisited = new boolean[1];
+        getTripIds(tripIds);
+        for (String tripId : tripIds) {
+            if (isVisited[0]) {
+                return true;
+            }
+            Query query = mDatabaseReference.child("Trips").orderByKey().equalTo(tripId);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
+                    if (singleSnapshot != null) {
+                        Trip trip = singleSnapshot.getValue(Trip.class);
+                        if (trip.getState() == state) {
+                            isVisited[0] = true;
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        return isVisited[0];
+    }
+
+    private void getTripIds(List<String> tripIds){
+        tripIds.clear();
+
+        Query query = mDatabaseReference.child(Constants.DATABASE_PATH_TRAVELHISTORY)
+                .orderByKey()
+                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot != null) {
+                    if (dataSnapshot.hasChildren()) {
+                        DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
+                        for (DataSnapshot snapshot: singleSnapshot.getChildren()) {
+                            String id = snapshot.child(Constants.DATABASE_FIELD_TRIPID).getValue().toString();
+                            Log.d(TAG, "onDataChange: found a post id: " + id);
+                            tripIds.add(id);
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
@@ -449,7 +546,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     }
 
     private boolean validateTextInput() {
-        if (mState < 0) {
+        if (mStateSelected < 0) {
             Toast.makeText(getActivity(), R.string.please_choose_a_state,
                     Toast.LENGTH_SHORT).show();
             return false;

@@ -1,20 +1,20 @@
 package com.example.travelapp.activities;
 
-import android.content.Context;
+
 import android.content.Intent;
-import android.graphics.ColorSpace;
 
 import android.os.Bundle;
 
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,27 +22,52 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelapp.R;
+import com.example.travelapp.adapters.UserListAdapter;
+import com.example.travelapp.models.HitsObject;
 import com.example.travelapp.models.User;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.SnapshotParser;
+import com.example.travelapp.models.UserHitsList;
+import com.example.travelapp.util.ElasticSearchAPI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import okhttp3.Credentials;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static android.app.PendingIntent.getActivity;
 
 public class SearchActivity extends AppCompatActivity {
 
-    private final String TAG = "Search Activity";
+    private final static String TAG = "Search Activity";
+    private final static String BASE_URL = "http://35.245.31.8//elasticsearch/users/Users/";
 
     private EditText searchField;
     private ImageButton searchButton;
-    private RecyclerView resultList;
+    private RecyclerView userResultView;
     private DatabaseReference UsersDatabaseReference;
-    private FirebaseRecyclerAdapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
+    //    private FirebaseRecyclerAdapter adapter;
+    private UserListAdapter adapter;
+    //    private RecyclerView.LayoutManager layoutManager;
+    private String elasticSearchPassword;
+    //    private User user;
+    private ArrayList<User> users;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,76 +80,156 @@ public class SearchActivity extends AppCompatActivity {
 
         UsersDatabaseReference = FirebaseDatabase.getInstance().getReference("Users");
         searchField = (EditText) findViewById(R.id.search_box);
-
         searchButton = (ImageButton) findViewById(R.id.search_btn);
 
-        resultList = (RecyclerView) findViewById(R.id.result_list);
-        layoutManager = new LinearLayoutManager(this);
-        resultList.setLayoutManager(layoutManager);
+        userResultView = (RecyclerView) findViewById(R.id.result_list);
+        userResultView.setLayoutManager(new LinearLayoutManager(this));
+        userResultView.setAdapter(adapter);
+        getElasticSearchPassword();
+
+//        searchField.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+//                if(i == KeyEvent.KEYCODE_ENTER){
+//                    InputMethodManager imm = (InputMethodManager)view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    if(imm.isActive()){
+//                        imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0 );
+//                        search();
+//                    }
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                search();
+            }
+        });
+    }
 
-                String searchText = searchField.getText().toString();
+    private void search() {
+        String searchText = searchField.getText().toString();
+        users = new ArrayList<User>();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-                if (!searchText.equals(""))
-                    firebaseSearch(searchText);
+        ElasticSearchAPI elasticSearchAPI = retrofit.create(ElasticSearchAPI.class);
+
+        HashMap<String, String> headerMap = new HashMap<String, String>();
+        headerMap.put("Authorization", Credentials.basic("user", elasticSearchPassword));
+
+        String searchString = "";
+
+        if (!searchText.equals("")) {
+//                    firebaseSearch(searchText);
+//                    user = new User
+
+            StringBuilder stringBuilder = new StringBuilder(searchText);
+
+            // multithread maybe?
+            for(int i = 0; i <= searchText.length() * 2; i += 2) {
+                stringBuilder.insert(i, "*");
+            }
+
+            searchString = searchString + "firstName:" + stringBuilder.toString() + " lastName:" + stringBuilder.toString() + " email:" + stringBuilder.toString();
+        }
+
+        Call<HitsObject> call = elasticSearchAPI.search(headerMap, "OR", searchString);
+
+        call.enqueue(new Callback<HitsObject>() {
+            @Override
+            public void onResponse(Call<HitsObject> call, Response<HitsObject> response) {
+
+                UserHitsList userHitsList = new UserHitsList();
+                String jsonResponse = "";
+
+                try {
+                    Log.d(TAG, "onResponse: server response: " + response.toString());
+
+                    if (response.isSuccessful()) {
+                        userHitsList = response.body().getUserHitsList();
+                    } else {
+                        jsonResponse = response.errorBody().string();
+                    }
+
+                    Log.d(TAG, "onResponse: hits: " + userHitsList);
+
+                    for (int i = 0; i < userHitsList.getUserIndex().size(); i++) {
+                        Log.d(TAG, "onResponse: data: " + userHitsList.getUserIndex().get(i).getUser().toString());
+                        users.add(userHitsList.getUserIndex().get(i).getUser());
+                    }
+
+                    Log.d(TAG, "onResponse: size: " + users.size());
+                    //setup the list of users
+                    setUpUsersList();
+
+                } catch (NullPointerException e) {
+                    Log.e(TAG, "onResponse: NullPointerException: " + e.getMessage());
+                } catch (IndexOutOfBoundsException e) {
+                    Log.e(TAG, "onResponse: IndexOutOfBoundsException: " + e.getMessage());
+                } catch (IOException e) {
+                    Log.e(TAG, "onResponse: IOException: " + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HitsObject> call, Throwable t) {
+                Log.e(TAG, "onFailure" + t.getMessage());
+                Toast.makeText(SearchActivity.this, "search failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setUpUsersList() {
+        adapter = new UserListAdapter(this, users, new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                int position = (int)view.getTag();
+                User user = adapter.getItem(position);
+
+                currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                if (currentUser.getUid().equals(user.getUid())) {
+                    //if the user clicked his&her own profile
+                    //open the profile activity
+                    Intent intent = new Intent(SearchActivity.this, ProfileActivity.class);
+                    startActivity(intent);
+                } else {
+                    //view other users' profile
+                    Intent intent = new Intent(SearchActivity.this, OthersProfileActivity.class);
+                    intent.putExtra("OTHER_USER_PROFILE", user.getFirstName() + " " + user.getLastName());
+                    startActivity(intent);
+                }
+            }
+        });
+        userResultView.setAdapter(adapter);
+    }
+
+    private void getElasticSearchPassword() {
+        Log.d(TAG, "getElasticSearchPassword() : retrieving elastic search password");
+
+        Query query = FirebaseDatabase.getInstance().getReference()
+                .child(getString(R.string.elasticsearch))
+                .orderByValue();
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
+                elasticSearchPassword = singleSnapshot.getValue().toString();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
-
     }
-
-    private void firebaseSearch(String searchText) {
-
-
-        Log.d(TAG, "Search started.");
-
-        // SELECT * FROM Users WHERE firstName = "searchText%"
-        Query query = UsersDatabaseReference.orderByChild("firstName").startAt(searchText).endAt("searchText\uf8ff");
-
-        FirebaseRecyclerOptions<User> options = new FirebaseRecyclerOptions.Builder<User>()
-                .setQuery(query, new SnapshotParser<User>() {
-                    @NonNull
-                    @Override
-                    public User parseSnapshot(@NonNull DataSnapshot snapshot) {
-                        User user = new User(snapshot.child("email").getValue().toString(),
-                                snapshot.child("firstName").getValue().toString(),
-                                snapshot.child("lastName").getValue().toString(),
-                                snapshot.child("profilePictureUrl").getValue().toString(),
-                                Long.parseLong(snapshot.child("statesInfo").getValue().toString()),
-                                snapshot.child("uid").getValue().toString());
-                        return user;
-                    }
-                }).build();
-
-        adapter = new FirebaseRecyclerAdapter<User, UsersViewHolder>(options) {
-
-            @Override
-            public UsersViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_users, parent, false);
-
-                return new UsersViewHolder(view);
-            }
-
-
-            @Override
-            protected void onBindViewHolder(UsersViewHolder holder, final int position, User user) {
-                holder.setDetails(SearchActivity.this,user.getFirstName(),
-                        user.getLastName(),
-                        user.getEmail(),
-                        user.getProfilePictureUrl());
-            }
-
-        };
-
-        resultList.setAdapter(adapter);
-        adapter.startListening();
-
-    }
-
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -136,8 +241,8 @@ public class SearchActivity extends AppCompatActivity {
                     startActivity(intent);
                     break;
                 case R.id.nav_search:
-                    Intent intent2 = new Intent(SearchActivity.this, SearchActivity.class);
-                    startActivity(intent2);
+//                    Intent intent2 = new Intent(SearchActivity.this, SearchActivity.class);
+//                    startActivity(intent2);
                     break;
                 case R.id.nav_travel_history:
                     Intent intent3 = new Intent(SearchActivity.this, TravelHistoryActivity.class);
@@ -156,43 +261,5 @@ public class SearchActivity extends AppCompatActivity {
             return false;
         }
     };
-
-
-    // viewholder
-
-    public class UsersViewHolder extends RecyclerView.ViewHolder {
-
-        View view;
-
-        public UsersViewHolder(View itemView) {
-            super(itemView);
-
-            view = itemView;
-
-        }
-
-        public void setDetails(Context ctx, String userFirstName, String userLastName ,String userEmail, String userImage) {
-
-            TextView user_name = (TextView) view.findViewById(R.id.name_text);
-            TextView user_email = (TextView) view.findViewById(R.id.email_text);
-            ImageView user_image = (ImageView) view.findViewById(R.id.profile_image);
-
-
-            user_name.setText(userFirstName + " " +userLastName);
-            user_email.setText(userEmail);
-
-            if (!userImage.isEmpty()){
-                Picasso.get().load(userImage).into(user_image);
-            }
-
-
-
-        }
-
-
-
-    }
-
-
 
 }

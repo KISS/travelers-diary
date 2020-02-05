@@ -58,7 +58,11 @@
     <string name="please_specify_a_number_of_days">Please specify a number of days!</string>
     <string name="Trip">Trip</string>
     <string name="text_days">days</string>
-    <string name="search_hint">Search</string>
+    <string name="hint_search">Search...</string>
+    <string name="elasticsearch">elasticsearch</string>
+    <string name="field_password">password</string>
+    <string name="search_hint">Search...</string>
+
     <string-array name="state">
         <item>State</item>
         <item>Minnesota</item>

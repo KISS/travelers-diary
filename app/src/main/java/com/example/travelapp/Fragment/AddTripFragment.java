@@ -16,10 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.travelapp.R;
@@ -63,16 +65,16 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     private byte[] mUploadBytes;
 
     private ImageView mImage;
+    private Switch mSwitch;
     private Spinner mSpinner;
     private EditText mTitle, mCity, mDate, mDays, mDescription;
-    private Button mPost;
-    private Button mSave;
-    private Button mCancel;
+    private Button mPost, mSave, mCancel, mRemove;
     private double mProgress = 0;
 
     DatabaseReference mDatabaseReference;
     private String mImageUrl;
     private String mTripId;
+    private boolean mPublicSelected;
     private int mStateSelected;
     private int mState; // Used to store original state when updating State
 
@@ -91,6 +93,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_trip, container, false);
         mImage = view.findViewById(R.id.post_image);
+        mSwitch = view.findViewById(R.id.input_switch);
         mTitle = view.findViewById(R.id.input_title);
         mCity = view.findViewById(R.id.input_city);
         mSpinner = view.findViewById(R.id.input_state);
@@ -100,8 +103,10 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
         mPost = view.findViewById(R.id.post_button);
         mSave = view.findViewById(R.id.save_button);
         mCancel = view.findViewById(R.id.cancel_button);
+        mRemove = view.findViewById(R.id.remove_button);
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         mTripId = getArguments() == null ? "" : getArguments().getString(ViewTripFragment.ARGUMENT_TRIPID);
+        mPublicSelected = true;
         mStateSelected = -1;
         mState = -1;
 
@@ -121,6 +126,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
             mPost.setVisibility(View.GONE);
             mSave.setVisibility(View.VISIBLE);
             mCancel.setVisibility(View.VISIBLE);
+            mRemove.setVisibility(View.VISIBLE);
         }
 
         mImage.setOnClickListener(new View.OnClickListener() {
@@ -130,6 +136,13 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                 SelectPhotoDialog dialog = new SelectPhotoDialog();
                 dialog.show(getFragmentManager(), getString(R.string.dialog_select_photo));
                 dialog.setTargetFragment(AddTripFragment.this, 1);
+            }
+        });
+
+        mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mPublicSelected = isChecked;
             }
         });
 
@@ -200,6 +213,12 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                         deleteImage(mImageUrl);
                         uploadNewPhoto(mSelectedUri);
                     }
+
+                    // Update public or private
+                    mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                            .child(mTripId)
+                            .child("is_public")
+                            .setValue(mSwitch.isChecked());
 
                     // Update trip title.
                     mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
@@ -281,6 +300,49 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
+
+        mRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteImage(mImageUrl);
+                // Delete record from Travel History.
+                mDatabaseReference.child(Constants.DATABASE_PATH_TRAVELHISTORY)
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .child(mTripId)
+                        .removeValue();
+                // Delete record from Trips.
+                mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                        .child(mTripId)
+                        .removeValue();
+                // Update statesInfo in Users.
+                String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                if (!stateIsVisited(mState)) {
+                    // Remove visited state
+                    mDatabaseReference.child("Users").child(user_id).child("statesInfo").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                Long singleSnapshot = dataSnapshot.getValue(Long.class);
+                                if (singleSnapshot != null) {
+                                    Log.d(TAG, "Visited States: " + singleSnapshot);
+                                    mDatabaseReference.child("Users")
+                                            .child(user_id)
+                                            .child("statesInfo")
+                                            .setValue(singleSnapshot & ~(1L << mState));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
     }
 
     private void getTripInfo() {
@@ -293,6 +355,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                     Trip trip = singleSnapshot.getValue(Trip.class);
                     mImageUrl = trip.getImage();
                     Picasso.get().load(mImageUrl).into(mImage);
+                    mSwitch.setChecked(trip.isIs_public());
                     mTitle.setText(trip.getTitle());
                     mCity.setText(trip.getCity());
                     mSpinner.setSelection(trip.getState() + 1);
@@ -410,7 +473,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
 
     private void uploadNewTrip() {
         String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Trip trip = new Trip(mTripId, user_id, mImageUrl, mTitle.getText().toString(),
+        Trip trip = new Trip(mTripId, user_id, mImageUrl, mSwitch.isChecked(), mTitle.getText().toString(),
                 mCity.getText().toString(), mStateSelected, mDate.getText().toString(),
                 Integer.parseInt(mDays.getText().toString().trim()), mDescription.getText().toString());
 

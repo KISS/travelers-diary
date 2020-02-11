@@ -253,10 +253,10 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
                         showImagePicDialog();
                     } else if (which == 1) {
                         pd.setMessage("Updating First Name");
-                        showEditInfoUpdatePopup("First Name");
+                        showEditInfoUpdatePopup("firstName");
                     } else if (which == 2) {
                         pd.setMessage("Updating Last Name");
-                        showEditInfoUpdatePopup("Last Name");
+                        showEditInfoUpdatePopup("lastName");
 
                     } else if (which == 3) {
                         pd.setMessage("Updating State Info");

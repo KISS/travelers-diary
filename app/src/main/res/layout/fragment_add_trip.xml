@@ -56,6 +56,18 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_add_a_photo_blue_24dp" />
 
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/input_switch"
+                android:layout_marginStart="10dp"
+                android:text="@string/set_trip_as_public"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                android:checked="true"
+                android:theme="@style/Platform.MaterialComponents.Light"
+                android:padding="10dp" />
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -159,7 +171,6 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/info"
                 android:background="@color/colorPrimaryDark"
                 android:layout_marginTop="10dp"
                 android:gravity="center">
@@ -196,6 +207,25 @@
                     android:text="@string/cancel_button"
                     android:background="@color/colorPrimaryLight"
                     android:visibility="invisible"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/remove_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="25dp"
+                    android:text="@string/remove_button"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:background="@color/colorPrimaryLight"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
 

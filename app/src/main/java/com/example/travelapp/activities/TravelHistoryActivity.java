@@ -108,8 +108,8 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     Trip upload = postSnapshot.getValue(Trip.class);
 
-                    if (!upload.getUser_id().equals(fUser.getUid())) {
-                        trips.add(upload);
+                    if (!upload.getUser_id().equals(fUser.getUid()) && upload.isIs_public()) {
+                        trips.add(0, upload);
                     }
 
                 }

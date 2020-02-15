@@ -58,6 +58,14 @@
     <string name="please_specify_a_number_of_days">Please specify a number of days!</string>
     <string name="Trip">Trip</string>
     <string name="text_days">days</string>
+    <string name="edit">EDIT</string>
+    <string name="save_button">SAVE</string>
+    <string name="cancel_button">CANCEL</string>
+    <string name="toast_trip_updated">Trip is updated!</string>
+    <string name="remove_button">REMOVE TRIP</string>
+    <string name="set_trip_as_public">Set trip as public</string>
+    <string name="is_public">Trip is public</string>
+    <string name="is_private">Trip is private</string>
     <string-array name="state">
         <item>State</item><item>Minnesota</item><item>Montana</item>
         <item>North Dakota</item><item>Idaho</item><item>Washington</item><item>Arizona</item><item>California</item><item>Colorado</item><item>Nevada</item><item>New Mexico</item><item>Oregon</item><item>Utah</item>

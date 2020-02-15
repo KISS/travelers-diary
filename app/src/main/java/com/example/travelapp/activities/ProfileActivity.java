@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.travelapp.Fragment.AddTripFragment;
 import com.example.travelapp.Fragment.MyAdapter;
 import com.example.travelapp.Fragment.ViewTripFragment;
 import com.example.travelapp.R;
@@ -58,7 +59,7 @@ import java.util.List;
 
 import static com.google.firebase.storage.FirebaseStorage.getInstance;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements AddTripFragment.AddTripFragmentHandler {
 
     private final String TAG = "Profile Activity";
 
@@ -252,10 +253,10 @@ public class ProfileActivity extends AppCompatActivity {
                         showImagePicDialog();
                     } else if (which == 1) {
                         pd.setMessage("Updating First Name");
-                        showEditInfoUpdatePopup("First Name");
+                        showEditInfoUpdatePopup("firstName");
                     } else if (which == 2) {
                         pd.setMessage("Updating Last Name");
-                        showEditInfoUpdatePopup("Last Name");
+                        showEditInfoUpdatePopup("lastName");
 
                     } else if (which == 3) {
                         pd.setMessage("Updating State Info");
@@ -571,6 +572,8 @@ public class ProfileActivity extends AppCompatActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mTripIds.clear();
+                mTrips.clear();
                 if (dataSnapshot != null) {
                     if (dataSnapshot.hasChildren()) {
                         DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
@@ -606,7 +609,17 @@ public class ProfileActivity extends AppCompatActivity {
                             DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
                             Trip trip = singleSnapshot.getValue(Trip.class);
                             Log.d(TAG, "onDataChange: found a post: " + trip.getTitle());
-                            mTrips.add(trip);
+                            int index = 0;
+                            for (; index < mTrips.size(); index++) {
+                                // When edit a trip, find the trip and update info
+                                if (trip.getTrip_id().equals(mTripIds.get(index))) {
+                                    mTrips.set(index, trip);
+                                    break;
+                                }
+                            }
+                            if (index == mTrips.size()) {
+                                mTrips.add(trip);
+                            }
                             mAdapter.notifyDataSetChanged();
                         } else {
                             // If we implement delete trip in the future, update here.

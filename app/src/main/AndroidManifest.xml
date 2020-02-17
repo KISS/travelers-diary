@@ -16,6 +16,7 @@
         android:theme="@style/AppTheme"
         android:networkSecurityConfig="@xml/network_security_config">
         <activity android:name=".activities.SearchActivity"></activity>
+        <activity android:name=".activities.OthersProfileActivity" />
         <activity android:name=".activities.ProfileActivity" />
         <activity android:name=".activities.MainActivity" />
         <activity android:name=".activities.SignUpActivity" />

@@ -202,7 +202,7 @@ public class SearchActivity extends AppCompatActivity {
                 } else {
                     //view other users' profile
                     Intent intent = new Intent(SearchActivity.this, OthersProfileActivity.class);
-                    intent.putExtra("OTHER_USER_PROFILE", user.getFirstName() + " " + user.getLastName());
+                    intent.putExtra("USER_ID", user.getUid());
                     startActivity(intent);
                 }
             }

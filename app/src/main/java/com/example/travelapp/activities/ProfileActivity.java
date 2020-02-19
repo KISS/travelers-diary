@@ -4,11 +4,14 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 
 import android.os.Bundle;
@@ -160,9 +163,15 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
     }
 
     private void logoutUser() {
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        prefsEditor.clear();
+        prefsEditor.apply();
         finish();
         Intent signInActivityIntent = new Intent(ProfileActivity.this, SignInActivity.class);
         startActivity(signInActivityIntent);
+        Log.d(TAG, "logoutUser: logging out");
     }
 
     private void initFirebaseData() {

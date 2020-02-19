@@ -13,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.travelapp.Fragment.UserSearchResultFragment;
 import com.example.travelapp.R;
 import com.example.travelapp.activities.OthersProfileActivity;
 import com.example.travelapp.activities.SearchActivity;
@@ -83,21 +82,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
         viewHolder.itemView.setTag(i);
         viewHolder.itemView.setOnClickListener(listener);
-
-//        viewHolder.view.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d(TAG, "user profile clicked");
-//                // open user profile
-//                //if (the profile user clicked on is his&her own profile)
-//                //  start ProfileActivity
-//                //else
-//                Intent intent = new Intent(context, OthersProfileActivity.class);
-//                intent.putExtra("OTHER_USER_NAME", users.get(i).getFirstName() + " " + users.get(i).getLastName());
-//                Log.d(TAG, users.get(i).getFirstName() + " " + users.get(i).getLastName());
-//                context.startActivity(intent);
-//            }
-//        });
 
     }
 

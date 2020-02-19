@@ -18,15 +18,22 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.travelapp.Fragment.ViewTripFragment;
 import com.example.travelapp.R;
+import com.example.travelapp.adapters.TripListAdapter;
 import com.example.travelapp.adapters.UserListAdapter;
-import com.example.travelapp.models.HitsObject;
+import com.example.travelapp.models.Trip;
+import com.example.travelapp.models.TripHitsList;
+import com.example.travelapp.models.TripHitsObject;
 import com.example.travelapp.models.User;
 import com.example.travelapp.models.UserHitsList;
-import com.example.travelapp.util.ElasticSearchAPI;
+import com.example.travelapp.models.UserHitsObject;
+import com.example.travelapp.util.TripElasticSearchAPI;
+import com.example.travelapp.util.UserElasticSearchAPI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -54,18 +61,24 @@ import static android.app.PendingIntent.getActivity;
 public class SearchActivity extends AppCompatActivity {
 
     private final static String TAG = "Search Activity";
-    private final static String BASE_URL = "http://35.245.31.8//elasticsearch/users/Users/";
+    private final static String BASE_URL_USER = "http://35.245.31.8//elasticsearch/users/Users/";
+    private final static String BASE_URL_TRIP = "http://35.245.31.8//elasticsearch/trips/Trips/";
 
     private EditText searchField;
     private ImageButton searchButton;
     private RecyclerView userResultView;
+    private RecyclerView tripResultView;
     private DatabaseReference UsersDatabaseReference;
     //    private FirebaseRecyclerAdapter adapter;
-    private UserListAdapter adapter;
+    private UserListAdapter userListAdapter;
+    private TripListAdapter tripListAdapter;
+
     //    private RecyclerView.LayoutManager layoutManager;
     private String elasticSearchPassword;
     //    private User user;
     private ArrayList<User> users;
+    private ArrayList<Trip> trips;
+
     FirebaseAuth firebaseAuth;
     FirebaseUser currentUser;
 
@@ -82,43 +95,132 @@ public class SearchActivity extends AppCompatActivity {
         searchField = (EditText) findViewById(R.id.search_box);
         searchButton = (ImageButton) findViewById(R.id.search_btn);
 
-        userResultView = (RecyclerView) findViewById(R.id.result_list);
+        userResultView = (RecyclerView) findViewById(R.id.user_result_list);
         userResultView.setLayoutManager(new LinearLayoutManager(this));
-        userResultView.setAdapter(adapter);
-        getElasticSearchPassword();
+        userResultView.setAdapter(userListAdapter);
 
-//        searchField.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-//                if(i == KeyEvent.KEYCODE_ENTER){
-//                    InputMethodManager imm = (InputMethodManager)view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-//                    if(imm.isActive()){
-//                        imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0 );
-//                        search();
-//                    }
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
+        tripResultView = findViewById(R.id.trip_result_list);
+        tripResultView.setLayoutManager(new LinearLayoutManager(this));
+        tripResultView.setAdapter(tripListAdapter);
+
+        getElasticSearchPassword();
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                search();
+                searchForUser();
+                searchForTrip();
             }
         });
     }
 
-    private void search() {
+    private void searchForTrip() {
+        Log.d(TAG, "searchForTrip: Searching...");
         String searchText = searchField.getText().toString();
-        users = new ArrayList<User>();
+        trips = new ArrayList<>();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(BASE_URL_TRIP)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        ElasticSearchAPI elasticSearchAPI = retrofit.create(ElasticSearchAPI.class);
+        TripElasticSearchAPI tripElasticSearchAPI = retrofit.create(TripElasticSearchAPI.class);
+
+        HashMap<String, String> headerMap = new HashMap<>();
+        headerMap.put("Authorization", Credentials.basic("user", elasticSearchPassword));
+
+        String searchString = "";
+
+        if (!searchText.equals("")) {
+
+            StringBuilder stringBuilder = new StringBuilder(searchText);
+
+            for(int i = 0; i <= searchText.length() * 2; i += 2) {
+                stringBuilder.insert(i, "*");
+            }
+
+            // state is stored in numbers
+            searchString = searchString + "city:" + stringBuilder.toString() + " state:" + stringBuilder.toString();
+
+            Call<TripHitsObject> call = tripElasticSearchAPI.search(headerMap, "OR", searchString);
+
+            call.enqueue(new Callback<TripHitsObject>() {
+                @Override
+                public void onResponse(Call<TripHitsObject> call, Response<TripHitsObject> response) {
+                    TripHitsList tripHitsList = new TripHitsList();
+                    String jsonResponse = "";
+
+                    try {
+                        Log.d(TAG, "onResponse: server response: " + response.toString());
+
+                        if (response.isSuccessful()) {
+                            tripHitsList = response.body().getTripHitsList();
+                        } else {
+                            jsonResponse = response.errorBody().string();
+                        }
+
+                        Log.d(TAG, "onResponse: hits: " + tripHitsList);
+
+                        for (int i = 0; i < tripHitsList.getTripIndex().size(); i++) {
+                            Log.d(TAG, "onResponse: data: " + tripHitsList.getTripIndex().get(i).getTrip().toString());
+                            trips.add(tripHitsList.getTripIndex().get(i).getTrip());
+                        }
+
+                        Log.d(TAG, "onResponse: size: " + trips.size());
+                        //setup the list of trips
+                        setUpTripsList();
+
+                    } catch (NullPointerException e) {
+                        Log.e(TAG, "onResponse: NullPointerException: " + e.getMessage());
+                    } catch (IndexOutOfBoundsException e) {
+                        Log.e(TAG, "onResponse: IndexOutOfBoundsException: " + e.getMessage());
+                    } catch (IOException e) {
+                        Log.e(TAG, "onResponse: IOException: " + e.getMessage());
+                    }
+
+                    setUpTripsList();
+                }
+
+                @Override
+                public void onFailure(Call<TripHitsObject> call, Throwable t) {
+
+                }
+            });
+        }
+
+    }
+
+    private void setUpTripsList() {
+        tripListAdapter = new TripListAdapter(trips, this, new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                int position = (int) v.getTag();
+                Trip trip = tripListAdapter.getItem(position);
+
+                Bundle args = new Bundle();
+                args.putString(ViewTripFragment.ARGUMENT_TRIPID, trip.getTrip_id());
+                ViewTripFragment fragment = new ViewTripFragment();
+                fragment.setArguments(args);
+
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, fragment, "Trip_Info");
+                fragmentTransaction.addToBackStack("Trip_Info");
+                fragmentTransaction.commit();
+            }
+        });
+
+        tripResultView.setAdapter(tripListAdapter);
+
+    }
+
+    private void searchForUser() {
+        String searchText = searchField.getText().toString();
+        users = new ArrayList<User>();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL_USER)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        UserElasticSearchAPI elasticSearchAPI = retrofit.create(UserElasticSearchAPI.class);
 
         HashMap<String, String> headerMap = new HashMap<String, String>();
         headerMap.put("Authorization", Credentials.basic("user", elasticSearchPassword));
@@ -126,12 +228,9 @@ public class SearchActivity extends AppCompatActivity {
         String searchString = "";
 
         if (!searchText.equals("")) {
-//                    firebaseSearch(searchText);
-//                    user = new User
 
             StringBuilder stringBuilder = new StringBuilder(searchText);
 
-            // multithread maybe?
             for(int i = 0; i <= searchText.length() * 2; i += 2) {
                 stringBuilder.insert(i, "*");
             }
@@ -139,11 +238,11 @@ public class SearchActivity extends AppCompatActivity {
             searchString = searchString + "firstName:" + stringBuilder.toString() + " lastName:" + stringBuilder.toString() + " email:" + stringBuilder.toString();
         }
 
-        Call<HitsObject> call = elasticSearchAPI.search(headerMap, "OR", searchString);
+        Call<UserHitsObject> call = elasticSearchAPI.search(headerMap, "OR", searchString);
 
-        call.enqueue(new Callback<HitsObject>() {
+        call.enqueue(new Callback<UserHitsObject>() {
             @Override
-            public void onResponse(Call<HitsObject> call, Response<HitsObject> response) {
+            public void onResponse(Call<UserHitsObject> call, Response<UserHitsObject> response) {
 
                 UserHitsList userHitsList = new UserHitsList();
                 String jsonResponse = "";
@@ -178,7 +277,7 @@ public class SearchActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<HitsObject> call, Throwable t) {
+            public void onFailure(Call<UserHitsObject> call, Throwable t) {
                 Log.e(TAG, "onFailure" + t.getMessage());
                 Toast.makeText(SearchActivity.this, "search failed", Toast.LENGTH_SHORT).show();
             }
@@ -186,11 +285,11 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void setUpUsersList() {
-        adapter = new UserListAdapter(this, users, new View.OnClickListener(){
+        userListAdapter = new UserListAdapter(this, users, new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 int position = (int)view.getTag();
-                User user = adapter.getItem(position);
+                User user = userListAdapter.getItem(position);
 
                 currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -207,7 +306,7 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         });
-        userResultView.setAdapter(adapter);
+        userResultView.setAdapter(userListAdapter);
     }
 
     private void getElasticSearchPassword() {

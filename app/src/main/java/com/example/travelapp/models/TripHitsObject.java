@@ -4,20 +4,17 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 @IgnoreExtraProperties
-public class HitsObject {
-
+public class TripHitsObject {
     @SerializedName("hits")
     @Expose
-    private UserHitsList userHitsList;
+    private TripHitsList tripHitsList;
 
-    public UserHitsList getUserHitsList() {
-        return userHitsList;
+    public TripHitsList getTripHitsList() {
+        return tripHitsList;
     }
 
-    public void setUserHitsList(UserHitsList userHitsList) {
-        this.userHitsList = userHitsList;
+    public void setTripHitsList(TripHitsList tripHitsList) {
+        this.tripHitsList = tripHitsList;
     }
 }

@@ -30,10 +30,16 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/result_list"
+        android:id="@+id/user_result_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="300dp"
         android:layout_below="@id/search_box" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/trip_result_list"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@+id/user_result_list"/>
 
     <FrameLayout
         android:id="@+id/fragment_container"

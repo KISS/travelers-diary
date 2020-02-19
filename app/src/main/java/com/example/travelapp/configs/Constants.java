@@ -3,6 +3,11 @@ package com.example.travelapp.configs;
 import android.Manifest;
 
 public class Constants {
+
+    public static String KEY_EMAIL = "email";
+    public static String KEY_PASSWORD = "password";
+
+
     public static final String DATABASE_PATH_UPLOADS = "Trips";
 
     public static final String DATABASE_PATH_USERS = "Users";

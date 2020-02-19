@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.travelapp.R;
+import com.example.travelapp.util.PreferenceUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -37,6 +38,13 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
         findViewById(R.id.signupPage).setOnClickListener(this);
         findViewById(R.id.signinButton).setOnClickListener(this);
+
+        PreferenceUtils utils = new PreferenceUtils();
+
+        if (utils.getEmail(this) != null ){
+            Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void userLogin() {
@@ -74,6 +82,9 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 if (task.isSuccessful()) {
 
                     if (mAuth.getCurrentUser().isEmailVerified()) {
+
+                        PreferenceUtils.saveEmail(emailaddress, SignInActivity.this);
+                        PreferenceUtils.savePassword(Signuppassword, SignInActivity.this);
 
                         Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

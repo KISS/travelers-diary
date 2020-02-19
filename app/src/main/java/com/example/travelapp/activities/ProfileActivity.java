@@ -526,8 +526,8 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
 //                                startActivity(intent4);
 //                                break;
                             case R.id.nav_profile:
-                                Intent intent5 = new Intent(ProfileActivity.this, ProfileActivity.class);
-                                startActivity(intent5);
+//                                Intent intent5 = new Intent(ProfileActivity.this, ProfileActivity.class);
+//                                startActivity(intent5);
                                 break;
 
                         }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -261,5 +262,17 @@ public class SearchActivity extends AppCompatActivity {
             return false;
         }
     };
+
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            // get which view was focused
+            View v = getCurrentFocus();
+
+            if (HideKeyboard.getInstance().isTouchOutsideView(v, ev)) {
+                HideKeyboard.getInstance().hideSoftInput(v.getWindowToken(), this);
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
 
 }

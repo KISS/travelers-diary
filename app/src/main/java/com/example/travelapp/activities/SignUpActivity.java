@@ -1,8 +1,7 @@
 package com.example.travelapp.activities;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.MotionEvent;
@@ -10,6 +9,9 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.travelapp.R;
 import com.example.travelapp.configs.Constants;

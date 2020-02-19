@@ -3,22 +3,23 @@ package com.example.travelapp.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelapp.Fragment.AddTripFragment;
 import com.example.travelapp.R;
 import com.example.travelapp.adapters.TravelFeedAdapter;
 import com.example.travelapp.configs.Constants;
 import com.example.travelapp.models.Trip;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -140,7 +141,7 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
                     startActivity(intent);
                     break;
                 case R.id.nav_search:
-                    Intent intent2 = new Intent(TravelHistoryActivity.this, MainActivity.class);
+                    Intent intent2 = new Intent(TravelHistoryActivity.this, SearchActivity.class);
                     startActivity(intent2);
                     break;
                 case R.id.nav_travel_history:

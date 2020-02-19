@@ -62,7 +62,14 @@
     <string name="elasticsearch">elasticsearch</string>
     <string name="field_password">password</string>
     <string name="search_hint">Search...</string>
-
+    <string name="edit">EDIT</string>
+    <string name="save_button">SAVE</string>
+    <string name="cancel_button">CANCEL</string>
+    <string name="toast_trip_updated">Trip is updated!</string>
+    <string name="remove_button">REMOVE TRIP</string>
+    <string name="set_trip_as_public">Set trip as public</string>
+    <string name="is_public">Trip is public</string>
+    <string name="is_private">Trip is private</string>
     <string-array name="state">
         <item>State</item>
         <item>Minnesota</item>

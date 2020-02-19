@@ -5,6 +5,7 @@ public class Trip {
     private String trip_id;
     private String user_id;
     private String image;
+    private boolean is_public;
     private String title;
     private String city;
     private int state;
@@ -16,10 +17,11 @@ public class Trip {
 
     }
 
-    public Trip(String trip_id, String user_id, String image, String title, String city, int state, String date, int days, String description) {
+    public Trip(String trip_id, String user_id, String image, boolean is_public, String title, String city, int state, String date, int days, String description) {
         this.trip_id = trip_id;
         this.user_id = user_id;
         this.image = image;
+        this.is_public = is_public;
         this.title = title;
         this.city = city;
         this.state = state;
@@ -50,6 +52,14 @@ public class Trip {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public boolean isIs_public() {
+        return is_public;
+    }
+
+    public void setIs_public(boolean is_public) {
+        this.is_public = is_public;
     }
 
     public String getTitle() {
@@ -106,6 +116,7 @@ public class Trip {
                 "trip_id='" + trip_id + '\'' +
                 ", user_id='" + user_id + '\'' +
                 ", image='" + image + '\'' +
+                ", is_public=" + is_public +
                 ", title='" + title + '\'' +
                 ", city='" + city + '\'' +
                 ", state=" + state +

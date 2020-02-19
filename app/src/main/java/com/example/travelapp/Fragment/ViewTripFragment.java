@@ -3,9 +3,14 @@ package com.example.travelapp.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,13 +38,14 @@ public class ViewTripFragment extends Fragment {
     TextView mDate;
     TextView mDays;
     TextView mDescription;
+    Button mEdit;
     DatabaseReference mDatabaseReference;
 
     private String mTripId;
     private Trip mTrip;
 
     private static final String TAG = "ViewTripFragment";
-    public static final String ARGUMENT_TRIPID = "PostID";
+    public static final String ARGUMENT_TRIPID = "TripID";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,7 +66,9 @@ public class ViewTripFragment extends Fragment {
         mDate = view.findViewById(R.id.trip_date);
         mDays = view.findViewById(R.id.trip_number_of_days);
         mDescription = view.findViewById(R.id.trip_description);
+        mEdit = view.findViewById(R.id.edit_trip_button);
         getTripInfo();
+        addButtonClickListener();
         return view;
     }
 
@@ -104,6 +112,23 @@ public class ViewTripFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+    }
+
+    private void addButtonClickListener() {
+        mEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle args = new Bundle();
+                args.putString(ARGUMENT_TRIPID, mTripId);
+                AddTripFragment fragment = new AddTripFragment();
+                fragment.setArguments(args);
+
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, fragment, "Edit_Trip");
+                fragmentTransaction.addToBackStack("Edit_Trip");
+                fragmentTransaction.commit();
             }
         });
     }

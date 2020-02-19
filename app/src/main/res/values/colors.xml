@@ -11,5 +11,17 @@
     <color name="red">#ff0000</color>
     <color name="green">#00ff00</color>
 
+    <!-- color scheme of new design -->
+    <color name="main_colors_yellow">#F7BE16</color>
+    <color name="main_colors_orange">#EC9B3B</color>
+    <color name="main_colors_red">#C70D3A</color>
+    <color name="main_colors_green">#00818A</color>
+    <color name="main_colors_blue">#293462</color>
+    
+    <color name="monochrome_white">#F8F9FA</color>
+    <color name="monochrome_gray_light">#DEE2E6</color>
+    <color name="monochrome_gray">#868E96</color>
+    <color name="monochrome_gray_dark">#343A40</color>
+    <color name="monochrome_black">#17181A</color>
 
 </resources>

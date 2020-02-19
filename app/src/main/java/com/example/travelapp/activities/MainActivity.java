@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -218,8 +219,8 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
 
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-                Intent intent = new Intent(MainActivity.this, MainActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+//                startActivity(intent);
                 break;
             case R.id.nav_search:
                 Intent intent2 = new Intent(MainActivity.this, SearchActivity.class);
@@ -242,6 +243,17 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
         return false;
     };
 
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            // get which view was focused
+            View v = getCurrentFocus();
+
+            if (HideKeyboard.getInstance().isTouchOutsideView(v, ev)) {
+                HideKeyboard.getInstance().hideSoftInput(v.getWindowToken(), this);
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
 
 
 }

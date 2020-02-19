@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:paddingTop="5dp"
+    tools:context="com.example.travelapp.activities.OthersProfileActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:id="@+id/user_header_layout">
+
+
+        <ImageView
+            android:id="@+id/user_header_profile_image"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginEnd="5dp"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_person" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_header_first_name"
+            android:text="firstname"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="20sp"
+            android:layout_toEndOf="@+id/user_header_profile_image"
+            android:layout_toRightOf="@+id/user_header_profile_image"
+            android:textColor="@color/colorPrimary"/>
+
+        <TextView
+            android:text="lastname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_header_last_name"
+            android:layout_toRightOf="@id/user_header_first_name"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimary"/>
+
+        <TextView
+            android:id="@+id/user_header_user_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_header_first_name"
+            android:layout_marginBottom="10dp"
+            android:textSize="15sp"
+            android:layout_toEndOf="@+id/user_header_profile_image"
+            android:layout_toRightOf="@+id/user_header_profile_image"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/user_header_user_state_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_header_user_email"
+            android:layout_toEndOf="@+id/user_header_profile_image"
+            android:layout_toRightOf="@+id/user_header_profile_image"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <TextView
+            android:id="@+id/user_header_user_phone_number"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/user_header_user_state_info"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/user_header_profile_image"
+            android:layout_toRightOf="@+id/user_header_profile_image"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <Button
+            android:layout_width="90dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/user_header_user_state_info"
+            android:layout_marginStart="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_toEndOf="@id/user_header_user_phone_number"
+            android:layout_toRightOf="@id/user_header_user_phone_number"
+            android:text="message" />
+
+    </RelativeLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_others"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/user_header_layout"
+        android:padding="5dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <FrameLayout
+        android:id="@+id/fragment_container_others"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/user_header_layout"/>
+<!--        android:layout_above="@+id/bottom_nav"/>-->
+
+
+</RelativeLayout>

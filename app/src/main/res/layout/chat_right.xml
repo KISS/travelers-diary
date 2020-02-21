@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp">
+
+    <ImageView
+        android:id="@+id/chatIcon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="15dp"
+        app:srcCompat="@drawable/ic_person"
+
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/messageTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/chatIcon"
+        android:background="#DEDEDE"
+        android:padding="15dp"
+        android:text="Users Message"
+        android:textColor="@color/grey"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/seenTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/messageTv"
+        android:layout_alignParentRight="true"
+        android:gravity="end"
+        android:text="delivered"
+        android:textAlignment="textEnd"
+        android:textColor="@color/grey" />
+
+
+</RelativeLayout>

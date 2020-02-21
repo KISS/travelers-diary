@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -65,6 +66,9 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     private Bitmap mSelectedBitmap;
     private Uri mSelectedUri;
     private byte[] mUploadBytes;
+
+    TextView tvLName, tvObjects;
+
 
     private ImageView mImage;
     private Switch mSwitch;
@@ -112,6 +116,9 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
         mStateSelected = -1;
         mState = -1;
 
+        tvLName = view.findViewById(R.id.tvLName);
+        tvObjects = view.findViewById(R.id.tvObjects);
+
         init();
         return view;
     }
@@ -121,7 +128,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
         super.onActivityCreated(savedInstanceState);
     }
 
-    private void init(){
+    private void init() {
         // For edit in View Trip Fragment
         if (!mTripId.isEmpty()) {
             getTripInfo();
@@ -135,7 +142,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: opening dialog to choose new photo");
-                SelectPhotoDialog dialog = new SelectPhotoDialog();
+                SelectPhotoDialog dialog = new SelectPhotoDialog(tvLName, tvObjects);
                 dialog.show(getFragmentManager(), getString(R.string.dialog_select_photo));
                 dialog.setTargetFragment(AddTripFragment.this, 1);
             }
@@ -148,7 +155,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
             }
         });
 
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mStateSelected = position - 1;
@@ -375,13 +382,13 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
         });
     }
 
-    private void uploadNewPhoto(Bitmap bitmap){
+    private void uploadNewPhoto(Bitmap bitmap) {
         Log.d(TAG, "uploadNewPhoto: uploading a new image bitmap to storage");
         AddTripFragment.BackgroundImageResize resize = new AddTripFragment.BackgroundImageResize(bitmap);
         resize.execute((Uri) null);
     }
 
-    private void uploadNewPhoto(Uri imagePath){
+    private void uploadNewPhoto(Uri imagePath) {
         Log.d(TAG, "uploadNewPhoto: uploading a new image uri to storage.");
         AddTripFragment.BackgroundImageResize resize = new AddTripFragment.BackgroundImageResize(null);
         resize.execute(imagePath);
@@ -410,7 +417,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                 try {
                     RotateBitmap rotateBitmap = new RotateBitmap();
                     mBitmap = rotateBitmap.HandleSamplingAndRotationBitmap(getActivity(), params[0]);
-                } catch (IOException e){
+                } catch (IOException e) {
                     Log.e(TAG, "doInBackground: IOException: " + e.getMessage());
                 }
             }
@@ -429,13 +436,13 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
         }
     }
 
-    private byte[] getBytesFromBitmap(Bitmap bitmap, int quality){
+    private byte[] getBytesFromBitmap(Bitmap bitmap, int quality) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
         return stream.toByteArray();
     }
 
-    private void uploadImage(){
+    private void uploadImage() {
         Toast.makeText(getActivity(), R.string.toast_uploading_photo, Toast.LENGTH_SHORT).show();
         mTripId = mDatabaseReference.push().getKey();
         final StorageReference storageReference = FirebaseStorage.getInstance().getReference()
@@ -449,7 +456,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                 Toast.makeText(getActivity(), R.string.toast_photo_uploaded_successfully, Toast.LENGTH_SHORT).show();
 
                 Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                while (!urlTask.isSuccessful());
+                while (!urlTask.isSuccessful()) ;
                 mImageUrl = urlTask.getResult().toString();
 
                 uploadNewTrip();
@@ -464,7 +471,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
             @Override
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                 double currentProgress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                if ( currentProgress > (mProgress + 15)) {
+                if (currentProgress > (mProgress + 15)) {
                     mProgress = currentProgress;
                     Log.d(TAG, "onProgress: upload is " + mProgress + "& done");
                     Toast.makeText(getActivity(), mProgress + "%", Toast.LENGTH_SHORT).show();
@@ -551,7 +558,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
         return isVisited[0];
     }
 
-    private void getTripIds(List<String> tripIds){
+    private void getTripIds(List<String> tripIds) {
         tripIds.clear();
 
         Query query = mDatabaseReference.child(Constants.DATABASE_PATH_TRAVELHISTORY)
@@ -564,7 +571,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                 if (dataSnapshot != null) {
                     if (dataSnapshot.hasChildren()) {
                         DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
-                        for (DataSnapshot snapshot: singleSnapshot.getChildren()) {
+                        for (DataSnapshot snapshot : singleSnapshot.getChildren()) {
                             String id = snapshot.child(Constants.DATABASE_FIELD_TRIPID).getValue().toString();
                             Log.d(TAG, "onDataChange: found a post id: " + id);
                             tripIds.add(id);
@@ -572,6 +579,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                     }
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -579,7 +587,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
         });
     }
 
-    private void resetFields(){
+    private void resetFields() {
         mImage.setImageResource(R.drawable.ic_waddphoto);
         mTitle.setText("");
         mCity.setText("");

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,9 +22,11 @@ import com.example.travelapp.Fragment.MyAdapter;
 import com.example.travelapp.Fragment.ViewTripFragment;
 import com.example.travelapp.R;
 import com.example.travelapp.configs.Constants;
+import com.example.travelapp.models.NotificationData;
 import com.example.travelapp.models.Trip;
 import com.example.travelapp.models.User;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,9 +47,15 @@ public class OthersProfileActivity extends AppCompatActivity {
     TextView emailView;
     TextView stateInfoView;
     TextView phoneNumView;
+    Button messageUser;
 
     ImageView profileImageView;
     String userId;
+//    String uploaderId;
+
+    FirebaseDatabase firebaseDatabase;
+
+    DatabaseReference databaseReference;
 
     List<String> tripId;
     List<Trip> trips;
@@ -67,11 +76,32 @@ public class OthersProfileActivity extends AppCompatActivity {
         phoneNumView = findViewById(R.id.user_header_user_phone_number);
 
         profileImageView = findViewById(R.id.user_header_profile_image);
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        databaseReference = firebaseDatabase.getReference(Constants.DATABASE_PATH_UPLOADS);
+
+
         Intent intent = getIntent();
         userId = intent.getStringExtra("USER_ID");
 
         tripId = new ArrayList<>();
         trips = new ArrayList<>();
+
+        messageUser = findViewById(R.id.init_chat);
+
+        messageUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                chatNotification();
+
+                Intent intent = new Intent(OthersProfileActivity.this, ChatActivity.class);
+                intent.putExtra("userUid", userId);
+                startActivity(intent);
+
+            }
+        });
 
         setUserInfoHeader();
         setUserTrips();
@@ -97,7 +127,20 @@ public class OthersProfileActivity extends AppCompatActivity {
         });
 
         recyclerView.setAdapter(adapter);
-        
+
+    }
+
+    private void chatNotification() {
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String currentUserId = currentUser.getUid();
+
+        DatabaseReference reference = firebaseDatabase.getReference(Constants.DATABASE_PATH_Notifications);
+
+        NotificationData notificationData = new NotificationData(currentUserId, userId);
+        reference.child(userId).setValue(notificationData);
+
+
     }
 
     private void setUserInfoHeader() {

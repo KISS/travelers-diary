@@ -1,39 +1,43 @@
 package com.example.travelapp.activities;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelapp.Fragment.AddTripFragment;
 import com.example.travelapp.Fragment.MyAdapter;
@@ -44,8 +48,6 @@ import com.example.travelapp.models.Trip;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -65,7 +67,7 @@ import java.util.List;
 
 import static com.google.firebase.storage.FirebaseStorage.getInstance;
 
-public class ProfileActivity extends AppCompatActivity implements AddTripFragment.AddTripFragmentHandler {
+public class ProfileActivity extends AppCompatActivity implements AddTripFragment.AddTripFragmentHandler, MyAdapter.OnItemClickListner {
 
     private final String TAG = "Profile Activity";
 
@@ -86,6 +88,7 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
 
     ImageView photo;
     TextView mfirstname, mlastname, memail, mStateInfo, mPhoneNum, fab;
+    TextView menuTextview;
     FloatingActionButton logoutBtn;
 
     ProgressDialog pd;
@@ -134,6 +137,7 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
         logoutBtn = findViewById(R.id.logoutBtn);
 
 
+
         pd = new ProgressDialog(ProfileActivity.this);
 
         mRecyclerView = findViewById(R.id.recyclerView);
@@ -163,15 +167,9 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
     }
 
     private void logoutUser() {
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor prefsEditor = prefs.edit();
-        prefsEditor.clear();
-        prefsEditor.apply();
         finish();
         Intent signInActivityIntent = new Intent(ProfileActivity.this, SignInActivity.class);
         startActivity(signInActivityIntent);
-        Log.d(TAG, "logoutUser: logging out");
     }
 
     private void initFirebaseData() {
@@ -222,327 +220,327 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
 
     }
 
-        private boolean checkStoragePermission () {
-            boolean result = ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == (PackageManager.PERMISSION_GRANTED);
-            return result;
-        }
+    private boolean checkStoragePermission() {
+        boolean result = ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == (PackageManager.PERMISSION_GRANTED);
+        return result;
+    }
 
-        @RequiresApi(api = Build.VERSION_CODES.M)
-        private void requestedStoragePermission () {
-            requestPermissions(storagePermission, STORAGE_REQUEST_CODE);
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestedStoragePermission() {
+        requestPermissions(storagePermission, STORAGE_REQUEST_CODE);
 
-        }
+    }
 
-        private boolean checkCameraPermission () {
-            boolean result = ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CAMERA)
-                    == (PackageManager.PERMISSION_GRANTED);
-            boolean result1 = ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    == (PackageManager.PERMISSION_GRANTED);
-            return result && result1;
-        }
+    private boolean checkCameraPermission() {
+        boolean result = ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CAMERA)
+                == (PackageManager.PERMISSION_GRANTED);
+        boolean result1 = ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == (PackageManager.PERMISSION_GRANTED);
+        return result && result1;
+    }
 
-        @RequiresApi(api = Build.VERSION_CODES.M)
-        private void requestedCameraPermission () {
-            requestPermissions(cameraPermission, CAMERA_REQUEST_CODE);
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestedCameraPermission() {
+        requestPermissions(cameraPermission, CAMERA_REQUEST_CODE);
 
-        }
+    }
 
-        /*
-         * Edit pop up and its options
-         *
-         * */
-        private void showEditProfilePopup () {
-            String options[] = {"Edit Profile Picture", "Edit First Name", "Edit Last Name"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Choose ");
-            builder.setItems(options, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (which == 0) {
-                        pd.setMessage("Updating ProfileActivity Picture");
-                        profilePhoto = "profilePictureUrl";
-                        showImagePicDialog();
-                    } else if (which == 1) {
-                        pd.setMessage("Updating First Name");
-                        showEditInfoUpdatePopup("firstName");
-                    } else if (which == 2) {
-                        pd.setMessage("Updating Last Name");
-                        showEditInfoUpdatePopup("lastName");
+    /*
+     * Edit pop up and its options
+     *
+     * */
+    private void showEditProfilePopup() {
+        String options[] = {"Edit Profile Picture", "Edit First Name", "Edit Last Name"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose ");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
+                    pd.setMessage("Updating ProfileActivity Picture");
+                    profilePhoto = "profilePictureUrl";
+                    showImagePicDialog();
+                } else if (which == 1) {
+                    pd.setMessage("Updating First Name");
+                    showEditInfoUpdatePopup("firstName");
+                } else if (which == 2) {
+                    pd.setMessage("Updating Last Name");
+                    showEditInfoUpdatePopup("lastName");
 
-                    } else if (which == 3) {
-                        pd.setMessage("Updating State Info");
-                        showEditInfoUpdatePopup("stateInfo");
+                } else if (which == 3) {
+                    pd.setMessage("Updating State Info");
+                    showEditInfoUpdatePopup("stateInfo");
 
-                    } else if (which == 4) {
-                        pd.setMessage("Updating Phone Num");
-                        showEditInfoUpdatePopup("phoneNum");
-
-                    }
-                }
-            });
-            builder.create().show();
-        }
-
-        private void showEditInfoUpdatePopup ( final String key){
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Update " + key);
-
-
-            final EditText editText = new EditText(this);
-
-            editText.setHint("Enter " + key);
-
-            LinearLayout linearLayout = new LinearLayout(this);
-            linearLayout.setOrientation(LinearLayout.VERTICAL);
-            linearLayout.setPadding(10, 10, 10, 10);
-
-            linearLayout.addView(editText);
-
-            builder.setView(linearLayout);
-
-            builder.setPositiveButton("update", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    String value = editText.getText().toString().trim();
-                    if (!TextUtils.isEmpty(value)) {
-                        pd.show();
-                        HashMap<String, Object> result = new HashMap<>();
-                        result.put(key, value);
-                        databaseReference.child(user.getUid()).updateChildren(result).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-
-                                pd.dismiss();
-                                Toast.makeText(ProfileActivity.this, "Updated", Toast.LENGTH_SHORT).show();
-
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                pd.dismiss();
-                                Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
-
-                    } else {
-                        Toast.makeText(ProfileActivity.this, "Please enter ", Toast.LENGTH_SHORT).show();
-                    }
-
+                } else if (which == 4) {
+                    pd.setMessage("Updating Phone Num");
+                    showEditInfoUpdatePopup("phoneNum");
 
                 }
-            });
+            }
+        });
+        builder.create().show();
+    }
 
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            });
-            builder.create().show();
+    private void showEditInfoUpdatePopup(final String key) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Update " + key);
 
 
-        }
+        final EditText editText = new EditText(this);
 
-        private void showImagePicDialog () {
+        editText.setHint("Enter " + key);
 
-            String options[] = {"Camera", "Gallery"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Pick Image From");
-            builder.setItems(options, new DialogInterface.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.M)
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (which == 0) {
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setPadding(10, 10, 10, 10);
 
-                        if (!checkCameraPermission()) {
-                            requestedCameraPermission();
-                        } else {
-                            pickFromCamera();
+        linearLayout.addView(editText);
+
+        builder.setView(linearLayout);
+
+        builder.setPositiveButton("update", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String value = editText.getText().toString().trim();
+                if (!TextUtils.isEmpty(value)) {
+                    pd.show();
+                    HashMap<String, Object> result = new HashMap<>();
+                    result.put(key, value);
+                    databaseReference.child(user.getUid()).updateChildren(result).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+
+                            pd.dismiss();
+                            Toast.makeText(ProfileActivity.this, "Updated", Toast.LENGTH_SHORT).show();
+
                         }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            pd.dismiss();
+                            Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 
-                    } else if (which == 1) {
-                        if (!checkStoragePermission()) {
-                            requestedStoragePermission();
-                        } else {
-                            pickFromGallery();
                         }
+                    });
 
-
-                    }
+                } else {
+                    Toast.makeText(ProfileActivity.this, "Please enter ", Toast.LENGTH_SHORT).show();
                 }
-            });
-            builder.create().show();
-        }
 
-        @Override
-        public void onRequestPermissionsResult ( int requestCode, @NonNull String[] permissions,
-        @NonNull int[] grantResults){
-
-            switch (requestCode) {
-                case CAMERA_REQUEST_CODE: {
-                    if (grantResults.length > 0) {
-                        boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                        if (cameraAccepted) {
-                            pickFromCamera();
-                        } else {
-                            Toast.makeText(ProfileActivity.this, "Please Enable the camera  permission", Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-
-                }
-                break;
-                case STORAGE_REQUEST_CODE: {
-                    if (grantResults.length > 0) {
-                        boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                        if (writeStorageAccepted) {
-                            pickFromGallery();
-                        } else {
-                            Toast.makeText(ProfileActivity.this, "Please Enable the Storage permission", Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                }
-                break;
 
             }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.create().show();
 
 
-        }
+    }
 
+    private void showImagePicDialog() {
 
-        private void pickFromCamera () {
+        String options[] = {"Camera", "Gallery"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Pick Image From");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
 
-            ContentValues values = new ContentValues();
-            values.put(MediaStore.Images.Media.TITLE, "temp pic");
-            values.put(MediaStore.Images.Media.DESCRIPTION, "temp description");
+                    if (!checkCameraPermission()) {
+                        requestedCameraPermission();
+                    } else {
+                        pickFromCamera();
+                    }
 
-            image_uri = this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                } else if (which == 1) {
+                    if (!checkStoragePermission()) {
+                        requestedStoragePermission();
+                    } else {
+                        pickFromGallery();
+                    }
 
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
-            startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_CODE);
-
-        }
-
-        private void pickFromGallery () {
-
-            Intent galleryIntent = new Intent(Intent.ACTION_PICK);
-            galleryIntent.setType("image/*");
-            startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_CODE);
-
-        }
-
-
-        @Override
-        public void onActivityResult ( int requestCode, int resultCode, @Nullable Intent data){
-
-            if (resultCode == RESULT_OK) {
-
-                if (requestCode == IMAGE_PICK_GALLERY_CODE) {
-                    image_uri = data.getData();
-
-                    uploadProfilePhoto(image_uri);
 
                 }
-                if (requestCode == IMAGE_PICK_CAMERA_CODE) {
+            }
+        });
+        builder.create().show();
+    }
 
-                    uploadProfilePhoto(image_uri);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
 
+        switch (requestCode) {
+            case CAMERA_REQUEST_CODE: {
+                if (grantResults.length > 0) {
+                    boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    if (cameraAccepted) {
+                        pickFromCamera();
+                    } else {
+                        Toast.makeText(ProfileActivity.this, "Please Enable the camera  permission", Toast.LENGTH_SHORT).show();
+                    }
 
                 }
 
             }
-
-
-            super.onActivityResult(requestCode, resultCode, data);
-
-
-        }
-
-        private void uploadProfilePhoto (Uri uri) {
-
-            pd.show();
-
-            String filePathAndName = storagePath + "" + profilePhoto + "_" + user.getUid();
-
-            StorageReference storageReference2 = storageReference.child(filePathAndName);
-            storageReference2.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                    Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
-                    while (!uriTask.isSuccessful()) ;
-                    Uri downloadUri = uriTask.getResult();
-
-                    if (uriTask.isSuccessful()) {
-                        HashMap<String, Object> results = new HashMap<>();
-                        results.put(profilePhoto, downloadUri.toString());
-
-                        databaseReference.child(user.getUid()).updateChildren(results).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                pd.dismiss();
-                                Toast.makeText(ProfileActivity.this, "Image Updated", Toast.LENGTH_SHORT).show();
-
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                pd.dismiss();
-                                Toast.makeText(ProfileActivity.this, "Error Updating image", Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
+            break;
+            case STORAGE_REQUEST_CODE: {
+                if (grantResults.length > 0) {
+                    boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    if (writeStorageAccepted) {
+                        pickFromGallery();
                     } else {
-                        pd.dismiss();
-                        Toast.makeText(ProfileActivity.this, "Some error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileActivity.this, "Please Enable the Storage permission", Toast.LENGTH_SHORT).show();
                     }
 
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
+            }
+            break;
+
+        }
+
+
+    }
+
+
+    private void pickFromCamera() {
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "temp pic");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "temp description");
+
+        image_uri = this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
+        startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_CODE);
+
+    }
+
+    private void pickFromGallery() {
+
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_CODE);
+
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        if (resultCode == RESULT_OK) {
+
+            if (requestCode == IMAGE_PICK_GALLERY_CODE) {
+                image_uri = data.getData();
+
+                uploadProfilePhoto(image_uri);
+
+            }
+            if (requestCode == IMAGE_PICK_CAMERA_CODE) {
+
+                uploadProfilePhoto(image_uri);
+
+
+            }
+
+        }
+
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+    }
+
+    private void uploadProfilePhoto(Uri uri) {
+
+        pd.show();
+
+        String filePathAndName = storagePath + "" + profilePhoto + "_" + user.getUid();
+
+        StorageReference storageReference2 = storageReference.child(filePathAndName);
+        storageReference2.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+                while (!uriTask.isSuccessful()) ;
+                Uri downloadUri = uriTask.getResult();
+
+                if (uriTask.isSuccessful()) {
+                    HashMap<String, Object> results = new HashMap<>();
+                    results.put(profilePhoto, downloadUri.toString());
+
+                    databaseReference.child(user.getUid()).updateChildren(results).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            pd.dismiss();
+                            Toast.makeText(ProfileActivity.this, "Image Updated", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            pd.dismiss();
+                            Toast.makeText(ProfileActivity.this, "Error Updating image", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                } else {
                     pd.dismiss();
-                    Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "Some error", Toast.LENGTH_SHORT).show();
                 }
 
-            });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                pd.dismiss();
+                Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
 
+        });
+
+    }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+            switch (menuItem.getItemId()) {
+                case R.id.nav_home:
+                    Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.nav_search:
+                    Intent intent2 = new Intent(ProfileActivity.this, SearchActivity.class);
+                    startActivity(intent2);
+                    break;
+                case R.id.nav_travel_history:
+                    Intent intent3 = new Intent(ProfileActivity.this, TravelHistoryActivity.class);
+                    startActivity(intent3);
+                    break;
+                case R.id.nav_notification:
+                    Intent intent4 = new Intent(ProfileActivity.this, NotificationActivity.class);
+                    startActivity(intent4);
+                    break;
+                case R.id.nav_profile:
+                    Intent intent5 = new Intent(ProfileActivity.this, ProfileActivity.class);
+                    startActivity(intent5);
+                    break;
+
+            }
+            return false;
         }
-
-                private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
-                        switch (menuItem.getItemId()) {
-                            case R.id.nav_home:
-                                Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                break;
-                            case R.id.nav_search:
-                                Intent intent2 = new Intent(ProfileActivity.this, SearchActivity.class);
-                                startActivity(intent2);
-                                break;
-                            case R.id.nav_travel_history:
-                                Intent intent3 = new Intent(ProfileActivity.this, TravelHistoryActivity.class);
-                                startActivity(intent3);
-                                break;
-//                            case R.id.nav_wishlist:
-//                                Intent intent4 = new Intent(ProfileActivity.this, MainActivity.class);
-//                                startActivity(intent4);
-//                                break;
-                            case R.id.nav_profile:
-//                                Intent intent5 = new Intent(ProfileActivity.this, ProfileActivity.class);
-//                                startActivity(intent5);
-                                break;
-
-                        }
-                        return false;
-                    }
-                };
+    };
 
 
     @Override
@@ -552,35 +550,42 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
 
     private void configureRecyclerView() {
         Log.d(TAG, "configure recycler view");
-        mAdapter = new MyAdapter(this, mTrips, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = (int) v.getTag();
-                Trip trip = mAdapter.getItem(position);
+        mAdapter = new MyAdapter(this, mTrips, v -> {
+            int position = (int) v.getTag();
+            Trip trip = mAdapter.getItem(position);
 
-                Bundle args = new Bundle();
-                args.putString(ViewTripFragment.ARGUMENT_TRIPID, trip.getTrip_id());
-                ViewTripFragment fragment = new ViewTripFragment();
-                fragment.setArguments(args);
+            Bundle args = new Bundle();
+            args.putString(ViewTripFragment.ARGUMENT_TRIPID, trip.getTrip_id());
+            ViewTripFragment fragment = new ViewTripFragment();
+            fragment.setArguments(args);
 
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, fragment, "Trip_Info");
-                fragmentTransaction.addToBackStack("Trip_Info");
-                fragmentTransaction.commit();
-            }
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, fragment, "Trip_Info");
+            fragmentTransaction.addToBackStack("Trip_Info");
+            fragmentTransaction.commit();
+
+
         });
+
         mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListner(ProfileActivity.this);
+
+
         getTripIdsAndTrips();
     }
 
-    private void getTripIdsAndTrips(){
+
+
+
+    private void getTripIdsAndTrips() {
         mTripIds.clear();
         mTrips.clear();
 
         Query query = FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_TRAVELHISTORY)
                 .orderByKey()
                 .equalTo(mLooggedInUserId);
-        
+
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -589,7 +594,7 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
                 if (dataSnapshot != null) {
                     if (dataSnapshot.hasChildren()) {
                         DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
-                        for (DataSnapshot snapshot: singleSnapshot.getChildren()) {
+                        for (DataSnapshot snapshot : singleSnapshot.getChildren()) {
                             String id = snapshot.child(Constants.DATABASE_FIELD_TRIPID).getValue().toString();
                             Log.d(TAG, "onDataChange: found a post id: " + id);
                             mTripIds.add(id);
@@ -598,17 +603,21 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
                     getTripsInTripIDList();
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+
+
     }
 
-    private void getTripsInTripIDList(){
+
+    private void getTripsInTripIDList() {
         if (mTripIds.size() > 0) {
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-            for (int i  = 0; i < mTripIds.size(); i++) {
+            for (int i = 0; i < mTripIds.size(); i++) {
                 Log.d(TAG, "getPosts: getting post information for: " + mTripIds.get(i));
                 Query query = reference.child(Constants.DATABASE_PATH_TRIPS)
                         .orderByKey()
@@ -646,5 +655,25 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
         } else {
             mAdapter.notifyDataSetChanged(); //still need to notify the adapter if the list is empty
         }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
+    }
+
+    @Override
+    public void onPrivacyLongPress(int position) {
+
+    }
+
+    @Override
+    public void onEditTripLongPress(int position) {
+
+    }
+
+    @Override
+    public void onRemoveTripLongPress(int position) {
+
     }
 }

@@ -27,12 +27,41 @@ import androidx.fragment.app.Fragment;
 import com.example.travelapp.R;
 import com.example.travelapp.activities.ProfileActivity;
 import com.example.travelapp.configs.Constants;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.cloud.FirebaseVisionCloudDetectorOptions;
+import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark;
+import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmarkDetector;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.label.FirebaseVisionCloudImageLabelerOptions;
+import com.google.firebase.ml.vision.label.FirebaseVisionImageLabel;
+import com.google.firebase.ml.vision.label.FirebaseVisionImageLabeler;
+
+import java.io.IOException;
+import java.util.List;
 
 public class SelectPhotoDialog extends DialogFragment {
 
-    public interface OnPhotoSelectedListener{
+    TextView tvLName, tvObjects;
+
+    SelectPhotoDialog() {
+
+    }
+
+
+    SelectPhotoDialog(TextView tvLName, TextView tvObjects) {
+        this.tvLName = tvLName;
+        this.tvObjects = tvObjects;
+    }
+
+
+    public interface OnPhotoSelectedListener {
         void getImagePath(Uri imagePath);
+
         void getImageBitmap(Bitmap bitmap);
+
         void triggerImageUpload();
     }
 
@@ -51,7 +80,7 @@ public class SelectPhotoDialog extends DialogFragment {
         try {
             mOnPhotoSelectedListener = (SelectPhotoDialog.OnPhotoSelectedListener) getTargetFragment();
         } catch (ClassCastException e) {
-            Log.e(TAG, "onAttach: ClassCastException: " + e.getMessage() );
+            Log.e(TAG, "onAttach: ClassCastException: " + e.getMessage());
         }
         super.onAttach(context);
     }
@@ -110,50 +139,106 @@ public class SelectPhotoDialog extends DialogFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        // Results from selecting a image from memory
         if (requestCode == PICK_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri selectedImageUri = data.getData();
             Log.d(TAG, "onActivityResult: image uri: " + selectedImageUri);
 
+
+
             // Send the uri to AddTripFragment & dismiss dialog
             mOnPhotoSelectedListener.getImagePath(selectedImageUri);
-            getDialog().dismiss();
-        }
 
-        // Results from taking a photo with camera
-        else if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            Log.d(TAG, "onActivityResult: done taking new photo");
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), selectedImageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-            //send the bitmap to AddTripFragment and dismiss dialog
-            mOnPhotoSelectedListener.getImageBitmap(bitmap);
+
+            FirebaseVisionCloudDetectorOptions options =
+                    new FirebaseVisionCloudDetectorOptions.Builder()
+                            .setModelType(FirebaseVisionCloudDetectorOptions.LATEST_MODEL)
+                            .setMaxResults(5)
+                            .build();
+
+            FirebaseVisionCloudImageLabelerOptions optionsLabel =
+                    new FirebaseVisionCloudImageLabelerOptions.Builder()
+                            .setConfidenceThreshold(0.7f)
+                            .build();
+
+
+            FirebaseVisionImage imageLabel = FirebaseVisionImage.fromBitmap(bitmap);
+
+            FirebaseVisionImageLabeler labeler = FirebaseVision.getInstance()
+                    .getCloudImageLabeler(optionsLabel);
+
+
+            labeler.processImage(imageLabel).addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionImageLabel>>() {
+                @Override
+                public void onSuccess(List<FirebaseVisionImageLabel> labels) {
+                    tvObjects.setText("");
+                    for (FirebaseVisionImageLabel label : labels) {
+
+                        tvObjects.append(label.getText() + "   ");
+                    }
+
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                }
+            });
+
+
+            FirebaseVisionCloudLandmarkDetector detector = FirebaseVision.getInstance()
+                    .getVisionCloudLandmarkDetector(options);
+
+
+            FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
+
+            Task<List<FirebaseVisionCloudLandmark>> result = detector.detectInImage(image)
+                    .addOnSuccessListener(firebaseVisionCloudLandmarks -> {
+                        // Task completed successfully
+                        // ...
+                        tvLName.setText("");
+                        for (FirebaseVisionCloudLandmark landmark : firebaseVisionCloudLandmarks) {
+
+                            tvLName.setText(landmark.getLandmark());
+                        }
+
+                    })
+                    .addOnFailureListener(e -> {
+                        // ...
+                        Log.d(TAG, e.getMessage());
+                    });
             getDialog().dismiss();
         }
     }
 
-    private boolean checkStoragePermission () {
+    private boolean checkStoragePermission() {
         return ContextCompat.checkSelfPermission(((Fragment) mOnPhotoSelectedListener).getContext(),
                 Constants.STORAGE_PERMISSION[0]) == (PackageManager.PERMISSION_GRANTED);
     }
 
-    private void requestedStoragePermission () {
+    private void requestedStoragePermission() {
         requestPermissions(Constants.STORAGE_PERMISSION, PERMISSION_STORAGE_REQUEST_CODE);
     }
 
-    private boolean checkCameraPermission () {
+    private boolean checkCameraPermission() {
         return ContextCompat.checkSelfPermission(((Fragment) mOnPhotoSelectedListener).getContext(),
                 Constants.CAMERA_PERMISSION[0]) == (PackageManager.PERMISSION_GRANTED)
                 && ContextCompat.checkSelfPermission(((Fragment) mOnPhotoSelectedListener).getContext(),
                 Constants.CAMERA_PERMISSION[1]) == (PackageManager.PERMISSION_GRANTED);
     }
 
-    private void requestedCameraPermission () {
+    private void requestedCameraPermission() {
         requestPermissions(Constants.CAMERA_PERMISSION, PERMISSION_CAMERA_REQUEST_CODE);
     }
 
     @Override
-    public void onRequestPermissionsResult (int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_STORAGE_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

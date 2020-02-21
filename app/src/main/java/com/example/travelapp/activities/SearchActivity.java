@@ -135,7 +135,7 @@ public class SearchActivity extends AppCompatActivity {
 
             StringBuilder stringBuilder = new StringBuilder(searchText);
 
-            for(int i = 0; i <= searchText.length() * 2; i += 2) {
+            for (int i = 0; i <= searchText.length() * 2; i += 2) {
                 stringBuilder.insert(i, "*");
             }
 
@@ -191,7 +191,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void setUpTripsList() {
-        tripListAdapter = new TripListAdapter(trips, this, new View.OnClickListener(){
+        tripListAdapter = new TripListAdapter(trips, this, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = (int) v.getTag();
@@ -232,7 +232,7 @@ public class SearchActivity extends AppCompatActivity {
 
             StringBuilder stringBuilder = new StringBuilder(searchText);
 
-            for(int i = 0; i <= searchText.length() * 2; i += 2) {
+            for (int i = 0; i <= searchText.length() * 2; i += 2) {
                 stringBuilder.insert(i, "*");
             }
 
@@ -286,10 +286,10 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void setUpUsersList() {
-        userListAdapter = new UserListAdapter(this, users, new View.OnClickListener(){
+        userListAdapter = new UserListAdapter(this, users, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int position = (int)view.getTag();
+                int position = (int) view.getTag();
                 User user = userListAdapter.getItem(position);
 
                 currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -341,17 +341,17 @@ public class SearchActivity extends AppCompatActivity {
                     startActivity(intent);
                     break;
                 case R.id.nav_search:
-//                    Intent intent2 = new Intent(SearchActivity.this, SearchActivity.class);
-//                    startActivity(intent2);
+                    Intent intent2 = new Intent(SearchActivity.this, SearchActivity.class);
+                    startActivity(intent2);
                     break;
                 case R.id.nav_travel_history:
                     Intent intent3 = new Intent(SearchActivity.this, TravelHistoryActivity.class);
                     startActivity(intent3);
                     break;
-//                            case R.id.nav_wishlist:
-//                                Intent intent4 = new Intent(SearchActivity.this, MainActivity.class);
-//                                startActivity(intent4);
-//                                break;
+                case R.id.nav_notification:
+                    Intent intent4 = new Intent(SearchActivity.this, NotificationActivity.class);
+                    startActivity(intent4);
+                    break;
                 case R.id.nav_profile:
                     Intent intent5 = new Intent(SearchActivity.this, ProfileActivity.class);
                     startActivity(intent5);

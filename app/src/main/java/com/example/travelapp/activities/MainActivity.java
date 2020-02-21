@@ -219,8 +219,8 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
 
         switch (menuItem.getItemId()) {
             case R.id.nav_home:
-//                Intent intent = new Intent(MainActivity.this, MainActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
                 break;
             case R.id.nav_search:
                 Intent intent2 = new Intent(MainActivity.this, SearchActivity.class);
@@ -230,10 +230,10 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
                 Intent intent3 = new Intent(MainActivity.this, TravelHistoryActivity.class);
                 startActivity(intent3);
                 break;
-//            case R.id.nav_wishlist:
-//                Intent intent4 = new Intent(MainActivity.this, MainActivity.class);
-//                startActivity(intent4);
-//                break;
+            case R.id.nav_notification:
+                Intent intent4 = new Intent(MainActivity.this, NotificationActivity.class);
+                startActivity(intent4);
+                break;
             case R.id.nav_profile:
                 Intent intent5 = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(intent5);

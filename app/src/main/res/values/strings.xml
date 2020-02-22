@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">TravelApp</string>
 
-    <string name="usernamehint">Email Address</string>
-    <string name="passwordhint">Password</string>
+    <string name="usernamehint">example@example.com</string>
+    <string name="passwordhint">no less than 10 characters</string>
     <string name="signinbutton">SIGN IN</string>
     <string name="signupbutton">SIGN UP</string>
     <string name="donthaveanaccount">Don\'t have account? Click on Sign up</string>
@@ -14,8 +14,8 @@
     <string name="nameOfItem">Enter the name of item</string>
     <string name="uploadhelp">Now click on Upload Item to add item</string>
     <string name="showprofile">Trade Feed Page</string>
-    <string name="firstname">First name</string>
-    <string name="lastname">Last name</string>
+    <string name="firstname">First name:</string>
+    <string name="lastname">Last name:</string>
     <string name="gradyear">Graduation year</string>
     <string name="enterfirstname">Enter First Name</string>
     <string name="enterlastname">Enter Last Name</string>
@@ -70,6 +70,9 @@
     <string name="set_trip_as_public">Set trip as public</string>
     <string name="is_public">Trip is public</string>
     <string name="is_private">Trip is private</string>
+    <string name="travelers_diary">Traveler\'s Diary</string>
+    <string name="text_email_address">Email Address:</string>
+    <string name="text_password">Password:</string>
     <string-array name="state">
         <item>State</item>
         <item>Minnesota</item>

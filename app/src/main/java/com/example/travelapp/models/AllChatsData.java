@@ -1,14 +1,14 @@
 package com.example.travelapp.models;
 
-public class NotificationData {
+public class AllChatsData {
     String from;
     String to;
 
-    public NotificationData() {
+    public AllChatsData() {
 
     }
 
-    public NotificationData(String fromUser, String toUser) {
+    public AllChatsData(String fromUser, String toUser) {
         from = fromUser;
         to = toUser;
     }

@@ -2,37 +2,48 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_margin="20dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp">
 
     <ImageView
+        android:id="@+id/chatIcon"
         android:layout_width="50dp"
-        app:srcCompat="@drawable/ic_add_a_photo_blue_24dp"
         android:layout_height="50dp"
         android:layout_marginRight="15dp"
-        android:id="@+id/chatIcon" />
-    
-    <TextView
-        android:id="@+id/messageTv"
-        android:layout_toRightOf="@+id/chatIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="13sp"
-        android:padding="15dp"
-        android:textColor="@color/white"
-        android:background="#000000"
-        android:text="Users Message"/>
+        app:srcCompat="@drawable/ic_add_a_photo_blue_24dp" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_below="@+id/chatIcon"
+        android:id="@+id/messageTv"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/seenTv"
+        android:layout_toRightOf="@+id/chatIcon"
+        android:background="#5497A7"
+        android:padding="15dp"
+        android:text="Users Message"
         android:textColor="@color/white"
-        android:text="delivered"
-        android:visibility="gone"
-        android:textAlignment="textEnd"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/seenTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chatIcon"
         android:layout_alignParentRight="true"
-        android:gravity="end" />
+        android:gravity="end"
+        android:text="delivered"
+        android:textAlignment="textEnd"
+        android:textColor="@color/monochrome_black"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/timeTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_toRightOf="@+id/messageTv"
+        android:layout_centerInParent="true"
+        android:text="02/22/2020 02:15PM"
+        android:textColor="@color/white" />
+
 
 </RelativeLayout>

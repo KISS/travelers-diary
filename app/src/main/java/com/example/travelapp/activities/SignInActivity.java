@@ -92,7 +92,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                         finish();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.verify_email_password), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.verify_email_password), Toast.LENGTH_LONG).show();
                     emailEditTextView.setText("");
                     signUpPasswordEditTextView.setText("");
                 }

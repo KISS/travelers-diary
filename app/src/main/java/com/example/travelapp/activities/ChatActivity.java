@@ -3,6 +3,7 @@ package com.example.travelapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -31,14 +32,16 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class ChatActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ImageView userLogo;
-    TextView userChatName;
+    TextView userChatName, userStatusTv;
     EditText messegeEditText;
     ImageButton sentButton;
 
@@ -67,6 +70,8 @@ public class ChatActivity extends AppCompatActivity {
         messegeEditText = findViewById(R.id.chatEditText);
         sentButton = findViewById(R.id.sentMessage);
         userChatName = findViewById(R.id.userChatName);
+        userStatusTv = findViewById(R.id.userOnlineStatus);
+
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
@@ -109,6 +114,17 @@ public class ChatActivity extends AppCompatActivity {
                     String name = "" + ds.child("firstName").getValue();
                     usersImage = "" + ds.child("profilePictureUrl").getValue();
 
+                    String onlineStatus = ""+ds.child("onlineStatus").getValue();
+                    if (onlineStatus.equals("online")){
+                        userStatusTv.setText(onlineStatus);
+                    }else {
+
+                        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+                        cal.setTimeInMillis(Long.parseLong(onlineStatus));
+                        String dateTime = DateFormat.format("dd/MM/yyyy hh:mm aa", cal).toString();
+                        userStatusTv.setText("Last seen: "+ dateTime);
+
+                    }
                     userChatName.setText(name);
                     try {
                         Picasso.get().load(usersImage).placeholder(R.drawable.ic_person_black_24dp).into(userLogo);
@@ -158,7 +174,7 @@ public class ChatActivity extends AppCompatActivity {
                     Chat chat = ds.getValue(Chat.class);
                     if (chat.getReceiver().equals(myUid) && chat.getSender().equals(userUid)) {
                         HashMap<String, Object> hasSeenHashMap = new HashMap<>();
-                        hasSeenHashMap.put("isSeen", true);
+                        hasSeenHashMap.put("seen", true);
                         ds.getRef().updateChildren(hasSeenHashMap);
 
 
@@ -217,12 +233,14 @@ public class ChatActivity extends AppCompatActivity {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         myUid = user.getUid();
 
+        String timestamp = String.valueOf(System.currentTimeMillis());
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("sender", myUid);
         hashMap.put("receiver", userUid);
         hashMap.put("message", message);
-        hashMap.put("isSeen", false);
+        hashMap.put("timestamp", timestamp);
+        hashMap.put("seen", false);
 
 
         databaseReference.child("Chats").push().setValue(hashMap);
@@ -231,18 +249,36 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+    private  void checkOnlineStatus(String status){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("onlineStatus", status);
+        databaseReference.updateChildren(hashMap);
+    }
+
     @Override
     protected void onPause() {
-        super.onPause();
 
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        checkOnlineStatus(timestamp);
+        super.onPause();
         userRefForSeen.removeEventListener(seenListner);
 
     }
 
     @Override
     protected void onStart() {
+        checkOnlineStatus("online");
         super.onStart();
     }
+
+    @Override
+    protected void onResume() {
+        checkOnlineStatus("online");
+        super.onResume();
+    }
+
+
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -262,8 +298,8 @@ public class ChatActivity extends AppCompatActivity {
                     Intent intent3 = new Intent(ChatActivity.this, TravelHistoryActivity.class);
                     startActivity(intent3);
                     break;
-                case R.id.nav_notification:
-                    Intent intent4 = new Intent(ChatActivity.this, NotificationActivity.class);
+                case R.id.nav_AllChats:
+                    Intent intent4 = new Intent(ChatActivity.this, AllChatsActivity.class);
                     startActivity(intent4);
                     break;
                 case R.id.nav_profile:

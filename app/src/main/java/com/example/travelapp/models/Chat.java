@@ -1,14 +1,31 @@
 package com.example.travelapp.models;
 
 public class Chat {
-    String message, receiver, sender;
-    boolean isSeen;
+    String message, receiver, sender, timestamp;
+    boolean seen;
 
-    public Chat(String message, String receiver, String sender, boolean isSeen) {
+    public Chat(String message, String receiver, String sender, String timestamp, boolean seen) {
         this.message = message;
         this.receiver = receiver;
         this.sender = sender;
-        this.isSeen = isSeen;
+        this.timestamp = timestamp;
+        this.seen = seen;
+    }
+
+    public boolean isSeen() {
+        return seen;
+    }
+
+    public void setSeen(boolean seen) {
+        this.seen = seen;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getMessage() {
@@ -35,16 +52,6 @@ public class Chat {
         this.sender = sender;
     }
 
-    public boolean isSeen() {
-        return isSeen;
-    }
 
-    public void setSeen(boolean seen) {
-        isSeen = seen;
-    }
-
-    public Chat() {
-
-
-    }
+    public Chat() { }
 }

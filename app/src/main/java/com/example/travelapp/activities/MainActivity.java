@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -230,8 +229,8 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
                 Intent intent3 = new Intent(MainActivity.this, TravelHistoryActivity.class);
                 startActivity(intent3);
                 break;
-            case R.id.nav_notification:
-                Intent intent4 = new Intent(MainActivity.this, NotificationActivity.class);
+            case R.id.nav_AllChats:
+                Intent intent4 = new Intent(MainActivity.this, AllChatsActivity.class);
                 startActivity(intent4);
                 break;
             case R.id.nav_profile:

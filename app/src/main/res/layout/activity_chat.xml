@@ -5,40 +5,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#2d2d2d"
+    android:orientation="vertical"
     android:paddingTop="5dp"
-    tools:context=".activities.ProfileActivity"
-    android:orientation="vertical">
+    tools:context=".activities.ProfileActivity">
 
     <RelativeLayout
         android:id="@+id/rel1"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:padding="5dp"
-        android:background="#2d2d2d">
+        android:layout_height="90dp"
+        android:background="#2d2d2d"
+        android:padding="8dp">
 
 
         <ImageView
             android:id="@+id/userLogo"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginLeft="10dp"
             android:layout_below="@+id/logo"
+            android:layout_margin="10dp"
             app:srcCompat="@drawable/ic_add_black_24dp" />
 
         <TextView
             android:id="@+id/userChatName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_centerInParent="true"
+            android:layout_margin="10dp"
             android:layout_toRightOf="@+id/userLogo"
             android:text="name"
             android:textColor="@color/colorPrimaryLight"
-            android:textSize="30sp" />
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/userOnlineStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/userChatName"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="10dp"
+            android:layout_toRightOf="@+id/userLogo"
+            android:text="Online"
+            android:textColor="@color/colorPrimaryLight"
+            android:textSize="12sp" />
 
 
     </RelativeLayout>
-
 
 
     <RelativeLayout
@@ -50,8 +60,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/chat_recyclerView"
             android:layout_width="match_parent"
-            android:layout_above="@+id/chatEditText"
             android:layout_height="match_parent"
+            android:layout_above="@+id/chatEditText"
             android:layout_marginTop="10dp">
 
         </androidx.recyclerview.widget.RecyclerView>

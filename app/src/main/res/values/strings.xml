@@ -28,7 +28,7 @@
     <string name="users">Users</string>
     <string name="inventory">Inventory</string>
     <string name="item_details">Item Details</string>
-    <string name="notifications">Notifications</string>
+    <string name="allchats">Chats</string>
     <string name="user_profile">Profile"</string>
     <string name="empty_message_error">Can not send empty message</string>
     <string name="review_error">Please Enter a Review</string>

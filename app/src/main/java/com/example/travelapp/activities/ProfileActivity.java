@@ -31,13 +31,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -536,8 +534,8 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
                     Intent intent3 = new Intent(ProfileActivity.this, TravelHistoryActivity.class);
                     startActivity(intent3);
                     break;
-                case R.id.nav_notification:
-                    Intent intent4 = new Intent(ProfileActivity.this, NotificationActivity.class);
+                case R.id.nav_AllChats:
+                    Intent intent4 = new Intent(ProfileActivity.this, AllChatsActivity.class);
                     startActivity(intent4);
                     break;
                 case R.id.nav_profile:

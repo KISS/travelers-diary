@@ -58,8 +58,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         String emailaddress = Email.getText().toString().trim();
         String Signuppassword = signupPassword.getText().toString().trim();
 
+
         final String firstName = firstNameEditTextView.getText().toString().trim();
         final String lastName = lastNameEditTextView.getText().toString().trim();
+
+
 
         if (firstName.isEmpty()) {
             firstNameEditTextView.setError("First Name is required");
@@ -107,20 +110,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
                     String email = user.getEmail();
                     String uid = user.getUid();
+                    String onlineStatus = "online";
 
-//                    HashMap<Object, String> hashMap = new HashMap<>();
-//
-//                    hashMap.put("email", email);
-//                    hashMap.put("uid", uid);
-//                    hashMap.put("firstname", firstName);
-//                    hashMap.put("lastname", lastName);
-//                    hashMap.put("gradyear", ""); // need revision
-//                    hashMap.put("image", "");
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference reference = database.getReference(Constants.DATABASE_PATH_USERS);
 
-                    User userObj = new User(email, firstName, lastName, "", 0L, uid);
+                    User userObj = new User(email, firstName, lastName, "", 0L, uid, onlineStatus);
                     reference.child(uid).setValue(userObj);
 
                     mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {

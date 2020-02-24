@@ -6,15 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,7 +40,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -348,8 +343,8 @@ public class SearchActivity extends AppCompatActivity {
                     Intent intent3 = new Intent(SearchActivity.this, TravelHistoryActivity.class);
                     startActivity(intent3);
                     break;
-                case R.id.nav_notification:
-                    Intent intent4 = new Intent(SearchActivity.this, NotificationActivity.class);
+                case R.id.nav_AllChats:
+                    Intent intent4 = new Intent(SearchActivity.this, AllChatsActivity.class);
                     startActivity(intent4);
                     break;
                 case R.id.nav_profile:

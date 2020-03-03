@@ -18,7 +18,7 @@ public class Constants {
 
 
     public static final String DATABASE_FIELD_TRIPID = "tripId";
-
+    public static final String DATABASE_FIELD_STATESINFO = "statesInfo";
     public static final String DATABASE_PATH_REVIEWS = "Reviews";
 
     public static final String[] MAP_IDS = new String[]{"US.MN", "US.MT",

@@ -19,6 +19,7 @@ import androidx.annotation.RequiresApi;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
@@ -32,10 +33,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,7 +70,7 @@ import java.util.List;
 
 import static com.google.firebase.storage.FirebaseStorage.getInstance;
 
-public class ProfileActivity extends AppCompatActivity implements AddTripFragment.AddTripFragmentHandler, MyAdapter.OnItemClickListner {
+public class ProfileActivity extends AppCompatActivity implements AddTripFragment.AddTripFragmentHandler, MyAdapter.OnItemClickListener {
 
     private final String TAG = "Profile Activity";
 
@@ -90,6 +93,7 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
     TextView mfirstname, mlastname, memail, mStateInfo, mPhoneNum, fab;
     TextView menuTextview;
     FloatingActionButton logoutBtn;
+    RelativeLayout mNoTripDisplay;
 
     ProgressDialog pd;
 
@@ -137,6 +141,7 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
         logoutBtn = findViewById(R.id.logoutBtn);
 
 
+        mNoTripDisplay = findViewById(R.id.no_trip_Display);
 
         pd = new ProgressDialog(ProfileActivity.this);
 
@@ -556,7 +561,7 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
 
     private void configureRecyclerView() {
         Log.d(TAG, "configure recycler view");
-        mAdapter = new MyAdapter(this, mTrips, v -> {
+        mAdapter = new MyAdapter(this, mTrips, true, v -> {
             int position = (int) v.getTag();
             Trip trip = mAdapter.getItem(position);
 
@@ -575,7 +580,7 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
 
         mRecyclerView.setAdapter(mAdapter);
 
-        mAdapter.setOnItemClickListner(ProfileActivity.this);
+        mAdapter.setOnItemClickListener(ProfileActivity.this);
 
 
         getTripIdsAndTrips();
@@ -648,8 +653,12 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
                                 mTrips.add(trip);
                             }
                             mAdapter.notifyDataSetChanged();
-                        } else {
-                            // If we implement delete trip in the future, update here.
+                            if (mNoTripDisplay.getVisibility() == View.VISIBLE) {
+                                mNoTripDisplay.setVisibility(View.INVISIBLE);
+                            }
+                            if (mRecyclerView.getVisibility() == View.GONE) {
+                                mRecyclerView.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
 
@@ -660,6 +669,8 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
             }
         } else {
             mAdapter.notifyDataSetChanged(); //still need to notify the adapter if the list is empty
+            mNoTripDisplay.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
         }
     }
 
@@ -670,16 +681,47 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
 
     @Override
     public void onPrivacyLongPress(int position) {
-
+        FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_TRIPS)
+                .child(mTripIds.get(position))
+                .child("is_public")
+                .setValue(!mTrips.get(position).isIs_public());
     }
 
     @Override
     public void onEditTripLongPress(int position) {
+        Log.d(TAG, "Edit trip!!!!!!");
+        Bundle args = new Bundle();
+        args.putString(ViewTripFragment.ARGUMENT_TRIPID, mTripIds.get(position));
+        AddTripFragment fragment = new AddTripFragment();
+        fragment.setArguments(args);
 
+        FragmentTransaction fragmentTransaction = this.getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment, "Edit_Trip");
+        fragmentTransaction.addToBackStack("Edit_Trip");
+        fragmentTransaction.commit();
     }
 
     @Override
     public void onRemoveTripLongPress(int position) {
+        Log.d(TAG, "Delete trip!!!!!!");
+        AddTripFragment.deleteTrip(mTrips.get(position).getImage(), mTripIds.get(position),mTrips.get(position).getState());
+    }
 
+    // The function called when the Add A Trip link is clicked
+    public void addATrip(View v) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().add(R.id.fragment_container, new AddTripFragment()).addToBackStack("Add a trip").commit();
+    }
+
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            // get which view was focused
+            View v = getCurrentFocus();
+
+            if (HideKeyboard.getInstance().isTouchOutsideView(v, ev)) {
+                HideKeyboard.getInstance().hideSoftInput(v.getWindowToken(), this);
+            }
+        }
+        return super.dispatchTouchEvent(ev);
     }
 }

@@ -3,6 +3,7 @@ package com.example.travelapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,6 +21,7 @@ import com.example.travelapp.R;
 import com.example.travelapp.configs.Constants;
 import com.example.travelapp.models.AllChatsData;
 import com.example.travelapp.models.Trip;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -64,6 +66,10 @@ public class OthersProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_others_profile);
 
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
+        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
+        bottomNavigationView.getMenu().findItem(R.id.nav_search).setChecked(true);
+
         firstNameView = findViewById(R.id.user_header_first_name);
         lastNameView = findViewById(R.id.user_header_last_name);
         emailView = findViewById(R.id.user_header_user_email);
@@ -103,7 +109,7 @@ public class OthersProfileActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerview_others);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        adapter = new MyAdapter(this, trips, new View.OnClickListener() {
+        adapter = new MyAdapter(this, trips, false, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = (int) v.getTag();
@@ -231,5 +237,36 @@ public class OthersProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+            switch (menuItem.getItemId()) {
+                case R.id.nav_home:
+                    Intent intent = new Intent(OthersProfileActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.nav_search:
+                    Intent intent2 = new Intent(OthersProfileActivity.this, SearchActivity.class);
+                    startActivity(intent2);
+                    break;
+                case R.id.nav_travel_history:
+                    Intent intent3 = new Intent(OthersProfileActivity.this, TravelHistoryActivity.class);
+                    startActivity(intent3);
+                    break;
+                case R.id.nav_AllChats:
+                    Intent intent4 = new Intent(OthersProfileActivity.this, AllChatsActivity.class);
+                    startActivity(intent4);
+                    break;
+                case R.id.nav_profile:
+                    Intent intent5 = new Intent(OthersProfileActivity.this, ProfileActivity.class);
+                    startActivity(intent5);
+                    break;
+
+            }
+            return false;
+        }
+    };
 
 }

@@ -28,19 +28,33 @@
             android:background="@color/colorPrimaryDark"
             app:srcCompat="@drawable/ic_search_navigation" />
 
+    <ScrollView android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_box"
+        android:layout_above="@id/bottom_nav">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false">
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_result_list"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_below="@id/search_box" />
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/trip_result_list"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_below="@+id/user_result_list" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/user_result_list"
+        android:nestedScrollingEnabled="false"/>
+  
+      </RelativeLayout>
 
+  </ScrollView>
+  
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"

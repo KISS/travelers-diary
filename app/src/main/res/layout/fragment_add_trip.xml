@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    android:paddingTop="5dp"
     tools:context=".activities.TravelHistoryActivity">
 
     <RelativeLayout
@@ -13,25 +12,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="?attr/homeAsUpIndicator" />
+
         <TextView
-            android:id="@+id/travel_history_title"
+            android:id="@+id/add_trip_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/toolbar"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="20dp"
             android:text="@string/add_a_trip"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryLight"
             android:textSize="25sp" />
 
-        <!--<ImageView-->
-            <!--android:id="@+id/line"-->
-            <!--android:layout_width="240dp"-->
-            <!--android:layout_height="5dp"-->
-            <!--android:layout_below="@+id/travel_history_title"-->
-            <!--android:layout_margin="15dp"-->
-            <!--android:background="@drawable/lineblue" />-->
+        <TextView
+            android:id="@+id/edit_trip_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/toolbar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/edit_trip"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryLight"
+            android:textSize="25sp"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
@@ -44,7 +56,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -91,18 +102,6 @@
                     android:textSize="9sp" />
 
             </RelativeLayout>
-
-            <Switch
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/input_switch"
-                android:layout_marginStart="10dp"
-                android:text="@string/set_trip_as_public"
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:checked="true"
-                android:theme="@style/Platform.MaterialComponents.Light"
-                android:padding="10dp" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -204,6 +203,19 @@
                 android:gravity="start"
                 android:padding="10dp" />
 
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/input_switch"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/set_trip_as_public"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                android:checked="true"
+                android:theme="@style/Platform.MaterialComponents.Light"
+                android:padding="10dp" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -223,45 +235,26 @@
                     android:background="@color/colorPrimaryLight" />
 
                 <Button
-                    android:id="@+id/save_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginBottom="25dp"
-                    android:text="@string/save_button"
-                    android:background="@color/colorPrimaryLight"
-                    android:visibility="invisible"/>
-
-                <Button
-                    android:id="@+id/cancel_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/save_button"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginBottom="25dp"
-                    android:layout_marginStart="15dp"
-                    android:text="@string/cancel_button"
-                    android:background="@color/colorPrimaryLight"
-                    android:visibility="invisible"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center">
-
-                <Button
                     android:id="@+id/remove_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="25dp"
                     android:layout_marginBottom="25dp"
                     android:text="@string/remove_button"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
                     android:background="@color/colorPrimaryLight"
-                    android:visibility="gone"/>
+                    android:visibility="invisible"/>
+
+                <Button
+                    android:id="@+id/save_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/remove_button"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="25dp"
+                    android:layout_marginStart="15dp"
+                    android:text="@string/save_button"
+                    android:background="@color/colorPrimaryLight"
+                    android:visibility="invisible"/>
 
             </RelativeLayout>
 

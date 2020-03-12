@@ -2,11 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimaryDark">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,6 +44,26 @@
                 android:padding="10dp"
                 android:textSize="18sp"
                 android:textColor="@color/colorPrimaryLight" />
+
+            <RelativeLayout
+                android:id="@+id/user_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/user_photo"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp" />
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/user_photo"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/location"
@@ -138,7 +166,21 @@
                 android:layout_marginTop="35dp"
                 android:layout_marginBottom="35dp"
                 android:text="@string/edit"
-                android:background="@color/colorPrimaryLight"/>
+                android:background="@color/colorPrimaryLight"
+                android:visibility="gone"
+                android:onClick="editTrip"/>
+
+            <Button
+                android:id="@+id/travel_feed_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="35dp"
+                android:layout_marginBottom="35dp"
+                android:text="@string/view_travel_feed"
+                android:background="@color/colorPrimaryLight"
+                android:visibility="gone"
+                android:onClick="viewTravelFeed"/>
 
         </LinearLayout>
 

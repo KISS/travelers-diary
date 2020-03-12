@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimaryDark"
     android:paddingTop="5dp"
     tools:context="com.example.travelapp.activities.OthersProfileActivity">
@@ -105,8 +106,15 @@
         android:id="@+id/fragment_container_others"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/user_header_layout"/>
-<!--        android:layout_above="@+id/bottom_nav"/>-->
+        android:layout_above="@+id/bottom_nav"/>
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:itemIconTint="@drawable/selector"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimaryDark"
+        app:menu="@menu/bottom_navigation" />
 
 </RelativeLayout>

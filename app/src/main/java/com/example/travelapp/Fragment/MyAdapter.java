@@ -24,14 +24,15 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Context mContext;
     List<Trip> mList;
-    int mSelectedPosition = -1;
-    public OnItemClickListner mListner;
-    View.OnClickListener mListenersingleClick;
+    boolean mLongPressEnabled;
+    public OnItemClickListener mListener;
+    View.OnClickListener mListenerSingleClick;
 
-    public MyAdapter(Context context, List<Trip> list, View.OnClickListener listener) {
+    public MyAdapter(Context context, List<Trip> list, boolean longPressEnabled, View.OnClickListener listener) {
         mContext = context;
         mList = list;
-        mListenersingleClick = listener;
+        mLongPressEnabled = longPressEnabled;
+        mListenerSingleClick = listener;
     }
 
     @NonNull
@@ -52,16 +53,12 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         holder.mState.setText(Constants.MAP_NAMES[trip.getState()]);
         holder.mDate.setText(trip.getDate());
         holder.itemView.setTag(position);
-        holder.itemView.setOnClickListener(mListenersingleClick);
+        holder.itemView.setOnClickListener(mListenerSingleClick);
     }
 
     @Override
     public int getItemCount() {
         return mList.size();
-    }
-
-    public String getSelectedPostId() {
-        return mSelectedPosition == -1 ? "" : mList.get(mSelectedPosition).getTrip_id();
     }
 
     public class MyAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener,
@@ -81,53 +78,54 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mState = itemView.findViewById(R.id.trip_state);
             mDate = itemView.findViewById(R.id.trip_date);
 
-            itemView.setOnClickListener(this);
-            itemView.setOnCreateContextMenuListener(this);
+            if (mLongPressEnabled) {
+                itemView.setOnClickListener(this);
+                itemView.setOnCreateContextMenuListener(this);
+            }
         }
 
         @Override
         public void onClick(View v) {
-            if (mListner != null) {
+            if (mListener != null) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    mListner.onItemClick(position);
+                    mListener.onItemClick(position);
                 }
             }
         }
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("select action");
-            MenuItem editprivacy = menu.add(Menu.NONE, 1, 1, "Privacy");
-            MenuItem edittrip = menu.add(Menu.NONE, 2, 2, "Edit Trip");
-            MenuItem editdelete = menu.add(Menu.NONE, 2, 2, "Remove Trip");
+            menu.setHeaderTitle(R.string.select_action);
+            Boolean status = mList.get((int)v.getTag()).isIs_public();
+            MenuItem editPrivacy = menu.add(Menu.NONE, 1, 1, status ? R.string.set_as_private : R.string.set_as_public);
+            MenuItem editTrip = menu.add(Menu.NONE, 2, 2, R.string.edit_trip);
+            MenuItem editDelete = menu.add(Menu.NONE, 3, 3, R.string.remove_trip);
 
-            editprivacy.setOnMenuItemClickListener(this);
-            edittrip.setOnMenuItemClickListener(this);
-            editdelete.setOnMenuItemClickListener(this);
+            editPrivacy.setOnMenuItemClickListener(this);
+            editTrip.setOnMenuItemClickListener(this);
+            editDelete.setOnMenuItemClickListener(this);
 
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
-            if (mListner != null) {
+            if (mListener != null) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     switch (item.getItemId()) {
                         case 1:
-                            mListner.onPrivacyLongPress(position);
+                            mListener.onPrivacyLongPress(position);
                             return true;
                         case 2:
-                            mListner.onEditTripLongPress(position);
+                            mListener.onEditTripLongPress(position);
                             return true;
                         case 3:
-                            mListner.onRemoveTripLongPress(position);
+                            mListener.onRemoveTripLongPress(position);
                             return true;
                     }
-//                    mListner.onItemClick(position);
                 }
             }
-
             return false;
         }
     }
@@ -136,15 +134,7 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return mList.get(position);
     }
 
-    public int getSelectedPosition() {
-        return mSelectedPosition;
-    }
-
-    public void setSelectedPosition(int position) {
-        mSelectedPosition = position;
-    }
-
-    public interface OnItemClickListner {
+    public interface OnItemClickListener {
         void onItemClick(int position);
 
         void onPrivacyLongPress(int position);
@@ -155,10 +145,8 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     }
 
-    public void setOnItemClickListner(OnItemClickListner listner) {
-        mListner = listner;
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
     }
 
 }
-
-

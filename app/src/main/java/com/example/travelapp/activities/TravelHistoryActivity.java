@@ -10,6 +10,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -71,19 +72,6 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
 
         fUser = FirebaseAuth.getInstance().getCurrentUser();
 
-
-//
-//        mAddTripButton = findViewById(R.id.add_trip_button);
-//        mAddTripButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                FragmentManager fragmentManager = getSupportFragmentManager();
-//                fragmentManager.beginTransaction().add(R.id.fragment_container, new AddTripFragment()).addToBackStack("Add a trip").commit();
-//            }
-//
-//
-//        });
-
         getAllItem();
     }
 
@@ -131,6 +119,12 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
 
     }
 
+    // The function called when the Add A Trip link is clicked
+    public void addATrip(View v) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().add(R.id.fragment_container, new AddTripFragment()).addToBackStack("Add a trip").commit();
+    }
+
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -148,10 +142,10 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
 //                    Intent intent3 = new Intent(TravelHistoryActivity.this, TravelHistoryActivity.class);
 //                    startActivity(intent3);
                     break;
-//                case R.id.nav_wishlist:
-//                    Intent intent4 = new Intent(TravelHistoryActivity.this, MainActivity.class);
-//                    startActivity(intent4);
-//                    break;
+                case R.id.nav_AllChats:
+                    Intent intent4 = new Intent(TravelHistoryActivity.this, AllChatsActivity.class);
+                    startActivity(intent4);
+                    break;
                 case R.id.nav_profile:
                     Intent intent5 = new Intent(TravelHistoryActivity.this, ProfileActivity.class);
                     startActivity(intent5);

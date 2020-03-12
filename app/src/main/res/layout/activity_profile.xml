@@ -131,21 +131,65 @@
 
     </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/rel2"
         android:layout_above="@+id/bottom_nav"
-        android:padding="5dp">
+        android:padding="8dp">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <TextView
+            android:id="@+id/travel_history_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/your_travel_stories"
+            android:textSize="22sp"
+            android:padding="5dp"/>
+
+        <RelativeLayout
+            android:id="@+id/no_trip_Display"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/travel_history_title"
+            android:visibility="invisible"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/no_trip_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_trip_hint"
+                android:textSize="18sp"
+                android:padding="5dp"/>
+
+            <TextView
+                android:id="@+id/add_a_trip_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/no_trip_hint"
+                android:text="@string/add_a_trip_lowercase"
+                android:textSize="18sp"
+                android:padding="5dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="addATrip"/>
+
+        </RelativeLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/travel_history_title"
+            android:padding="5dp" />
+
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rel1"
         android:layout_above="@+id/bottom_nav"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -155,8 +199,6 @@
         app:itemIconTint="@drawable/selector"
         android:layout_alignParentBottom="true"
         android:background="@color/colorPrimaryDark"
-        app:menu="@menu/bottom_navigation">
-
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
+        app:menu="@menu/bottom_navigation" />
 
 </RelativeLayout>

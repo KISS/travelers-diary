@@ -1,6 +1,7 @@
 package com.example.travelapp.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 //import android.support.annotation.NonNull;
@@ -13,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,8 +24,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.travelapp.R;
+import com.example.travelapp.activities.ChatActivity;
+import com.example.travelapp.activities.OthersProfileActivity;
+import com.example.travelapp.activities.TravelHistoryActivity;
 import com.example.travelapp.configs.Constants;
 import com.example.travelapp.models.Trip;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,15 +40,17 @@ import com.squareup.picasso.Picasso;
 
 public class ViewTripFragment extends Fragment {
 
-    ImageView mImage;
-    TextView mTitle;
-    TextView mCity;
-    TextView mState;
-    TextView mDate;
-    TextView mDays;
-    TextView mDescription;
-    Button mEdit;
-    DatabaseReference mDatabaseReference;
+    private Toolbar mToolbar;
+    private ImageView mImage;
+    private TextView mTitle;
+    private TextView mCity;
+    private TextView mState;
+    private TextView mDate;
+    private TextView mDays;
+    private TextView mDescription;
+    private Button mEdit, mTravelFeedButton;
+    private RelativeLayout mUserInfo;
+    private DatabaseReference mDatabaseReference;
 
     private String mTripId;
     private Trip mTrip;
@@ -61,6 +70,7 @@ public class ViewTripFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_trip_details, container, false);
+        mToolbar = view.findViewById(R.id.toolbar);
         mImage = view.findViewById(R.id.trip_image);
         mTitle = view.findViewById(R.id.trip_title);
         mCity = view.findViewById(R.id.trip_city);
@@ -69,6 +79,8 @@ public class ViewTripFragment extends Fragment {
         mDays = view.findViewById(R.id.trip_number_of_days);
         mDescription = view.findViewById(R.id.trip_description);
         mEdit = view.findViewById(R.id.edit_trip_button);
+        mTravelFeedButton = view.findViewById(R.id.travel_feed_button);
+        mUserInfo = view.findViewById(R.id.user_info);
         getTripInfo();
         addButtonClickListener();
         return view;
@@ -107,6 +119,14 @@ public class ViewTripFragment extends Fragment {
                         } else {
                             mDescription.setVisibility(View.GONE);
                         }
+                        // Different displays for my trip and other users' trip
+                        if (mTrip.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                            mEdit.setVisibility(View.VISIBLE);
+                        } else {
+                            mUserInfo.setVisibility(View.VISIBLE);
+                            // ADD USER INFO LATER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                            mTravelFeedButton.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }
@@ -119,6 +139,13 @@ public class ViewTripFragment extends Fragment {
     }
 
     private void addButtonClickListener() {
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().onBackPressed();
+            }
+        });
+
         mEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,6 +158,14 @@ public class ViewTripFragment extends Fragment {
                 fragmentTransaction.replace(R.id.fragment_container, fragment, "Edit_Trip");
                 fragmentTransaction.addToBackStack("Edit_Trip");
                 fragmentTransaction.commit();
+            }
+        });
+
+        mTravelFeedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), TravelHistoryActivity.class);
+                startActivity(intent);
             }
         });
     }

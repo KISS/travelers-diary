@@ -47,7 +47,9 @@
             android:padding="5dp"
             android:textSize="16sp"
             android:layout_below="@id/trip_title"
-            android:layout_toEndOf="@id/trip_city" />
+            android:layout_toEndOf="@id/trip_city"
+            android:maxLines="1"
+            android:ellipsize="end"/>
 
         <TextView
             android:id="@+id/trip_date"

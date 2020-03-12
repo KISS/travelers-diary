@@ -73,6 +73,16 @@
     <string name="travelers_diary">Traveler\'s Diary</string>
     <string name="text_email_address">Email Address:</string>
     <string name="text_password">Password:</string>
+    <string name="edit_trip">Edit Trip</string>
+    <string name="remove_trip">Remove Trip</string>
+    <string name="your_travel_stories">Your Travel Stories</string>
+    <string name="no_trip_hint">You haven\'t added any trips yet,</string>
+    <string name="add_a_trip_lowercase"><u>add a trip</u></string>
+    <string name="view_travel_feed">View Travel Feed</string>
+    <string name="no_trip_in_state_hint">There is no trip in the selected state.</string>
+    <string name="select_action">Select Action</string>
+    <string name="set_as_public">Set as Public</string>
+    <string name="set_as_private">Set as Private</string>
     <string-array name="state">
         <item>State</item>
         <item>Minnesota</item>

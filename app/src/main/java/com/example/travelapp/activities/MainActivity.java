@@ -11,17 +11,22 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
+import com.anychart.chart.common.listener.Event;
+import com.anychart.chart.common.listener.ListenersInterface;
 import com.anychart.charts.Map;
 import com.anychart.core.map.series.Choropleth;
 import com.anychart.enums.HAlign;
 import com.anychart.enums.SelectionMode;
 import com.anychart.scales.LinearColor;
 import com.example.travelapp.Fragment.AddTripFragment;
+import com.example.travelapp.Fragment.StateTripFragment;
+import com.example.travelapp.Fragment.ViewTripFragment;
 import com.example.travelapp.R;
 import com.example.travelapp.configs.Constants;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -37,7 +42,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements AddTripFragment.AddTripFragmentHandler {
+public class MainActivity extends AppCompatActivity implements AddTripFragment.AddTripFragmentHandler, StateTripFragment.TripItemClickHandler {
 
     private RecyclerView recyclerView;
     private AnyChartView anyChartView;
@@ -188,6 +193,31 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
         map.credits().enabled(false);
         anyChartView.setLicenceKey("nilesh78890@gmail.com-885f8f7b-ef1cea3b");
 
+        map.setOnClickListener(new ListenersInterface.OnClickListener(new String[]{"id", "name", "value"}) {
+            @Override
+            public void onClick(Event event) {
+//                event.getData().get("id");
+//                event.getData().get("name");
+//                event.getData().get("value");
+
+                // Change to HashMap Later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                for (int index = 0; index < 52; index++) {
+                    if (Constants.MAP_IDS[index].equals(event.getData().get("id"))) {
+                        // Only show dialog if state is visited
+                        if (getMapColor(index) == 1) {
+                            // Create and show the dialog.
+                            Bundle args = new Bundle();
+                            args.putInt(StateTripFragment.ARGUMENT_STATE, index);
+                            StateTripFragment fragment = new StateTripFragment();
+                            fragment.setArguments(args);
+                            fragment.show(getSupportFragmentManager(), "Trips in state");
+                        }
+                        break;
+                    }
+                }
+            }
+        });
+
         anyChartView.addScript("file:///android_asset/united_states_of_america.js");
         anyChartView.addScript("file:///android_asset/proj4.js");
         anyChartView.setChart(map);
@@ -254,6 +284,18 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
         return super.dispatchTouchEvent(ev);
     }
 
+    // Called when any trip in a StateTripFragment is clicked
+    @Override
+    public void onTripClicked(String id) {
+        Bundle args = new Bundle();
+        args.putString(ViewTripFragment.ARGUMENT_TRIPID, id);
+        ViewTripFragment fragment = new ViewTripFragment();
+        fragment.setArguments(args);
 
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment, "Trip_Info");
+        fragmentTransaction.addToBackStack("Trip_Info");
+        fragmentTransaction.commit();
+    }
 }
 

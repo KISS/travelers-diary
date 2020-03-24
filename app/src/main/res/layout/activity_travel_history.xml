@@ -4,39 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
-    android:paddingTop="5dp"
+    android:background="@color/monochrome_white"
     tools:context=".activities.TravelHistoryActivity">
 
     <RelativeLayout
-        android:id="@+id/rel1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/travel_history_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:text="@string/travel_feed"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimaryLight"
-            android:textSize="25sp" />
-
-        <!--<ImageView-->
-            <!--android:id="@+id/line"-->
-            <!--android:layout_width="240dp"-->
-            <!--android:layout_height="5dp"-->
-            <!--android:layout_below="@+id/travel_history_title"-->
-            <!--android:layout_margin="15dp"-->
-            <!--android:background="@drawable/lineblue" />-->
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_below="@+id/rel1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottom_nav">
@@ -48,7 +19,8 @@
             android:layout_alignParentEnd="true"
             android:text="@string/add_a_trip"
             android:textSize="18sp"
-            android:padding="5dp"
+            android:textColor="@color/monochrome_gray"
+            android:padding="15dp"
             android:onClick="addATrip" />
 
         <androidx.recyclerview.widget.RecyclerView

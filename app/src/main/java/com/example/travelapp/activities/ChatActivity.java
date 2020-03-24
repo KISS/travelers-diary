@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +40,7 @@ import java.util.Locale;
 
 public class ChatActivity extends AppCompatActivity {
 
+    Toolbar mToolbar;
     RecyclerView recyclerView;
     ImageView userLogo;
     TextView userChatName, userStatusTv;
@@ -65,6 +67,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        mToolbar = findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.chat_recyclerView);
         userLogo = findViewById(R.id.userLogo);
         messegeEditText = findViewById(R.id.chatEditText);
@@ -101,6 +104,8 @@ public class ChatActivity extends AppCompatActivity {
         readMessages();
 
         seenMessage();
+
+        configureToolbar();
     }
 
     private void getUserDetails() {
@@ -278,7 +283,14 @@ public class ChatActivity extends AppCompatActivity {
         super.onResume();
     }
 
-
+    private void configureToolbar() {
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+    }
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {

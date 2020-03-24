@@ -29,6 +29,7 @@ import com.example.travelapp.activities.OthersProfileActivity;
 import com.example.travelapp.activities.TravelHistoryActivity;
 import com.example.travelapp.configs.Constants;
 import com.example.travelapp.models.Trip;
+import com.example.travelapp.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,13 +44,14 @@ public class ViewTripFragment extends Fragment {
     private Toolbar mToolbar;
     private ImageView mImage;
     private TextView mTitle;
-    private TextView mCity;
-    private TextView mState;
+    private TextView mLocation;
     private TextView mDate;
     private TextView mDays;
     private TextView mDescription;
     private Button mEdit, mTravelFeedButton;
     private RelativeLayout mUserInfo;
+    private ImageView mUserPhoto;
+    private TextView mUserName;
     private DatabaseReference mDatabaseReference;
 
     private String mTripId;
@@ -62,7 +64,7 @@ public class ViewTripFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTripId = (String) getArguments().get(ARGUMENT_TRIPID);
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference(Constants.DATABASE_PATH_TRIPS);
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
     @Nullable
@@ -73,14 +75,15 @@ public class ViewTripFragment extends Fragment {
         mToolbar = view.findViewById(R.id.toolbar);
         mImage = view.findViewById(R.id.trip_image);
         mTitle = view.findViewById(R.id.trip_title);
-        mCity = view.findViewById(R.id.trip_city);
-        mState = view.findViewById(R.id.trip_state);
+        mLocation = view.findViewById(R.id.trip_location);
         mDate = view.findViewById(R.id.trip_date);
         mDays = view.findViewById(R.id.trip_number_of_days);
         mDescription = view.findViewById(R.id.trip_description);
         mEdit = view.findViewById(R.id.edit_trip_button);
         mTravelFeedButton = view.findViewById(R.id.travel_feed_button);
         mUserInfo = view.findViewById(R.id.user_info);
+        mUserPhoto = view.findViewById(R.id.user_photo);
+        mUserName = view.findViewById(R.id.user_name);
         getTripInfo();
         addButtonClickListener();
         return view;
@@ -92,7 +95,7 @@ public class ViewTripFragment extends Fragment {
     }
 
     private void getTripInfo() {
-        Query query = mDatabaseReference.orderByKey().equalTo(mTripId);
+        Query query = mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS).orderByKey().equalTo(mTripId);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -106,8 +109,8 @@ public class ViewTripFragment extends Fragment {
                         } else {
                             mTitle.setVisibility(View.GONE);
                         }
-                        mCity.setText(mTrip.getCity());
-                        mState.setText(Constants.MAP_NAMES[mTrip.getState()]);
+                        String location = mTrip.getCity().isEmpty() ? Constants.MAP_NAMES[mTrip.getState()] : mTrip.getCity() + ", " + Constants.MAP_NAMES[mTrip.getState()];
+                        mLocation.setText(location);
                         if (mTrip.getDate().length() > 0) {
                             mDate.setText(mTrip.getDate());
                         } else {
@@ -123,10 +126,32 @@ public class ViewTripFragment extends Fragment {
                         if (mTrip.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             mEdit.setVisibility(View.VISIBLE);
                         } else {
+                            getUserInfo(mTrip.getUser_id());
                             mUserInfo.setVisibility(View.VISIBLE);
-                            // ADD USER INFO LATER !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                             mTravelFeedButton.setVisibility(View.VISIBLE);
                         }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getUserInfo(String userId) {
+        Query query = mDatabaseReference.child(Constants.DATABASE_PATH_USERS).orderByKey().equalTo(userId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChildren()){
+                    DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
+                    if (singleSnapshot != null) {
+                        User user = singleSnapshot.getValue(User.class);
+                        Picasso.get().load(user.getProfilePictureUrl()).into(mUserPhoto);
+                        mUserName.setText(user.getFirstName() + " " + user.getLastName());
                     }
                 }
             }

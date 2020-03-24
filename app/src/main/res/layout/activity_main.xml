@@ -11,19 +11,46 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/bottom_nav">
 
+        <TextView
+            android:id="@+id/title_map"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:text="@string/title_your_travel_map"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@color/main_colors_green"/>
+
+        <TextView
+            android:id="@+id/title_usa"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_below="@id/title_map"
+            android:gravity="center"
+            android:text="@string/title_usa"
+            android:textSize="18sp"
+            android:textColor="@color/monochrome_gray" />
+
         <com.anychart.AnyChartView
             android:id="@+id/any_chart_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_below="@id/title_usa"
+            android:layout_above="@id/add_trip_button"/>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <ImageView
             android:id="@+id/add_trip_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="40dp"
+            android:padding="15dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_margin="30dp"
-            android:src="@drawable/ic_add_black_24dp" />
+            android:src="@drawable/ic_control_point_black_24dp"
+            android:background="@drawable/button_bg_round_corner_green"
+            android:onClick="addATrip"/>
 
     </RelativeLayout>
 

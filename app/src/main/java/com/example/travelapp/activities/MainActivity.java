@@ -11,17 +11,22 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
+import com.anychart.chart.common.listener.Event;
+import com.anychart.chart.common.listener.ListenersInterface;
 import com.anychart.charts.Map;
 import com.anychart.core.map.series.Choropleth;
 import com.anychart.enums.HAlign;
 import com.anychart.enums.SelectionMode;
 import com.anychart.scales.LinearColor;
 import com.example.travelapp.Fragment.AddTripFragment;
+import com.example.travelapp.Fragment.StateTripFragment;
+import com.example.travelapp.Fragment.ViewTripFragment;
 import com.example.travelapp.R;
 import com.example.travelapp.configs.Constants;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -37,12 +42,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements AddTripFragment.AddTripFragmentHandler {
+public class MainActivity extends AppCompatActivity implements AddTripFragment.AddTripFragmentHandler, StateTripFragment.TripItemClickHandler {
 
-    private RecyclerView recyclerView;
+//    private RecyclerView recyclerView;
     private AnyChartView anyChartView;
-    private FloatingActionButton mAddTripButton;
-
 
     public List<DataEntry> data;
     DatabaseReference mDatabaseReference;
@@ -57,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
         setContentView(R.layout.activity_main);
 
         anyChartView = findViewById(R.id.any_chart_view);
-        mAddTripButton = findViewById(R.id.add_trip_button);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
@@ -70,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_USERS);
         mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         getStatesInfoAndConfigureMap();
-        addClickListener();
     }
 
     private void getStatesInfoAndConfigureMap() {
@@ -135,19 +136,19 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
         Map map = AnyChart.map();
 
 
-        map.padding(50,0,0,0);
-        map.background("#2d2d2d");
+//        map.padding(50,0,0,0);
+//        map.background("#2d2d2d");
 
-        map.title()
-                .enabled(true)
-                .useHtml(true)
-                .hAlign(String.valueOf(HAlign.CENTER))
-                .fontFamily("Verdana, Helvetica, Arial, sans-serif")
-                .padding(35, 0, 10, 0)
-                .text("<span style=\"color:#00F3F6; font-size: 25 px\"> Travel Map" +
-////                        "Love Wine The Most.</span> <br>" +
-//                        "<br><span style=\"color:#545f69; font-size: 14px\"> United States of America" +
-                        "</span>");
+//        map.title()
+//                .enabled(true)
+//                .useHtml(true)
+//                .hAlign(String.valueOf(HAlign.CENTER))
+//                .fontFamily("Verdana, Helvetica, Arial, sans-serif")
+//                .padding(35, 0, 10, 0)
+//                .text("<span style=\"color:#00F3F6; font-size: 25 px\"> Travel Map" +
+//////                        "Love Wine The Most.</span> <br>" +
+////                        "<br><span style=\"color:#545f69; font-size: 14px\"> United States of America" +
+//                        "</span>");
 //
 //        map.credits()
 //                .enabled(true)
@@ -165,14 +166,14 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
 
         Choropleth series = map.choropleth(getData());
         LinearColor linearColor = LinearColor.instantiate();
-        linearColor.colors(new String[]{ "#e5e5e5", "#00F3F6"});
+        linearColor.colors(new String[]{ "#868E96", "#00818A"});
         series.colorScale(linearColor);
         series.hovered()
                 .fill("#2E6171")
                 .stroke("#2E6171");
         series.selected()
-                .fill("#2E6171")
-                .stroke("#2E6171");
+                .fill("#00F3F6")
+                .stroke("#00F3F6");
         series.labels(true).enabled(true);
         series.labels().fontSize(10);
         series.labels().fontColor("ffffff");
@@ -188,20 +189,35 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
         map.credits().enabled(false);
         anyChartView.setLicenceKey("nilesh78890@gmail.com-885f8f7b-ef1cea3b");
 
+        map.setOnClickListener(new ListenersInterface.OnClickListener(new String[]{"id", "name", "value"}) {
+            @Override
+            public void onClick(Event event) {
+//                event.getData().get("id");
+//                event.getData().get("name");
+//                event.getData().get("value");
+
+                // Change to HashMap Later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                for (int index = 0; index < 52; index++) {
+                    if (Constants.MAP_IDS[index].equals(event.getData().get("id"))) {
+                        // Only show dialog if state is visited
+                        if (getMapColor(index) == 1) {
+                            // Create and show the dialog.
+                            Bundle args = new Bundle();
+                            args.putInt(StateTripFragment.ARGUMENT_STATE, index);
+                            StateTripFragment fragment = new StateTripFragment();
+                            fragment.setArguments(args);
+                            fragment.show(getSupportFragmentManager(), "Trips in state");
+                        }
+                        break;
+                    }
+                }
+            }
+        });
+
         anyChartView.addScript("file:///android_asset/united_states_of_america.js");
         anyChartView.addScript("file:///android_asset/proj4.js");
         anyChartView.setChart(map);
 
-    }
-
-    private void addClickListener() {
-        mAddTripButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().add(R.id.fragment_container, new AddTripFragment()).addToBackStack("Add a trip").commit();
-            }
-        });
     }
 
     @Override
@@ -254,6 +270,24 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
         return super.dispatchTouchEvent(ev);
     }
 
+    // Called when any trip in a StateTripFragment is clicked
+    @Override
+    public void onTripClicked(String id) {
+        Bundle args = new Bundle();
+        args.putString(ViewTripFragment.ARGUMENT_TRIPID, id);
+        ViewTripFragment fragment = new ViewTripFragment();
+        fragment.setArguments(args);
 
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment, "Trip_Info");
+        fragmentTransaction.addToBackStack("Trip_Info");
+        fragmentTransaction.commit();
+    }
+
+    // The function called when the Add A Trip link is clicked
+    public void addATrip(View v) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().add(R.id.fragment_container, new AddTripFragment()).addToBackStack("Add a trip").commit();
+    }
 }
 

@@ -4,35 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2d2d2d"
     android:orientation="vertical"
-    android:paddingTop="5dp"
     tools:context=".activities.ProfileActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        android:background="@color/monochrome_gray_light" />
 
     <RelativeLayout
         android:id="@+id/rel1"
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:background="#2d2d2d"
+        android:layout_below="@id/toolbar"
         android:padding="8dp">
 
-
-        <ImageView
-            android:id="@+id/userLogo"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/myCardView"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_below="@+id/logo"
             android:layout_margin="10dp"
-            app:srcCompat="@drawable/ic_add_black_24dp" />
+            app:cardCornerRadius="30dp">
+
+            <ImageView
+                android:id="@+id/userLogo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_person"
+                android:background="@color/monochrome_gray" />
+
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/userChatName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:layout_toRightOf="@+id/userLogo"
+            android:layout_toEndOf="@+id/myCardView"
             android:text="name"
-            android:textColor="@color/colorPrimaryLight"
+            android:textColor="@color/monochrome_black"
             android:textSize="20sp" />
 
         <TextView
@@ -42,9 +55,9 @@
             android:layout_below="@+id/userChatName"
             android:layout_centerInParent="true"
             android:layout_marginStart="10dp"
-            android:layout_toRightOf="@+id/userLogo"
+            android:layout_toRightOf="@+id/myCardView"
             android:text="Online"
-            android:textColor="@color/colorPrimaryLight"
+            android:textColor="@color/monochrome_black"
             android:textSize="12sp" />
 
 
@@ -61,28 +74,38 @@
             android:id="@+id/chat_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/chatEditText"
+            android:layout_above="@+id/deco_line"
             android:layout_marginTop="10dp">
 
         </androidx.recyclerview.widget.RecyclerView>
+
+        <View
+            android:id="@+id/deco_line"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_above="@id/chatEditText"
+            android:background="@color/main_colors_green" />
 
         <EditText
             android:id="@+id/chatEditText"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_above="@+id/bottom_nav"
-            android:background="#3d3d3d"
+            android:layout_margin="10dp"
             android:padding="10dp"
-            android:textColor="@color/white" />
+            android:hint="@string/hint_message"
+            android:textSize="18sp"
+            android:textColor="@color/monochrome_black"
+            android:background="@null"/>
 
         <ImageButton
             android:id="@+id/sentMessage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_above="@+id/bottom_nav"
             android:layout_alignRight="@+id/chatEditText"
             android:background="@null"
-            app:srcCompat="@drawable/ic_person" />
+            app:srcCompat="@drawable/ic_send_black_24dp" />
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView

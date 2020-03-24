@@ -90,9 +90,10 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
 
 
     ImageView photo;
-    TextView mfirstname, mlastname, memail, mStateInfo, mPhoneNum, fab;
+//    TextView mfirstname, mlastname, memail, mStateInfo, mPhoneNum, fab;
+    TextView mUserName, mLogout, fab;
     TextView menuTextview;
-    FloatingActionButton logoutBtn;
+//    FloatingActionButton logoutBtn;
     RelativeLayout mNoTripDisplay;
 
     ProgressDialog pd;
@@ -131,14 +132,15 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
         storagePermission = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         photo = findViewById(R.id.userAddPhoto);
-        mfirstname = findViewById(R.id.userAddFirstName);
-        mlastname = findViewById(R.id.userAddLastName);
-        memail = findViewById(R.id.ShowEmail);
-        mStateInfo = findViewById(R.id.userAddStateInfo);
-        mPhoneNum = findViewById(R.id.userAddPhoneNum);
+        mUserName = findViewById(R.id.user_name);
+//        mfirstname = findViewById(R.id.userAddFirstName);
+//        mlastname = findViewById(R.id.userAddLastName);
+//        memail = findViewById(R.id.ShowEmail);
+//        mStateInfo = findViewById(R.id.userAddStateInfo);
+//        mPhoneNum = findViewById(R.id.userAddPhoneNum);
 
         fab = findViewById(R.id.fbtn);
-        logoutBtn = findViewById(R.id.logoutBtn);
+        mLogout = findViewById(R.id.logout);
 
 
         mNoTripDisplay = findViewById(R.id.no_trip_Display);
@@ -160,10 +162,6 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
             public void onClick(View v) {
                 showEditProfilePopup();
             }
-        });
-
-        logoutBtn.setOnClickListener(v -> {
-            logoutUser();
         });
 
         mTripIds = new ArrayList<>();
@@ -209,11 +207,12 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
                     String stateinfo = "State Info: " + ds.child("stateInfo").getValue();
                     String phonenum = "Phone Num: " + ds.child("phoneNum").getValue();
 
-                    mfirstname.setText(firstname);
-                    mlastname.setText(lastname);
-                    memail.setText(email);
-                    mStateInfo.setText(stateinfo);
-                    mPhoneNum.setText(phonenum);
+                    mUserName.setText(firstname + " " + lastname);
+//                    mfirstname.setText(firstname);
+//                    mlastname.setText(lastname);
+//                    memail.setText(email);
+//                    mStateInfo.setText(stateinfo);
+//                    mPhoneNum.setText(phonenum);
 
                     if (!image.isEmpty()) {
                         Picasso.get().load(image).into(photo);
@@ -711,6 +710,11 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
     public void addATrip(View v) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().add(R.id.fragment_container, new AddTripFragment()).addToBackStack("Add a trip").commit();
+    }
+
+    // The function called when the Logout link is clicked
+    public void logout(View v) {
+        logoutUser();
     }
 
     public boolean dispatchTouchEvent(MotionEvent ev) {

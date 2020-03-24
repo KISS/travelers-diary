@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/monochrome_white">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:navigationIcon="?attr/homeAsUpIndicator" />
+        android:layout_height="40dp"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        android:background="@color/monochrome_gray_light" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -25,9 +26,6 @@
                 android:id="@+id/trip_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="15dp"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter" />
 
@@ -35,114 +33,116 @@
                 android:id="@+id/trip_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="30dp"
+                android:layout_margin="20dp"
                 android:background="@null"
-                android:gravity="start"
+                android:gravity="center_horizontal"
                 android:hint="@string/hint_title"
                 android:maxLines="2"
-                android:padding="10dp"
                 android:textSize="18sp"
-                android:textColor="@color/colorPrimaryLight" />
+                android:textColor="@color/monochrome_black"
+                android:textStyle="bold" />
 
             <RelativeLayout
                 android:id="@+id/user_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:padding="10dp">
 
-                <ImageView
-                    android:id="@+id/user_photo"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/myCardView"
                     android:layout_width="60dp"
-                    android:layout_height="60dp" />
+                    android:layout_height="60dp"
+                    android:layout_margin="10dp"
+                    app:cardCornerRadius="30dp">
+
+                    <ImageView
+                        android:id="@+id/user_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:background="@color/monochrome_gray"/>
+
+                </androidx.cardview.widget.CardView>
 
                 <TextView
                     android:id="@+id/user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/user_photo"
-                    android:textSize="18sp" />
+                    android:layout_toEndOf="@id/myCardView"
+                    android:textSize="18sp"
+                    android:textColor="@color/monochrome_gray_dark"
+                    android:layout_marginStart="10dp"
+                    android:layout_centerVertical="true"/>
 
             </RelativeLayout>
 
-            <LinearLayout
-                android:id="@+id/location"
+            <TextView
+                android:id="@+id/trip_location"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:maxLines="2"
+                android:textSize="18sp"
+                android:textColor="@color/monochrome_black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp">
 
                 <TextView
-                    android:id="@+id/trip_city"
-                    android:layout_width="0dp"
+                    android:id="@+id/text_trip_date"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:maxLines="2"
-                    android:padding="10dp"
-                    android:textColor="@color/colorPrimary" />
+                    android:text="@string/trip_date"
+                    android:textSize="18sp"
+                    android:textColor="@color/monochrome_black" />
 
                 <TextView
-                    android:id="@+id/trip_state"
-                    android:layout_width="0dp"
+                    android:id="@+id/trip_date"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="1"
-
-                    android:background="@null"
-                    android:padding="10dp"
-                    android:textColor="@color/colorPrimary" />
+                    android:layout_marginStart="5dp"
+                    android:hint="@string/hint_no_date"
+                    android:textSize="18sp"
+                    android:textColor="@color/monochrome_black" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/dates"
                 android:layout_width="match_parent"
-                android:layout_height="60dp">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp">
 
                 <TextView
-                    android:id="@+id/trip_date"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="1"
-                    android:background="@null"
+                    android:text="@string/text_trip_length"
+                    android:textSize="18sp"
+                    android:textColor="@color/monochrome_black" />
 
-                    android:hint="@string/hint_date"
-                    android:maxLines="2"
-                    android:padding="10dp"
-                    android:textColor="@color/colorPrimary" />
-
-                <RelativeLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/trip_number_of_days"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_marginStart="5dp"
+                    android:textSize="18sp"
+                    android:textColor="@color/monochrome_black" />
 
-                    <TextView
-                        android:id="@+id/trip_number_of_days"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        android:layout_marginStart="10dp"
-                        android:background="@null"
-                        android:maxLines="1"
-                        android:padding="10dp"
-                        android:textColor="@color/colorPrimary" />
-
-                    <TextView
-                        android:id="@+id/text_days"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_toEndOf="@id/trip_number_of_days"
-                        android:background="@null"
-                        android:padding="10dp"
-
-                        android:text="@string/text_days"
-                        android:textColor="@color/colorPrimary" />
-
-                </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/text_days"
+                    android:textSize="18sp"
+                    android:textColor="@color/monochrome_black" />
 
             </LinearLayout>
 
@@ -150,35 +150,38 @@
                 android:id="@+id/trip_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:background="@null"
-
-                android:gravity="start"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
                 android:hint="@string/hint_description"
-                android:padding="10dp"
-                android:textColor="@color/colorPrimary" />
+                android:textSize="18sp"
+                android:textColor="@color/monochrome_black" />
 
             <Button
                 android:id="@+id/edit_trip_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="35dp"
-                android:layout_marginBottom="35dp"
-                android:text="@string/edit"
-                android:background="@color/colorPrimaryLight"
-                android:visibility="gone"
+                android:layout_margin="20dp"
+                android:paddingStart="50dp"
+                android:paddingEnd="50dp"
+                android:text="@string/edit_trip"
+                android:textColor="@color/monochrome_white"
+                android:textStyle="bold"
+                android:background="@drawable/button_bg_round_corner_blue"
+                android:visibility="visible"
                 android:onClick="editTrip"/>
 
             <Button
                 android:id="@+id/travel_feed_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="35dp"
-                android:layout_marginBottom="35dp"
+                android:layout_margin="20dp"
+                android:paddingStart="50dp"
+                android:paddingEnd="50dp"
                 android:text="@string/view_travel_feed"
-                android:background="@color/colorPrimaryLight"
+                android:textColor="@color/monochrome_white"
+                android:textStyle="bold"
+                android:background="@drawable/button_bg_round_corner_green"
                 android:visibility="gone"
                 android:onClick="viewTravelFeed"/>
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/monochrome_white"
     tools:context=".activities.TravelHistoryActivity">
 
     <RelativeLayout
@@ -15,8 +15,9 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="?attr/homeAsUpIndicator" />
+            android:layout_height="40dp"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            android:background="@color/monochrome_gray_light" />
 
         <TextView
             android:id="@+id/add_trip_title"
@@ -24,11 +25,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:text="@string/add_a_trip"
+            android:layout_margin="10dp"
+            android:text="@string/add_a_trip_title"
             android:textAlignment="center"
-            android:textColor="@color/colorPrimaryLight"
+            android:textColor="@color/main_colors_green"
+            android:textStyle="bold"
             android:textSize="25sp" />
 
         <TextView
@@ -37,13 +38,13 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/toolbar"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
+            android:layout_margin="10dp"
             android:text="@string/edit_trip"
             android:textAlignment="center"
-            android:textColor="@color/colorPrimaryLight"
+            android:textColor="@color/main_colors_green"
+            android:textStyle="bold"
             android:textSize="25sp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </RelativeLayout>
 
@@ -82,7 +83,7 @@
                     android:layout_marginEnd="15dp"
                     android:layout_toEndOf="@+id/post_image"
                     android:textAlignment="viewStart"
-                    android:textColor="@color/white"
+                    android:textColor="@color/monochrome_black"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
@@ -98,163 +99,278 @@
                     android:layout_toEndOf="@+id/post_image"
                     android:layout_weight="1"
                     android:textAlignment="viewStart"
-                    android:textColor="@color/white"
+                    android:textColor="@color/monochrome_black"
                     android:textSize="9sp" />
 
             </RelativeLayout>
 
-            <EditText
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:id="@+id/input_title"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:text="@string/hint_title"
+                android:textSize="18sp"
+                android:textColor="@color/monochrome_gray" />
+
+            <EditText
+                android:id="@+id/input_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:padding="10dp"
                 android:maxLines="2"
-                android:textColor="@color/colorPrimary"
-                android:background="@drawable/edittextline"
-                android:textColorHint="@color/colorPrimary"
-                android:hint="@string/hint_title"
-                android:gravity="start"
-                android:padding="10dp" />
+                android:textColor="@color/monochrome_black"
+                android:background="@drawable/edittext_box" />
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
                 android:id="@+id/location"
-                android:layout_marginTop="10dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <EditText
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:id="@+id/input_city"
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/edittextline"
-                    android:textColorHint="@color/colorPrimary"
-                    android:textColor="@color/colorPrimary"
-                    android:maxLines="2"
-                    android:hint="@string/hint_city_town"
-                    android:padding="10dp" />
-
-                <Spinner
-                    android:id="@+id/input_state"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
                     android:layout_weight="1"
-                    android:background="@color/colorPrimary"
-                    android:entries="@array/state"
-                    android:padding="10dp"
-                    android:popupBackground="#ffffff"
-                    android:textColor="@color/white" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/hint_city_or_town"
+                        android:textSize="18sp"
+                        android:textColor="@color/monochrome_gray" />
+
+                    <EditText
+                        android:id="@+id/input_city"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:padding="10dp"
+                        android:textColor="@color/monochrome_black"
+                        android:background="@drawable/edittext_box" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/hint_state"
+                        android:textSize="18sp"
+                        android:textColor="@color/monochrome_gray" />
+
+                    <Spinner
+                        android:id="@+id/input_state"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:padding="10dp"
+                        android:entries="@array/state"
+                        android:popupBackground="@color/monochrome_white"
+                        android:textColor="@color/monochrome_black"
+                        android:background="@drawable/edittext_box" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
                 android:id="@+id/dates"
-                android:layout_marginTop="10dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <EditText
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/input_date"
-                    android:layout_marginStart="10dp"
-                    android:clickable="true"
-                    android:textColorHint="@color/colorPrimary"
-                    android:textColor="@color/colorPrimary"
-                    android:focusable="false"
-                    android:inputType="date"
-                    android:background="@drawable/edittextline"
-                    android:maxLines="2"
-                    android:hint="@string/hint_date"
-                    android:padding="10dp" />
+                    android:orientation="vertical">
 
-                <EditText
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/hint_start_date"
+                        android:textSize="18sp"
+                        android:textColor="@color/monochrome_gray" />
+
+                    <EditText
+                        android:id="@+id/input_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:padding="10dp"
+                        android:clickable="true"
+                        android:textColor="@color/monochrome_black"
+                        android:focusable="false"
+                        android:inputType="date"
+                        android:background="@drawable/edittext_box" />
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:id="@+id/input_number_of_days"
-                    android:layout_marginStart="10dp"
-                    android:inputType="number"
-                    android:background="@drawable/edittextline"
-                    android:textColorHint="@color/colorPrimary"
-                    android:maxLines="2"
-                    android:textColor="@color/colorPrimary"
-                    android:hint="@string/hint_number_of_days"
-                    android:padding="10dp" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/hint_length_of_trip"
+                        android:textSize="18sp"
+                        android:textColor="@color/monochrome_gray" />
+
+                    <EditText
+                        android:id="@+id/input_number_of_days"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:padding="10dp"
+                        android:inputType="number"
+                        android:textColor="@color/monochrome_black"
+                        android:background="@drawable/edittext_box" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp">
+
+                        <ImageView
+                            android:id="@+id/hint_logo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_error_outline_black_24dp" />
+
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/hint_logo"
+                            android:layout_marginStart="5dp"
+                            android:text="@string/hint_number_of_days"
+                            android:textSize="18sp"
+                            android:textColor="@color/monochrome_gray" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <EditText
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:id="@+id/input_description"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:maxLines="20"
-                android:textColorHint="@color/colorPrimary"
-                android:textColor="@color/colorPrimary"
-                android:background="@drawable/edittextline"
-                android:hint="@string/hint_description"
-                android:gravity="start"
-                android:padding="10dp" />
-
-            <Switch
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/input_switch"
-                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:text="@string/set_trip_as_public"
-                android:textColor="@color/colorPrimary"
+                android:layout_marginStart="10dp"
+                android:text="@string/hint_description"
                 android:textSize="18sp"
-                android:checked="true"
-                android:theme="@style/Platform.MaterialComponents.Light"
-                android:padding="10dp" />
+                android:textColor="@color/monochrome_gray"/>
+
+            <EditText
+                android:id="@+id/input_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:padding="10dp"
+                android:maxLines="20"
+                android:minHeight="120dp"
+                android:textColor="@color/monochrome_black"
+                android:background="@drawable/edittext_box" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryDark"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/set_trip_as_public"
+                    android:textColor="@color/monochrome_gray"
+                    android:textSize="18sp"
+                    android:padding="10dp" />
+
+                <Switch
+                    android:id="@+id/input_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:checked="true"
+                    android:padding="10dp"
+                    android:thumb="@drawable/ic_brightness_1_black_24dp"
+                    android:track="@drawable/track_selector"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
                 android:gravity="center">
 
                 <Button
                     android:id="@+id/post_button"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginBottom="25dp"
+                    android:layout_marginTop="20dp"
+                    android:paddingStart="50dp"
+                    android:paddingEnd="50dp"
                     android:text="@string/post_button"
-                    android:layout_marginEnd="100dp"
-                    android:layout_marginStart="100dp"
-                    android:background="@color/colorPrimaryLight" />
+                    android:textColor="@color/monochrome_white"
+                    android:textStyle="bold"
+                    android:background="@drawable/button_bg_round_corner_blue" />
 
                 <Button
                     android:id="@+id/remove_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginBottom="25dp"
+                    android:layout_margin="20dp"
+                    android:paddingStart="30dp"
+                    android:paddingEnd="30dp"
                     android:text="@string/remove_button"
-                    android:background="@color/colorPrimaryLight"
-                    android:visibility="invisible"/>
+                    android:textColor="@color/monochrome_white"
+                    android:textStyle="bold"
+                    android:background="@drawable/button_bg_round_corner_red"
+                    android:visibility="gone"/>
 
                 <Button
                     android:id="@+id/save_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@id/remove_button"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginBottom="25dp"
                     android:layout_marginStart="15dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
+                    android:paddingStart="30dp"
+                    android:paddingEnd="30dp"
                     android:text="@string/save_button"
-                    android:background="@color/colorPrimaryLight"
-                    android:visibility="invisible"/>
+                    android:textColor="@color/monochrome_white"
+                    android:textStyle="bold"
+                    android:background="@drawable/button_bg_round_corner_blue"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
 

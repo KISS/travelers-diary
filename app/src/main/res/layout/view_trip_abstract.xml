@@ -10,7 +10,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:scaleType="fitCenter"
-        android:background="@color/colorPrimaryDark" />
+        android:background="@color/monochrome_gray" />
 
     <RelativeLayout
         android:id="@+id/trip_info"
@@ -24,42 +24,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/monochrome_gray_dark"
             android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/trip_city"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:textSize="16sp"
-            android:textColor="@color/colorPrimary"
-
-            android:layout_below="@id/trip_title" />
-
-        <TextView
-            android:id="@+id/trip_state"
+            android:id="@+id/trip_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-
             android:padding="5dp"
             android:textSize="16sp"
+            android:textColor="@color/monochrome_black"
+
             android:layout_below="@id/trip_title"
-            android:layout_toEndOf="@id/trip_city"
             android:maxLines="1"
-            android:ellipsize="end"/>
+            android:ellipsize="end" />
 
         <TextView
-            android:id="@+id/trip_date"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:id="@+id/trip_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:padding="5dp"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/monochrome_black"
 
             android:textSize="16sp"
-            android:layout_below="@id/trip_city" />
+            android:layout_below="@id/trip_location"
+            android:maxLines="1"
+            android:ellipsize="end" />
 
     </RelativeLayout>
 

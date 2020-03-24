@@ -49,9 +49,8 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         MyAdapterViewHolder holder = (MyAdapterViewHolder) viewHolder;
         Picasso.get().load(trip.getImage()).resize(100, 100).centerCrop().into(holder.mImage);
         holder.mTitle.setText(trip.getTitle());
-        holder.mCity.setText(trip.getCity());
-        holder.mState.setText(Constants.MAP_NAMES[trip.getState()]);
-        holder.mDate.setText(trip.getDate());
+        holder.mLocation.setText(trip.getCity() + ", "+ Constants.MAP_NAMES[trip.getState()]);
+        holder.mDescription.setText(trip.getDescription());
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(mListenerSingleClick);
     }
@@ -66,17 +65,15 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         ImageView mImage;
         TextView mTitle;
-        TextView mCity;
-        TextView mState;
-        TextView mDate;
+        TextView mLocation;
+        TextView mDescription;
 
         public MyAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             mImage = itemView.findViewById(R.id.trip_image);
             mTitle = itemView.findViewById(R.id.trip_title);
-            mCity = itemView.findViewById(R.id.trip_city);
-            mState = itemView.findViewById(R.id.trip_state);
-            mDate = itemView.findViewById(R.id.trip_date);
+            mLocation = itemView.findViewById(R.id.trip_location);
+            mDescription = itemView.findViewById(R.id.trip_description);
 
             if (mLongPressEnabled) {
                 itemView.setOnClickListener(this);

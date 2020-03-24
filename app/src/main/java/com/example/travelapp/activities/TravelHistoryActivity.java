@@ -19,6 +19,7 @@ import com.example.travelapp.R;
 import com.example.travelapp.adapters.TravelFeedAdapter;
 import com.example.travelapp.configs.Constants;
 import com.example.travelapp.models.Trip;
+import com.example.travelapp.models.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,8 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
 
     //list to hold all the uploaded images
     private List<Trip> trips;
+    //list to hold all users corresponding to trips
+    private List<User> users;
 
     FirebaseUser fUser;
 
@@ -67,6 +71,7 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         trips = new ArrayList<>();
+        users = new ArrayList<>();
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -89,6 +94,7 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 trips.clear();
+                users.clear();
 
                 //dismissing the progress dialog
                 progressDialog.dismiss();
@@ -98,13 +104,15 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
                     Trip upload = postSnapshot.getValue(Trip.class);
 
                     if (!upload.getUser_id().equals(fUser.getUid()) && upload.isIs_public()) {
-                        trips.add(0, upload);
+                        trips.add(upload);
+                        users.add(null);
+                        getUserInfo(upload.getUser_id(), users.size() - 1);
                     }
 
                 }
 
                 //creating adapter
-                adapter = new TravelFeedAdapter(getApplicationContext(), trips);
+                adapter = new TravelFeedAdapter(getApplicationContext(), trips, users);
 
                 //adding adapter to
                 recyclerView.setAdapter(adapter);
@@ -117,6 +125,28 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
             }
         });
 
+    }
+
+    private void getUserInfo(String userId, int index) {
+        Query query = FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_USERS).orderByKey().equalTo(userId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChildren()){
+                    DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
+                    if (singleSnapshot != null) {
+                        User user = singleSnapshot.getValue(User.class);
+                        users.set(index, user);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     // The function called when the Add A Trip link is clicked

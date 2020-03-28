@@ -33,7 +33,7 @@
                 android:id="@+id/trip_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
+                android:layout_marginTop="20dp"
                 android:background="@null"
                 android:gravity="center_horizontal"
                 android:hint="@string/hint_title"
@@ -47,13 +47,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:padding="10dp">
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/myCardView"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:layout_margin="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     app:cardCornerRadius="30dp">
 
                     <ImageView
@@ -61,7 +64,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:background="@color/monochrome_gray"/>
+                        android:background="@color/monochrome_gray" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -73,7 +76,7 @@
                     android:textSize="18sp"
                     android:textColor="@color/monochrome_gray_dark"
                     android:layout_marginStart="10dp"
-                    android:layout_centerVertical="true"/>
+                    android:layout_centerVertical="true" />
 
             </RelativeLayout>
 
@@ -83,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
                 android:maxLines="2"
                 android:textSize="18sp"
                 android:textColor="@color/monochrome_black" />
@@ -93,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:id="@+id/text_trip_date"
@@ -119,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -137,6 +140,7 @@
                     android:textColor="@color/monochrome_black" />
 
                 <TextView
+                    android:id="@+id/text_days"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -152,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
                 android:hint="@string/hint_description"
                 android:textSize="18sp"
                 android:textColor="@color/monochrome_black" />
@@ -168,7 +172,7 @@
                 android:textColor="@color/monochrome_white"
                 android:textStyle="bold"
                 android:background="@drawable/button_bg_round_corner_blue"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:onClick="editTrip"/>
 
             <Button
@@ -182,8 +186,7 @@
                 android:textColor="@color/monochrome_white"
                 android:textStyle="bold"
                 android:background="@drawable/button_bg_round_corner_green"
-                android:visibility="gone"
-                android:onClick="viewTravelFeed"/>
+                android:visibility="gone" />
 
         </LinearLayout>
 

@@ -166,17 +166,17 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
 
         Choropleth series = map.choropleth(getData());
         LinearColor linearColor = LinearColor.instantiate();
-        linearColor.colors(new String[]{ "#868E96", "#00818A"});
+        linearColor.colors(new String[]{ "#DEE2E6", "#00818A"});
         series.colorScale(linearColor);
         series.hovered()
-                .fill("#2E6171")
-                .stroke("#2E6171");
+                .fill("#EC9B3B")
+                .stroke("#00818A");
         series.selected()
-                .fill("#00F3F6")
-                .stroke("#00F3F6");
+                .fill("#EC9B3B")
+                .stroke("#00818A");
         series.labels(true).enabled(true);
         series.labels().fontSize(10);
-        series.labels().fontColor("ffffff");
+        series.labels().fontColor("#ffffff");
         series.labels().format("{%Value}");
 
         series.tooltip()
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
                 for (int index = 0; index < 52; index++) {
                     if (Constants.MAP_IDS[index].equals(event.getData().get("id"))) {
                         // Only show dialog if state is visited
-                        if (getMapColor(index) == 1) {
+                        if (getMapColor(index) == 1 && !StateTripFragment.showing) {
                             // Create and show the dialog.
                             Bundle args = new Bundle();
                             args.putInt(StateTripFragment.ARGUMENT_STATE, index);

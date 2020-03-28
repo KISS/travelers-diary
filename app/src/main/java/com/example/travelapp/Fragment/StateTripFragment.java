@@ -1,6 +1,7 @@
 package com.example.travelapp.Fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,8 +49,15 @@ public class StateTripFragment extends DialogFragment {
     MyAdapter mAdapter;
     int mState;
 
+    public static boolean showing = false;
+
     private final String TAG = "State Trip Fragment";
     public static final String ARGUMENT_STATE = "State";
+
+    public StateTripFragment() {
+        // Used to avoid displaying the same DialogFragment multiple times.
+        showing = true;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -152,11 +160,15 @@ public class StateTripFragment extends DialogFragment {
         }
     }
 
-    // One click on map results in multiple function calls, override show() to avoid opening multiple DialogFragment
     @Override
-    public void show(FragmentManager manager, String tag) {
-        if (manager.findFragmentByTag(tag) == null) {
-            super.show(manager, tag);
-        }
+    public void onCancel(DialogInterface dialog) {
+        showing = false;
+        super.onCancel(dialog);
+    }
+
+    @Override
+    public void dismiss() {
+        showing = false;
+        super.dismiss();
     }
 }

@@ -203,9 +203,9 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
                     String image = "" + ds.child("profilePictureUrl").getValue();
                     String firstname = "" + ds.child("firstName").getValue();
                     String lastname = "" + ds.child("lastName").getValue();
-                    String email = "" + ds.child("email").getValue();
-                    String stateinfo = "State Info: " + ds.child("stateInfo").getValue();
-                    String phonenum = "Phone Num: " + ds.child("phoneNum").getValue();
+//                    String email = "" + ds.child("email").getValue();
+//                    String stateinfo = "State Info: " + ds.child("stateInfo").getValue();
+//                    String phonenum = "Phone Num: " + ds.child("phoneNum").getValue();
 
                     mUserName.setText(firstname + " " + lastname);
 //                    mfirstname.setText(firstname);
@@ -261,9 +261,11 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
      *
      * */
     private void showEditProfilePopup() {
-        String options[] = {"Edit Profile Picture", "Edit First Name", "Edit Last Name"};
+        String options[] = {getResources().getString(R.string.profile_picture),
+                getResources().getString(R.string.first_name),
+                getResources().getString(R.string.last_name)};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose ");
+        builder.setTitle(R.string.choose_the_field_you_want_to_edit);
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -273,18 +275,18 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
                     showImagePicDialog();
                 } else if (which == 1) {
                     pd.setMessage("Updating First Name");
-                    showEditInfoUpdatePopup("firstName");
+                    showEditInfoUpdatePopup("firstName", "First Name");
                 } else if (which == 2) {
                     pd.setMessage("Updating Last Name");
-                    showEditInfoUpdatePopup("lastName");
+                    showEditInfoUpdatePopup("lastName", "Last Name");
 
                 } else if (which == 3) {
                     pd.setMessage("Updating State Info");
-                    showEditInfoUpdatePopup("stateInfo");
+                    showEditInfoUpdatePopup("stateInfo", "");
 
                 } else if (which == 4) {
                     pd.setMessage("Updating Phone Num");
-                    showEditInfoUpdatePopup("phoneNum");
+                    showEditInfoUpdatePopup("phoneNum", "");
 
                 }
             }
@@ -292,18 +294,20 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
         builder.create().show();
     }
 
-    private void showEditInfoUpdatePopup(final String key) {
+    private void showEditInfoUpdatePopup(final String key, final String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Update " + key);
+        builder.setTitle("Update " + message + ":");
 
 
         final EditText editText = new EditText(this);
 
-        editText.setHint("Enter " + key);
+        editText.setHint(" Enter " + message);
+        editText.setPadding(20,30,20,30);
+        editText.setBackground(getResources().getDrawable(R.drawable.edittext_box, null));
 
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setPadding(10, 10, 10, 10);
+        linearLayout.setPadding(30, 10, 30, 10);
 
         linearLayout.addView(editText);
 

@@ -59,6 +59,7 @@
     <string name="Trip">Trip</string>
     <string name="text_trip_length">Trip length:</string>
     <string name="text_days">days</string>
+    <string name="text_day">day</string>
     <string name="hint_search">Search...</string>
     <string name="elasticsearch">elasticsearch</string>
     <string name="field_password">password</string>
@@ -66,6 +67,7 @@
     <string name="save_button">Save Changes</string>
     <string name="cancel_button">CANCEL</string>
     <string name="toast_trip_updated">Trip is updated!</string>
+    <string name="toast_trip_posted">Trip is posted successfully!</string>
     <string name="remove_button">REMOVE TRIP</string>
     <string name="set_trip_as_public">Set trip as visible to public\u0020\u0020\u0020\u0020\u0020\u0020</string>
     <string name="is_public">Trip is public</string>
@@ -85,7 +87,7 @@
     <string name="set_as_private">Set as Private</string>
     <string name="edit_your_profile">Edit your profile</string>
     <string name="logout"><u>Logout</u></string>
-    <string name="trip_date">Trip start date:</string>
+    <string name="trip_date">Visited on:</string>
     <string name="hint_state">State</string>
     <string name="hint_no_date">no date provided</string>
     <string name="add_a_trip_title">Add a Trip</string>
@@ -93,6 +95,10 @@
     <string name="title_your_travel_map">Your Travel Map</string>
     <string name="title_usa">United States of America</string>
     <string name="hint_message">Message</string>
+    <string name="choose_the_field_you_want_to_edit">Choose the field you want to edit:</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
     <string-array name="state">
         <item></item>
         <item>Minnesota</item>

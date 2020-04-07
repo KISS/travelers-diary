@@ -407,7 +407,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     }
 
     private void uploadImage() {
-        Toast.makeText(getActivity(), R.string.toast_uploading_photo, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), R.string.toast_uploading_photo, Toast.LENGTH_SHORT).show();
         mTripId = mDatabaseReference.push().getKey();
         final StorageReference storageReference = FirebaseStorage.getInstance().getReference()
                 .child("Trip_Images/" + FirebaseAuth.getInstance().getCurrentUser().getUid() +
@@ -417,7 +417,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(getActivity(), R.string.toast_photo_uploaded_successfully, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), R.string.toast_photo_uploaded_successfully, Toast.LENGTH_SHORT).show();
 
                 Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
                 while (!urlTask.isSuccessful()) ;
@@ -464,6 +464,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
 
         // Update statesInfo in Users
         addVisitedState(user_id);
+        Toast.makeText(getActivity(), R.string.toast_trip_posted, Toast.LENGTH_LONG).show();
     }
 
     private void addVisitedState(String user_id) {
@@ -552,12 +553,13 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     }
 
     private void resetFields() {
-        mImage.setImageResource(R.drawable.ic_waddphoto);
+        mImage.setImageResource(R.drawable.ic_add_a_photo_blue_24dp);
         mTitle.setText("");
         mCity.setText("");
         mSpinner.setSelection(0);
         mDate.setText("");
         mDays.setText("");
+        mSwitch.setChecked(true);
         mDescription.setText("");
         tvLName.setText("");
         tvObjects.setText("");

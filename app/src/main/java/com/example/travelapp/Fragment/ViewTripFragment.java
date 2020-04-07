@@ -39,6 +39,10 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class ViewTripFragment extends Fragment {
 
     private Toolbar mToolbar;
@@ -48,6 +52,7 @@ public class ViewTripFragment extends Fragment {
     private TextView mDate;
     private TextView mDays;
     private TextView mDescription;
+    private TextView mTextDays;
     private Button mEdit, mTravelFeedButton;
     private RelativeLayout mUserInfo;
     private ImageView mUserPhoto;
@@ -79,6 +84,7 @@ public class ViewTripFragment extends Fragment {
         mDate = view.findViewById(R.id.trip_date);
         mDays = view.findViewById(R.id.trip_number_of_days);
         mDescription = view.findViewById(R.id.trip_description);
+        mTextDays = view.findViewById(R.id.text_days);
         mEdit = view.findViewById(R.id.edit_trip_button);
         mTravelFeedButton = view.findViewById(R.id.travel_feed_button);
         mUserInfo = view.findViewById(R.id.user_info);
@@ -112,11 +118,27 @@ public class ViewTripFragment extends Fragment {
                         String location = mTrip.getCity().isEmpty() ? Constants.MAP_NAMES[mTrip.getState()] : mTrip.getCity() + ", " + Constants.MAP_NAMES[mTrip.getState()];
                         mLocation.setText(location);
                         if (mTrip.getDate().length() > 0) {
-                            mDate.setText(mTrip.getDate());
-                        } else {
-                            mDate.setVisibility(View.GONE);
+                            if (mTrip.getDays() == 1) {
+                                mDate.setText(mTrip.getDate());
+                            } else {
+                                String startDate= mTrip.getDate();
+                                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                                Calendar calendar = Calendar.getInstance();
+                                try {
+                                    calendar.setTime(sdf.parse(startDate));
+                                    calendar.add(Calendar.DAY_OF_MONTH, mTrip.getDays() - 1);
+                                    String datePeriod = startDate + " - " + sdf.format(calendar.getTime());
+                                    mDate.setText(datePeriod);
+                                } catch (ParseException e) {
+                                    mDate.setText("");
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                         mDays.setText(String.valueOf(mTrip.getDays()));
+                        if (mTrip.getDays() <= 1) {
+                            mTextDays.setText(R.string.text_day);
+                        }
                         if (mTrip.getDescription().length() > 0) {
                             mDescription.setText(mTrip.getDescription());
                         } else {

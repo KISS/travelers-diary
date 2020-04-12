@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,11 +32,16 @@ public class TravelFeedAdapter extends RecyclerView.Adapter<TravelFeedAdapter.Vi
     private Context context;
     private List<Trip> tripsUploads;
     private List<User> usersUploads;
+    private View.OnClickListener clickOnUser;
+    private View.OnClickListener clickOnTrip;
 
-    public TravelFeedAdapter(Context context, List<Trip> tripsUploads, List<User> usersUploads) {
+    public TravelFeedAdapter(Context context, List<Trip> tripsUploads, List<User> usersUploads,
+                             View.OnClickListener clickOnUser, View.OnClickListener clickOnTrip) {
         this.tripsUploads = tripsUploads;
         this.usersUploads = usersUploads;
         this.context = context;
+        this.clickOnUser = clickOnUser;
+        this.clickOnTrip = clickOnTrip;
     }
 
     @Override
@@ -64,8 +70,10 @@ public class TravelFeedAdapter extends RecyclerView.Adapter<TravelFeedAdapter.Vi
 
         holder.location.setText(upload.getCity() + ", " + Constants.MAP_NAMES[upload.getState()]);
         Picasso.get().load(upload.getImage()).resize(getScreenWidthInPx(), dpToPx(270)).centerCrop().into(holder.tripImageView);
-
-
+        holder.userInfo.setTag(position);
+        holder.tripImageView.setTag(position);
+        holder.userInfo.setOnClickListener(clickOnUser);
+        holder.tripImageView.setOnClickListener(clickOnTrip);
     }
 
     private int getScreenWidthInPx() {
@@ -74,6 +82,10 @@ public class TravelFeedAdapter extends RecyclerView.Adapter<TravelFeedAdapter.Vi
         Point size = new Point();
         display.getSize(size);
         return size.x;
+    }
+
+    public Trip getItem(int position) {
+        return tripsUploads.get(position);
     }
 
     @Override
@@ -90,6 +102,7 @@ public class TravelFeedAdapter extends RecyclerView.Adapter<TravelFeedAdapter.Vi
 //        public TextView textViewDays;
 //        public TextView textViewDiscription;
 
+        public RelativeLayout userInfo;
         public TextView userName;
         public TextView location;
         public ImageView userPhoto;
@@ -97,7 +110,7 @@ public class TravelFeedAdapter extends RecyclerView.Adapter<TravelFeedAdapter.Vi
 
         public ViewHolder(View itemView) {
             super(itemView);
-
+            userInfo = itemView.findViewById(R.id.user_info);
             userName = itemView.findViewById(R.id.user_name);
             location = itemView.findViewById(R.id.location);
             userPhoto = itemView.findViewById(R.id.user_photo);

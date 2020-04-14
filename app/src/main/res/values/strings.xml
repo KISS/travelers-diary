@@ -154,4 +154,13 @@
         <item>Alaska</item>
         <item>Michigan</item>
     </string-array>
+
+    <string-array name="trip_options_menu">
+        <item>Flight</item>
+        <item>Hotel</item>
+        <item>Car</item>
+        <item>Park</item>
+        <item>Concert</item>
+        <item>Game</item>
+    </string-array>
 </resources>

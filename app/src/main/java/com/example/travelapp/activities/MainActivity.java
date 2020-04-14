@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.WebView;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
     public List<DataEntry> data;
     DatabaseReference mDatabaseReference;
     String mUid;
+    Button plan_trip;
     long visitedStates;
 
     private static final String TAG = "Travelers-diary:MainActivity";
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+        plan_trip = findViewById(R.id.plan_trip);
 
 //        recyclerView = findViewById(R.id.recyclerView);
 //        recyclerView.setHasFixedSize(true);
@@ -72,6 +76,18 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_USERS);
         mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         getStatesInfoAndConfigureMap();
+
+        planTrip();
+    }
+
+    private void planTrip() {
+        plan_trip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, TripPlanningActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void getStatesInfoAndConfigureMap() {
@@ -86,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
                         configureMap();
                     }
                 }
+
             }
 
             @Override

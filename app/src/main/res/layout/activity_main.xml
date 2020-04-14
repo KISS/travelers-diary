@@ -18,39 +18,50 @@
             android:layout_marginTop="50dp"
             android:gravity="center"
             android:text="@string/title_your_travel_map"
+            android:textColor="@color/main_colors_green"
             android:textSize="32sp"
-            android:textStyle="bold"
-            android:textColor="@color/main_colors_green"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/title_usa"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:layout_below="@id/title_map"
+            android:layout_margin="10dp"
             android:gravity="center"
             android:text="@string/title_usa"
-            android:textSize="18sp"
-            android:textColor="@color/monochrome_gray" />
+            android:textColor="@color/monochrome_gray"
+            android:textSize="18sp" />
 
         <com.anychart.AnyChartView
             android:id="@+id/any_chart_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/title_usa"
-            android:layout_above="@id/add_trip_button"/>
+            android:layout_above="@id/add_trip_button"
+            android:layout_below="@id/title_usa" />
+
+
+        <Button
+            android:id="@+id/plan_trip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="40dp"
+            android:layout_toStartOf="@+id/add_trip_button"
+            android:text="plan trip" />
+
 
         <ImageView
             android:id="@+id/add_trip_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="40dp"
-            android:padding="15dp"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_control_point_black_24dp"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="40dp"
             android:background="@drawable/button_bg_round_corner_green"
-            android:onClick="addATrip"/>
+            android:onClick="addATrip"
+            android:padding="15dp"
+            android:src="@drawable/ic_control_point_black_24dp" />
 
     </RelativeLayout>
 
@@ -58,15 +69,15 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_nav"/>
+        android:layout_above="@+id/bottom_nav" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:itemIconTint="@drawable/selector"
         android:layout_alignParentBottom="true"
         android:background="#2d2d2d"
+        app:itemIconTint="@drawable/selector"
         app:menu="@menu/bottom_navigation" />
 
 </RelativeLayout>

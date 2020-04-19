@@ -56,6 +56,7 @@
     <string name="hint_length_of_trip">Length of Trip</string>
     <string name="hint_start_date">Start Date</string>
     <string name="please_specify_a_number_of_days">Please specify a number of days!</string>
+    <string name="please_specify_the_start_date">Please specify the start date!</string>
     <string name="Trip">Trip</string>
     <string name="text_trip_length">Trip length:</string>
     <string name="text_days">days</string>

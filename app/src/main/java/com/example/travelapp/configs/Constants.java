@@ -15,6 +15,7 @@ public class Constants {
     public static final String DATABASE_PATH_TRIPS = "Trips";
     public static final String DATABASE_PATH_Notifications = "Notifications";
     public static final String DATABASE_PATH_Chats = "Chats";
+    public static final String DATABASE_PATH_TRIPS_OF_STATES = "States";
 
 
     public static final String DATABASE_FIELD_TRIPID = "tripId";

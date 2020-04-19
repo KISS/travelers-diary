@@ -81,7 +81,6 @@ public class StateTripFragment extends DialogFragment {
         mTrips = new ArrayList<>();
         mState = (int) getArguments().get(ARGUMENT_STATE);
         mTitle.setText(Constants.MAP_NAMES[mState]);
-        getDialog().setTitle("hahahah");
         configureRecyclerView();
         return view;
     }
@@ -101,15 +100,14 @@ public class StateTripFragment extends DialogFragment {
         mTripIds.clear();
         mTrips.clear();
 
-        Query query = FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_TRAVELHISTORY)
+        Query query = FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_TRIPS_OF_STATES)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .orderByKey()
-                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                .equalTo(String.valueOf(mState));
 
-        query.addValueEventListener(new ValueEventListener() {
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                mTripIds.clear();
-                mTrips.clear();
                 if (dataSnapshot != null) {
                     if (dataSnapshot.hasChildren()) {
                         DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
@@ -144,10 +142,8 @@ public class StateTripFragment extends DialogFragment {
                         if (dataSnapshot.hasChildren()) {
                             DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
                             Trip trip = singleSnapshot.getValue(Trip.class);
-                            if (trip.getState() == mState) {
-                                mTrips.add(trip);
-                                mAdapter.notifyDataSetChanged();
-                            }
+                            mTrips.add(trip);
+                            mAdapter.notifyDataSetChanged();
                         }
                     }
 

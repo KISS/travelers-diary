@@ -99,7 +99,7 @@ public class TripPlanningActivity extends AppCompatActivity {
         noOfDays = findViewById(R.id.trip_number_of_days);
 
 
-        bmpbi = BitmapFactory.decodeResource(getResources(), R.drawable.pdfbi);
+        bmpbi = BitmapFactory.decodeResource(getResources(), R.drawable.pdflogotop);
         scaledbmp = Bitmap.createScaledBitmap(bmpbi, 1200, 618, false);
 
         bmpline = BitmapFactory.decodeResource(getResources(), R.drawable.verticalline);

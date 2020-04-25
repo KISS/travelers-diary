@@ -144,8 +144,11 @@
             android:layout_marginTop="12dp"
             android:layout_gravity="center"
             android:textColor="@color/monochrome_white"
-            android:background="@color/main_colors_blue"
-            android:text="@string/signupbutton" />
+            android:background="@drawable/button_bg_round_corner_blue"
+            android:text="@string/signupbutton"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textAllCaps="false" />
 
         <TextView
             android:id="@+id/alreadyAccount"
@@ -165,10 +168,12 @@
             android:layout_marginTop="8dp"
             android:layout_gravity="center"
             android:layout_marginBottom="20dp"
-            android:background="@color/monochrome_gray_light"
+            android:background="@drawable/button_bg_round_corner_grey"
             android:textColor="@color/main_colors_blue"
             android:text="@string/signinbutton"
-            android:visibility="visible"/>
+            android:textSize="18sp"
+            android:visibility="visible"
+            android:textAllCaps="false" />
 
     </LinearLayout>
 

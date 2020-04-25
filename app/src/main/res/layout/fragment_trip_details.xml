@@ -169,11 +169,13 @@
                 android:paddingStart="50dp"
                 android:paddingEnd="50dp"
                 android:text="@string/edit_trip"
+                android:textSize="18sp"
                 android:textColor="@color/monochrome_white"
                 android:textStyle="bold"
                 android:background="@drawable/button_bg_round_corner_blue"
                 android:visibility="gone"
-                android:onClick="editTrip"/>
+                android:onClick="editTrip"
+                android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/travel_feed_button"
@@ -183,10 +185,12 @@
                 android:paddingStart="50dp"
                 android:paddingEnd="50dp"
                 android:text="@string/view_travel_feed"
+                android:textSize="18sp"
                 android:textColor="@color/monochrome_white"
                 android:textStyle="bold"
                 android:background="@drawable/button_bg_round_corner_green"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:textAllCaps="false" />
 
         </LinearLayout>
 

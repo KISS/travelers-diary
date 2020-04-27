@@ -59,7 +59,9 @@ public class TravelFeedAdapter extends RecyclerView.Adapter<TravelFeedAdapter.Vi
 
         if (upload_user != null) {
             holder.userName.setText(upload_user.getFirstName() + " " + upload_user.getLastName());
-            Picasso.get().load(upload_user.getProfilePictureUrl()).resize(dpToPx(50), dpToPx(50)).centerCrop().into(holder.userPhoto);
+            if (!upload_user.getProfilePictureUrl().isEmpty()) {
+                Picasso.get().load(upload_user.getProfilePictureUrl()).resize(dpToPx(50), dpToPx(50)).centerCrop().into(holder.userPhoto);
+            }
         }
 //        holder.textViewTitle.setText(upload.getTitle());
 //        holder.textViewCity.setText(upload.getCity());

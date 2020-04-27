@@ -510,15 +510,17 @@
 
         <Button
             android:id="@+id/submitbutton"
-            android:layout_width="wrap_content"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/itinerary_date5"
-            android:textColor="#00818a"
-            android:textSize="25sp"
-            android:background="@android:color/transparent"
+            android:textColor="@color/monochrome_white"
+            android:textSize="18sp"
+            android:background="@drawable/button_bg_round_corner_blue"
             android:layout_centerHorizontal="true"
             android:layout_margin="50dp"
-            android:text="Submit" />
+            android:text="Submit"
+            android:textStyle="bold"
+            android:textAllCaps="false" />
 
     </RelativeLayout>
 

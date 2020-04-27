@@ -215,6 +215,71 @@ public class SelectPhotoDialog extends DialogFragment {
                     });
             getDialog().dismiss();
         }
+        // Results from taking a photo with camera
+        else if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Log.d(TAG, "onActivityResult: done taking new photo");
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            mOnPhotoSelectedListener.getImageBitmap(bitmap);
+
+            FirebaseVisionCloudDetectorOptions options =
+                    new FirebaseVisionCloudDetectorOptions.Builder()
+                            .setModelType(FirebaseVisionCloudDetectorOptions.LATEST_MODEL)
+                            .setMaxResults(5)
+                            .build();
+
+            FirebaseVisionCloudImageLabelerOptions optionsLabel =
+                    new FirebaseVisionCloudImageLabelerOptions.Builder()
+                            .setConfidenceThreshold(0.7f)
+                            .build();
+
+
+            FirebaseVisionImage imageLabel = FirebaseVisionImage.fromBitmap(bitmap);
+
+            FirebaseVisionImageLabeler labeler = FirebaseVision.getInstance()
+                    .getCloudImageLabeler(optionsLabel);
+
+
+            labeler.processImage(imageLabel).addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionImageLabel>>() {
+                @Override
+                public void onSuccess(List<FirebaseVisionImageLabel> labels) {
+                    tvObjects.setText("");
+                    for (FirebaseVisionImageLabel label : labels) {
+
+                        tvObjects.append(label.getText() + "   ");
+                    }
+
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                }
+            });
+
+
+            FirebaseVisionCloudLandmarkDetector detector = FirebaseVision.getInstance()
+                    .getVisionCloudLandmarkDetector(options);
+
+
+            FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
+
+            Task<List<FirebaseVisionCloudLandmark>> result = detector.detectInImage(image)
+                    .addOnSuccessListener(firebaseVisionCloudLandmarks -> {
+                        // Task completed successfully
+                        // ...
+                        tvLName.setText("");
+                        for (FirebaseVisionCloudLandmark landmark : firebaseVisionCloudLandmarks) {
+
+                            tvLName.setText(landmark.getLandmark());
+                        }
+
+                    })
+                    .addOnFailureListener(e -> {
+                        // ...
+                        Log.d(TAG, e.getMessage());
+                    });
+            getDialog().dismiss();
+        }
     }
 
     private boolean checkStoragePermission() {

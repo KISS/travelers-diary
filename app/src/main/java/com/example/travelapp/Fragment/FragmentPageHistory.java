@@ -1,18 +1,15 @@
 package com.example.travelapp.Fragment;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.travelapp.R;
-import com.example.travelapp.activities.ProfileActivity;
+import com.example.travelapp.activities.StateTripActivity;
 import com.example.travelapp.configs.Constants;
 import com.example.travelapp.models.Trip;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,71 +23,83 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class StateTripFragment extends DialogFragment {
+public class FragmentPageHistory extends Fragment {
 
     public interface TripItemClickHandler {
         void onTripClicked(String id);
     }
 
-    TripItemClickHandler mClickHandler;
+    FragmentPageHistory.TripItemClickHandler mClickHandler;
 
-    private TextView mTitle;
+    private TextView mNoHistoryText;
     private RecyclerView mRecyclerView;
+
     List<String> mTripIds;
     List<Trip> mTrips;
     MyAdapter mAdapter;
     int mState;
 
-    public static boolean showing = false;
+    private final String TAG = "History Page Fragment";
+    public static final String ARGUMENT_STATE_NO = "State No";
+    public static final String ARGUMENT_STATE_STATUS = "State Status";
 
-    private final String TAG = "State Trip Fragment";
-    public static final String ARGUMENT_STATE = "State";
+    public FragmentPageHistory() {
+        // Required empty public constructor
+    }
 
-    public StateTripFragment() {
-        // Used to avoid displaying the same DialogFragment multiple times.
-        showing = true;
+    public static FragmentPageHistory newInstance(int state, int status) {
+        Bundle args = new Bundle();
+        args.putInt(ARGUMENT_STATE_NO, state);
+        args.putInt(ARGUMENT_STATE_STATUS, status);
+        FragmentPageHistory fragment = new FragmentPageHistory();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            mClickHandler = (TripItemClickHandler) context;
+            mClickHandler = (FragmentPageHistory.TripItemClickHandler) context;
         } catch (ClassCastException e) {
             throw new ClassCastException("The activity that this fragment is attached must be a TripItemClickHandler");
         }
     }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_trips, container);
-        mTitle = view.findViewById(R.id.title);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_page_history, container, false);
+        mNoHistoryText = view.findViewById(R.id.no_history_text);
         mRecyclerView = view.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mTripIds = new ArrayList<>();
         mTrips = new ArrayList<>();
-        mState = (int) getArguments().get(ARGUMENT_STATE);
-        mTitle.setText(Constants.MAP_NAMES[mState]);
-        configureRecyclerView();
+        mState = (int) getArguments().get(ARGUMENT_STATE_NO);
+        init();
         return view;
+    }
+
+    private void init() {
+        if (getArguments().getInt(ARGUMENT_STATE_STATUS) == 0) {
+            mNoHistoryText.setVisibility(View.VISIBLE);
+            mRecyclerView.setAdapter(new MyAdapter(getContext(), mTrips, false, null));
+        } else {
+            configureRecyclerView();
+        }
     }
 
     private void configureRecyclerView() {
         mAdapter = new MyAdapter(getContext(), mTrips, false, v -> {
+            StateTripActivity.showing = false;
             int position = (int) v.getTag();
             Trip trip = mAdapter.getItem(position);
             mClickHandler.onTripClicked(trip.getTrip_id());
-            this.dismiss();
         });
         mRecyclerView.setAdapter(mAdapter);
         getTripIdsAndTrips();
@@ -105,15 +114,17 @@ public class StateTripFragment extends DialogFragment {
                 .orderByKey()
                 .equalTo(String.valueOf(mState));
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mTripIds.clear();
+                mTrips.clear();
                 if (dataSnapshot != null) {
                     if (dataSnapshot.hasChildren()) {
                         DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
                         for (DataSnapshot snapshot : singleSnapshot.getChildren()) {
                             String id = snapshot.child(Constants.DATABASE_FIELD_TRIPID).getValue().toString();
-                            Log.d(TAG, "onDataChange: found a post id: " + id);
+//                            Log.d(TAG, "onDataChange: found a post id: " + id);
                             mTripIds.add(id);
                         }
                     }
@@ -131,19 +142,39 @@ public class StateTripFragment extends DialogFragment {
         if (mTripIds.size() > 0) {
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             for (int i = 0; i < mTripIds.size(); i++) {
-                Log.d(TAG, "getPosts: getting post information for: " + mTripIds.get(i));
+//                Log.d(TAG, "getPosts: getting post information for: " + mTripIds.get(i));
                 Query query = reference.child(Constants.DATABASE_PATH_TRIPS)
                         .orderByKey()
                         .equalTo(mTripIds.get(i));
 
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.hasChildren()) {
                             DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
                             Trip trip = singleSnapshot.getValue(Trip.class);
-                            mTrips.add(trip);
-                            mAdapter.notifyDataSetChanged();
+//                            Log.d(TAG, "onDataChange: found a post: " + trip.getTitle());
+                            int index = 0;
+                            // Consider special case when mTripIds.size() < mTrips.size(), eg. trip removed
+                            for (; index < Math.min(mTrips.size(), mTripIds.size()); index++) {
+                                // When edit a trip, find the trip and update info
+                                if (trip.getTrip_id().equals(mTripIds.get(index))) {
+                                    mTrips.set(index, trip);
+                                    mAdapter.notifyDataSetChanged();
+                                    break;
+                                }
+                            }
+                            // Consider special case when index < mTrips.size()
+                            if (index == mTrips.size()) {
+                                mTrips.add(trip);
+                                mAdapter.notifyDataSetChanged();
+                                if (mNoHistoryText.getVisibility() == View.VISIBLE) {
+                                    mNoHistoryText.setVisibility(View.INVISIBLE);
+                                }
+                                if (mRecyclerView.getVisibility() == View.GONE) {
+                                    mRecyclerView.setVisibility(View.VISIBLE);
+                                }
+                            }
                         }
                     }
 
@@ -153,18 +184,9 @@ public class StateTripFragment extends DialogFragment {
                 });
             }
         } else {
+            mAdapter.notifyDataSetChanged(); //still need to notify the adapter if the list is empty
+            mNoHistoryText.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void onCancel(DialogInterface dialog) {
-        showing = false;
-        super.onCancel(dialog);
-    }
-
-    @Override
-    public void dismiss() {
-        showing = false;
-        super.dismiss();
     }
 }

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".activities.MainActivity">
 
     <RelativeLayout
@@ -37,31 +38,44 @@
             android:id="@+id/any_chart_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/add_trip_button"
+            android:layout_above="@id/buttons"
             android:layout_below="@id/title_usa" />
 
-
-        <Button
-            android:id="@+id/plan_trip"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/buttons"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_margin="40dp"
-            android:layout_toStartOf="@+id/add_trip_button"
-            android:text="plan trip" />
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="30dp">
 
+            <Button
+                android:id="@+id/plan_trip"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:text="@string/plan_trip"
+                android:textSize="18sp"
+                android:textColor="@color/main_colors_blue"
+                android:textStyle="bold"
+                android:background="@drawable/button_bg_round_corner_grey"
+                android:textAllCaps="false" />
 
-        <ImageView
-            android:id="@+id/add_trip_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="40dp"
-            android:background="@drawable/button_bg_round_corner_green"
-            android:onClick="addATrip"
-            android:padding="15dp"
-            android:src="@drawable/ic_control_point_black_24dp" />
+            <Button
+                android:id="@+id/add_trip_button"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/plan_trip"
+                android:layout_margin="15dp"
+                android:onClick="addATrip"
+                android:text="@string/add_trip"
+                android:textSize="18sp"
+                android:textColor="@color/monochrome_white"
+                android:textStyle="bold"
+                android:background="@drawable/button_bg_round_corner_green"
+                android:textAllCaps="false" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

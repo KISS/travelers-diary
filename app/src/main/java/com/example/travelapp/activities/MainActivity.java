@@ -213,17 +213,17 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
 //                event.getData().get("name");
 //                event.getData().get("value");
 
-                // Change to HashMap Later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                for (int index = 0; index < 52; index++) {
+//                // Change to HashMap Later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                int index = 0;
+                for (; index < 52; index++) {
                     if (Constants.MAP_IDS[index].equals(event.getData().get("id"))) {
-                        // Only show dialog if state is visited
-                        if (getMapColor(index) == 1 && !StateTripFragment.showing) {
-                            // Create and show the dialog.
-                            Bundle args = new Bundle();
-                            args.putInt(StateTripFragment.ARGUMENT_STATE, index);
-                            StateTripFragment fragment = new StateTripFragment();
-                            fragment.setArguments(args);
-                            fragment.show(getSupportFragmentManager(), "Trips in state");
+                        if (!StateTripActivity.showing) {
+                            StateTripActivity.showing = true;
+                            Intent intent = new Intent(getBaseContext(), StateTripActivity.class);
+                            intent.putExtra(StateTripActivity.EXTRA_STATE_NAME, event.getData().get("name"));
+                            intent.putExtra(StateTripActivity.EXTRA_STATE_NO, index);
+                            intent.putExtra(StateTripActivity.EXTRA_STATE_VALUE, Integer.parseInt(event.getData().get("value")));
+                            startActivity(intent);
                         }
                         break;
                     }

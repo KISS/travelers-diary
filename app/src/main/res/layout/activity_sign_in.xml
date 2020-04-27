@@ -94,10 +94,13 @@
                 android:layout_height="44dp"
                 android:layout_marginTop="80dp"
                 android:layout_gravity="center"
-                android:background="@color/main_colors_blue"
+                android:background="@drawable/button_bg_round_corner_blue"
                 android:textColor="@color/monochrome_white"
                 android:text="@string/signinbutton"
-                android:visibility="visible" />
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="visible"
+                android:textAllCaps="false" />
 
             <TextView
                 android:layout_width="250dp"
@@ -115,8 +118,10 @@
                 android:layout_height="44dp"
                 android:layout_marginTop="12dp"
                 android:layout_gravity="center"
-                android:background="@color/monochrome_gray_light"
-                android:text="@string/signupbutton"/>
+                android:background="@drawable/button_bg_round_corner_grey"
+                android:text="@string/signupbutton"
+                android:textSize="18sp"
+                android:textAllCaps="false" />
 
         </LinearLayout>
 

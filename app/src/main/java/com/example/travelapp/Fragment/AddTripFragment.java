@@ -9,13 +9,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -51,8 +49,6 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import static android.text.TextUtils.isEmpty;
@@ -76,11 +72,12 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     private ImageView mImage;
     private Switch mSwitch;
     private Spinner mSpinner;
-    private EditText mTitle, mCity, mDate, mDays, mDescription;
+    private EditText mTitle, mCity, mDays, mDescription;
+    private TextView mDate;
     private Button mPost, mSave, mRemove;
     private double mProgress = 0;
 
-    DatabaseReference mDatabaseReference;
+    private DatabaseReference mDatabaseReference;
     private String mImageUrl;
     private String mTripId;
     private int mStateSelected;
@@ -90,7 +87,6 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            Log.d(TAG, "onAttach!!!!!!!!!!!!!!!");
             mHandler = (AddTripFragmentHandler) context;
         } catch (ClassCastException e) {
             throw new ClassCastException("The activity that this fragment is attached must be a AddTripFragmentHandler!");
@@ -228,82 +224,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                         uploadNewPhoto(mSelectedUri);
                     }
 
-                    // Update public or private
-                    mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
-                            .child(mTripId)
-                            .child("is_public")
-                            .setValue(mSwitch.isChecked());
-
-                    // Update trip title.
-                    mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
-                            .child(mTripId)
-                            .child("title")
-                            .setValue(mTitle.getText().toString().trim());
-
-                    // Update trip city.
-                    mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
-                            .child(mTripId)
-                            .child("city")
-                            .setValue(mCity.getText().toString().trim());
-
-                    // Update trip state.
-                    mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
-                            .child(mTripId)
-                            .child("state")
-                            .setValue(mStateSelected);
-
-                    // Update statesInfo in Users
-                    if (mStateSelected != mState) {
-                        String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                        if (stateIsVisited(mState)) {
-                            // Add visited state
-                            addVisitedState(user_id);
-                        } else {
-                            // Add and remove visited state
-                            mDatabaseReference.child("Users").child(user_id).child("statesInfo").addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()) {
-                                        Long singleSnapshot = dataSnapshot.getValue(Long.class);
-                                        if (singleSnapshot != null) {
-                                            Log.d(TAG, "Visited States: " + singleSnapshot);
-                                            mDatabaseReference.child("Users")
-                                                    .child(user_id)
-                                                    .child("statesInfo")
-                                                    .setValue((singleSnapshot | (1L << mStateSelected)) & ~(1L << mState));
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                        }
-                    }
-
-                    // Update trip date.
-                    mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
-                            .child(mTripId)
-                            .child("date")
-                            .setValue(mDate.getText().toString().trim());
-
-                    // Update trip days.
-                    mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
-                            .child(mTripId)
-                            .child("days")
-                            .setValue(Integer.parseInt(mDays.getText().toString().trim()));
-
-                    // Update trip description.
-                    mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
-                            .child(mTripId)
-                            .child("description")
-                            .setValue(mDescription.getText().toString().trim());
-
-                    Toast.makeText(getActivity(), R.string.toast_trip_updated,
-                            Toast.LENGTH_SHORT).show();
-                    getActivity().getSupportFragmentManager().popBackStack();
+                    updateTrip();
                 }
             }
         });
@@ -371,7 +292,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            Toast.makeText(getActivity(), R.string.toast_compressing_photo, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getActivity(), R.string.toast_compressing_photo, Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -396,7 +317,6 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
             super.onPostExecute(bytes);
             mUploadBytes = bytes;
             uploadImage();
-            uploadNewTrip();
         }
     }
 
@@ -451,13 +371,28 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
                 Integer.parseInt(mDays.getText().toString().trim()), mDescription.getText().toString());
 
         // Add record in Trips
-        mDatabaseReference.child("Trips")
+        mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
                 .child(mTripId)
                 .setValue(trip);
 
         // Add record in TravelHistory
-        mDatabaseReference.child("TravelHistory")
+        mDatabaseReference.child(Constants.DATABASE_PATH_TRAVELHISTORY)
                 .child(user_id)
+                .child(mTripId)
+                .child("tripId")
+                .setValue(mTripId);
+
+        // Add record in States.
+        mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS_OF_STATES)
+                .child(user_id)
+                .child(String.valueOf(mStateSelected))
+                .child(mTripId)
+                .child("tripId")
+                .setValue(mTripId);
+
+        // Add record in StatesAll.
+        mDatabaseReference.child(Constants.DATABASE_PATH_ALL_TRIPS_OF_STATES)
+                .child(String.valueOf(mStateSelected))
                 .child(mTripId)
                 .child("tripId")
                 .setValue(mTripId);
@@ -468,7 +403,8 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     }
 
     private void addVisitedState(String user_id) {
-        mDatabaseReference.child("Users").child(user_id).child("statesInfo").addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabaseReference.child(Constants.DATABASE_PATH_USERS).child(user_id)
+                .child(Constants.DATABASE_FIELD_STATESINFO).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -488,65 +424,6 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private static boolean stateIsVisited(int state) {
-        List<String> tripIds = new ArrayList<>();
-        boolean[] isVisited = new boolean[1];
-        getTripIds(tripIds);
-        for (String tripId : tripIds) {
-            if (isVisited[0]) {
-                return true;
-            }
-            Query query = FirebaseDatabase.getInstance().getReference().child("Trips").orderByKey().equalTo(tripId);
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
-                    if (singleSnapshot != null) {
-                        Trip trip = singleSnapshot.getValue(Trip.class);
-                        if (trip.getState() == state) {
-                            isVisited[0] = true;
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
-        return isVisited[0];
-    }
-
-    private static void getTripIds(List<String> tripIds) {
-        tripIds.clear();
-
-        Query query = FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_TRAVELHISTORY)
-                .orderByKey()
-                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null) {
-                    if (dataSnapshot.hasChildren()) {
-                        DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
-                        for (DataSnapshot snapshot : singleSnapshot.getChildren()) {
-                            String id = snapshot.child(Constants.DATABASE_FIELD_TRIPID).getValue().toString();
-                            Log.d(TAG, "onDataChange: found a post id: " + id);
-                            tripIds.add(id);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
@@ -599,8 +476,90 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
             Toast.makeText(getActivity(), R.string.please_specify_a_number_of_days,
                     Toast.LENGTH_SHORT).show();
             return false;
+        } else if (isEmpty(mDate.getText().toString().trim())) {
+            Toast.makeText(getActivity(), R.string.please_specify_the_start_date,
+                    Toast.LENGTH_SHORT).show();
+            return false;
         }
         return true;
+    }
+
+    private void updateTrip() {
+        // Update public or private
+        mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                .child(mTripId)
+                .child("is_public")
+                .setValue(mSwitch.isChecked());
+
+        // Update trip title.
+        mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                .child(mTripId)
+                .child("title")
+                .setValue(mTitle.getText().toString().trim());
+
+        // Update trip city.
+        mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                .child(mTripId)
+                .child("city")
+                .setValue(mCity.getText().toString().trim());
+
+        if (mStateSelected != mState) {
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            // Update trip state.
+            mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                    .child(mTripId)
+                    .child("state")
+                    .setValue(mStateSelected);
+
+            // Update trips of States.
+            mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS_OF_STATES)
+                    .child(userId)
+                    .child(String.valueOf(mState))
+                    .child(mTripId)
+                    .removeValue();
+            mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS_OF_STATES)
+                    .child(userId)
+                    .child(String.valueOf(mStateSelected))
+                    .child(mTripId)
+                    .child("tripId")
+                    .setValue(mTripId);
+
+            // Update trips of StatesAll.
+            mDatabaseReference.child(Constants.DATABASE_PATH_ALL_TRIPS_OF_STATES)
+                    .child(String.valueOf(mState))
+                    .child(mTripId)
+                    .removeValue();
+            mDatabaseReference.child(Constants.DATABASE_PATH_ALL_TRIPS_OF_STATES)
+                    .child(String.valueOf(mStateSelected))
+                    .child(mTripId)
+                    .child("tripId")
+                    .setValue(mTripId);
+
+            // Update statesInfo in Users
+            updateStatesInfo(userId);
+        }
+
+        // Update trip date.
+        mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                .child(mTripId)
+                .child("date")
+                .setValue(mDate.getText().toString().trim());
+
+        // Update trip days.
+        mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                .child(mTripId)
+                .child("days")
+                .setValue(Integer.parseInt(mDays.getText().toString().trim()));
+
+        // Update trip description.
+        mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS)
+                .child(mTripId)
+                .child("description")
+                .setValue(mDescription.getText().toString().trim());
+
+        Toast.makeText(getActivity(), R.string.toast_trip_updated,
+                Toast.LENGTH_SHORT).show();
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     private static void deleteImage(String imageUrl) {
@@ -621,42 +580,113 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
     }
 
     public static void deleteTrip(String imageUrl, String tripId, int state) {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         deleteImage(imageUrl);
         // Delete record from Travel History.
         FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_TRAVELHISTORY)
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(userId)
                 .child(tripId)
                 .removeValue();
         // Delete record from Trips.
         FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_TRIPS)
                 .child(tripId)
                 .removeValue();
+        // Delete record from States.
+        FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_TRIPS_OF_STATES)
+                .child(userId)
+                .child(String.valueOf(state))
+                .child(tripId)
+                .removeValue();
+        // Delete record from StatesAll.
+        FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_ALL_TRIPS_OF_STATES)
+                .child(String.valueOf(state))
+                .child(tripId)
+                .removeValue();
         // Update statesInfo in Users.
-        String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        if (!stateIsVisited(state)) {
-            // Remove visited state
-            FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_USERS).child(user_id)
-                    .child(Constants.DATABASE_FIELD_STATESINFO).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        Long singleSnapshot = dataSnapshot.getValue(Long.class);
-                        if (singleSnapshot != null) {
-                            Log.d(TAG, "Visited States: " + singleSnapshot);
-                            FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_USERS)
-                                    .child(user_id)
-                                    .child(Constants.DATABASE_FIELD_STATESINFO)
-                                    .setValue(singleSnapshot & ~(1L << state));
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
+        checkAndUpdateStatesInfo(state, userId);
     }
 
+    private static void checkAndUpdateStatesInfo(int state, String userId) {
+        FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_TRIPS_OF_STATES)
+                .child(userId).child(String.valueOf(state)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    removeVisitedState(state, userId);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private static void removeVisitedState(int state, String userId) {
+        FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_USERS).child(userId)
+                .child(Constants.DATABASE_FIELD_STATESINFO).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Long singleSnapshot = dataSnapshot.getValue(Long.class);
+                    if (singleSnapshot != null) {
+                        Log.d(TAG, "Visited States: " + singleSnapshot);
+                        FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_USERS)
+                                .child(userId)
+                                .child(Constants.DATABASE_FIELD_STATESINFO)
+                                .setValue(singleSnapshot & ~(1L << state));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void updateStatesInfo(String userId) {
+        mDatabaseReference.child(Constants.DATABASE_PATH_TRIPS_OF_STATES)
+                .child(userId).child(String.valueOf(mState)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    removeAndAddVisitedState(userId);
+                } else {
+                    addVisitedState(userId);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void removeAndAddVisitedState(String userId) {
+        FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_USERS).child(userId)
+                .child(Constants.DATABASE_FIELD_STATESINFO).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Long singleSnapshot = dataSnapshot.getValue(Long.class);
+                    if (singleSnapshot != null) {
+                        Log.d(TAG, "Visited States: " + singleSnapshot);
+                        FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_USERS)
+                                .child(userId)
+                                .child(Constants.DATABASE_FIELD_STATESINFO)
+                                .setValue(singleSnapshot & ~(1L << mState) | (1L << mStateSelected));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

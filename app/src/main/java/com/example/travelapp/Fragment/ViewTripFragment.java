@@ -172,8 +172,10 @@ public class ViewTripFragment extends Fragment {
                     DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
                     if (singleSnapshot != null) {
                         User user = singleSnapshot.getValue(User.class);
-                        Picasso.get().load(user.getProfilePictureUrl()).into(mUserPhoto);
                         mUserName.setText(user.getFirstName() + " " + user.getLastName());
+                        if (!user.getProfilePictureUrl().isEmpty()) {
+                            Picasso.get().load(user.getProfilePictureUrl()).into(mUserPhoto);
+                        }
                     }
                 }
             }

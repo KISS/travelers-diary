@@ -207,7 +207,7 @@
                         android:textSize="18sp"
                         android:textColor="@color/monochrome_gray" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/input_date"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -217,6 +217,7 @@
                         android:clickable="true"
                         android:textColor="@color/monochrome_black"
                         android:focusable="false"
+                        android:textSize="18sp"
                         android:inputType="date"
                         android:background="@drawable/edittext_box" />
 
@@ -340,39 +341,38 @@
                     android:paddingStart="50dp"
                     android:paddingEnd="50dp"
                     android:text="@string/post_button"
-                    android:textColor="@color/monochrome_white"
-                    android:textStyle="bold"
-                    android:background="@drawable/button_bg_round_corner_blue" />
-
-                <Button
-                    android:id="@+id/remove_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:paddingStart="30dp"
-                    android:paddingEnd="30dp"
-                    android:text="@string/remove_button"
-                    android:textColor="@color/monochrome_white"
-                    android:textStyle="bold"
-                    android:background="@drawable/button_bg_round_corner_red"
-                    android:visibility="gone"/>
-
-                <Button
-                    android:id="@+id/save_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/remove_button"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginTop="20dp"
-                    android:paddingStart="30dp"
-                    android:paddingEnd="30dp"
-                    android:text="@string/save_button"
+                    android:textSize="18sp"
                     android:textColor="@color/monochrome_white"
                     android:textStyle="bold"
                     android:background="@drawable/button_bg_round_corner_blue"
-                    android:visibility="gone"/>
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/remove_button"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:text="@string/remove_trip"
+                    android:textSize="18sp"
+                    android:textColor="@color/monochrome_white"
+                    android:textStyle="bold"
+                    android:background="@drawable/button_bg_round_corner_red"
+                    android:visibility="gone"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/save_button"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/remove_button"
+                    android:layout_margin="15dp"
+                    android:text="@string/save_button"
+                    android:textSize="18sp"
+                    android:textColor="@color/monochrome_white"
+                    android:textStyle="bold"
+                    android:background="@drawable/button_bg_round_corner_blue"
+                    android:visibility="gone"
+                    android:textAllCaps="false" />
 
             </RelativeLayout>
 

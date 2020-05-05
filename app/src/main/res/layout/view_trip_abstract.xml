@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:textColor="@color/monochrome_gray_dark"
+            android:textColor="@color/main_colors_blue"
             android:textSize="16sp"
             android:textStyle="bold" />
 

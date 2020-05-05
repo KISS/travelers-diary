@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,12 +40,13 @@ public class OthersProfileActivity extends AppCompatActivity {
 
     private final static String TAG = "OthersProfileActivity Activity";
 
+    Toolbar mToolbar;
     TextView firstNameView;
     TextView lastNameView;
-    TextView emailView;
-    TextView stateInfoView;
-    TextView phoneNumView;
-    Button messageUser;
+//    TextView emailView;
+//    TextView stateInfoView;
+//    TextView phoneNumView;
+    ImageView messageUser;
 
     ImageView profileImageView;
     String userId;
@@ -68,13 +70,18 @@ public class OthersProfileActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
-        bottomNavigationView.getMenu().findItem(R.id.nav_search).setChecked(true);
+        if (getIntent().getIntExtra("PARENT_PAGE", 0) == 1) {
+            bottomNavigationView.getMenu().findItem(R.id.nav_travel_history).setChecked(true);
+        } else {
+            bottomNavigationView.getMenu().findItem(R.id.nav_search).setChecked(true);
+        }
+        mToolbar = findViewById(R.id.toolbar);
 
         firstNameView = findViewById(R.id.user_header_first_name);
         lastNameView = findViewById(R.id.user_header_last_name);
-        emailView = findViewById(R.id.user_header_user_email);
-        stateInfoView = findViewById(R.id.user_header_user_state_info);
-        phoneNumView = findViewById(R.id.user_header_user_phone_number);
+//        emailView = findViewById(R.id.user_header_user_email);
+//        stateInfoView = findViewById(R.id.user_header_user_state_info);
+//        phoneNumView = findViewById(R.id.user_header_user_phone_number);
 
         profileImageView = findViewById(R.id.user_header_profile_image);
 
@@ -99,8 +106,16 @@ public class OthersProfileActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(OthersProfileActivity.this, ChatActivity.class);
                 intent.putExtra("userUid", userId);
+                intent.putExtra("PARENT_PAGE", getIntent().getIntExtra("PARENT_PAGE", 0));
                 startActivity(intent);
 
+            }
+        });
+
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
 
@@ -155,15 +170,15 @@ public class OthersProfileActivity extends AppCompatActivity {
                     Log.d(TAG, "jiuminga" + image);
                     String firstname = "" + ds.child("firstName").getValue();
                     String lastname = "" + ds.child("lastName").getValue();
-                    String email = "" + ds.child("email").getValue();
-                    String stateinfo = "State Info: " + ds.child("stateInfo").getValue();
-                    String phonenum = "Phone Num: " + ds.child("phoneNum").getValue();
+//                    String email = "" + ds.child("email").getValue();
+//                    String stateinfo = "State Info: " + ds.child("stateInfo").getValue();
+//                    String phonenum = "Phone Num: " + ds.child("phoneNum").getValue();
 
                     firstNameView.setText(firstname);
                     lastNameView.setText(lastname);
-                    emailView.setText(email);
-                    stateInfoView.setText(stateinfo);
-                    phoneNumView.setText(phonenum);
+//                    emailView.setText(email);
+//                    stateInfoView.setText(stateinfo);
+//                    phoneNumView.setText(phonenum);
 
                     if (!image.isEmpty()) {
                         Picasso.get().load(image).into(profileImageView);

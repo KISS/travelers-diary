@@ -76,7 +76,8 @@
                     android:textSize="18sp"
                     android:textColor="@color/monochrome_gray_dark"
                     android:layout_marginStart="10dp"
-                    android:layout_centerVertical="true" />
+                    android:layout_centerVertical="true"
+                    android:textStyle="bold" />
 
             </RelativeLayout>
 

@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_toRightOf="@+id/chatIcon"
-        android:background="#DEDEDE"
+        android:background="@drawable/button_bg_round_corner_grey"
         android:padding="15dp"
         android:text="Users Message"
         android:textColor="@color/grey"

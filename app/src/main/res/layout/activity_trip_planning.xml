@@ -6,10 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".activities.TripPlanningActivity">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        android:background="@color/monochrome_gray_light" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar">
 
         <TextView
             android:id="@+id/plantriptitle"
@@ -17,11 +28,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:fontFamily="@font/open_sans_semibold"
-            android:text="Plan Trip"
-            android:textColor="#00818a"
-            android:textSize="30sp" />
+            android:layout_marginTop="10dp"
+            android:text="Plan a Trip"
+            android:textColor="@color/main_colors_green"
+            android:textStyle="bold"
+            android:textSize="25sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -524,5 +535,6 @@
 
     </RelativeLayout>
 
+    </RelativeLayout>
 
 </ScrollView>

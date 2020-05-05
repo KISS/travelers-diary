@@ -79,7 +79,40 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
 
         fUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        configureRecyclerView();
+
         getAllItem();
+    }
+
+    private void configureRecyclerView() {
+        //creating adapter
+        adapter = new TravelFeedAdapter(getApplicationContext(), trips, users, v -> {
+            // Listener for click event on User Info.
+            int position = (int) v.getTag();
+            Trip trip = adapter.getItem(adapter.getItemCount() - 1 - position);
+
+            Intent intent = new Intent(TravelHistoryActivity.this, OthersProfileActivity.class);
+            intent.putExtra("USER_ID", trip.getUser_id());
+            intent.putExtra("PARENT_PAGE", 1);
+            startActivity(intent);
+        }, v -> {
+            // Listener for click event on Trip.
+            int position = (int) v.getTag();
+            Trip trip = adapter.getItem(adapter.getItemCount() - 1 - position);
+
+            Bundle args = new Bundle();
+            args.putString(ViewTripFragment.ARGUMENT_TRIPID, trip.getTrip_id());
+            ViewTripFragment fragment = new ViewTripFragment();
+            fragment.setArguments(args);
+
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, fragment, "Trip_Info");
+            fragmentTransaction.addToBackStack("Trip_Info");
+            fragmentTransaction.commit();
+        });
+
+        //adding adapter to
+        recyclerView.setAdapter(adapter);
     }
 
     private void getAllItem() {
@@ -112,34 +145,6 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
                     }
 
                 }
-
-                //creating adapter
-                adapter = new TravelFeedAdapter(getApplicationContext(), trips, users, v -> {
-                    // Listener for click event on User Info.
-                    int position = (int) v.getTag();
-                    Trip trip = adapter.getItem(adapter.getItemCount() - 1 - position);
-
-                    Intent intent = new Intent(TravelHistoryActivity.this, OthersProfileActivity.class);
-                    intent.putExtra("USER_ID", trip.getUser_id());
-                    startActivity(intent);
-                }, v -> {
-                    // Listener for click event on Trip.
-                    int position = (int) v.getTag();
-                    Trip trip = adapter.getItem(adapter.getItemCount() - 1 - position);
-
-                    Bundle args = new Bundle();
-                    args.putString(ViewTripFragment.ARGUMENT_TRIPID, trip.getTrip_id());
-                    ViewTripFragment fragment = new ViewTripFragment();
-                    fragment.setArguments(args);
-
-                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment_container, fragment, "Trip_Info");
-                    fragmentTransaction.addToBackStack("Trip_Info");
-                    fragmentTransaction.commit();
-                });
-
-                //adding adapter to
-                recyclerView.setAdapter(adapter);
             }
 
             @Override

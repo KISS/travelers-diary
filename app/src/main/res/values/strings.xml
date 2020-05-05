@@ -5,8 +5,8 @@
     <string name="passwordhint">no less than 10 characters</string>
     <string name="signinbutton">Sign in</string>
     <string name="signupbutton">Sign up</string>
-    <string name="donthaveanaccount">Don\'t have account? Click on Sign up</string>
-    <string name="alreadyhaveaccount">Already have account? Click on Sign in </string>
+    <string name="donthaveanaccount">Don\'t have an account? Sign up below</string>
+    <string name="alreadyhaveaccount">Already have an account? Sign in below</string>
     <string name="Signuppasswordhint">Password </string>
     <string name="emailhint">Email address</string>
     <string name="signupbuttonhint">SIGN UP</string>
@@ -106,6 +106,7 @@
     <string name="no_trip_in_current_state">No recommended trip in this state.</string>
     <string name="plan_trip">Plan Trip</string>
     <string name="add_trip">Add Trip</string>
+    <string name="travel_stories">Travel Stories</string>
     <string-array name="state">
         <item></item>
         <item>Minnesota</item>

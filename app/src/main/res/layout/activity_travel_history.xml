@@ -45,7 +45,8 @@
         android:layout_height="50dp"
         app:itemIconTint="@drawable/selector"
         android:layout_alignParentBottom="true"
-        app:menu="@menu/bottom_navigation">
+        app:menu="@menu/bottom_navigation"
+        android:background="@color/monochrome_gray_light">
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 

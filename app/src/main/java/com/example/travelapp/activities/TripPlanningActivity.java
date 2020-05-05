@@ -2,6 +2,7 @@ package com.example.travelapp.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
 import android.Manifest;
@@ -39,6 +40,7 @@ import java.util.Calendar;
 
 public class TripPlanningActivity extends AppCompatActivity {
 
+    private Toolbar mToolbar;
     private ArrayList<OptionsItem> mOptionsList1, mOptionsList2, mOptionsList3,
             mOptionsList4, itineraryNameList;
 
@@ -90,7 +92,15 @@ public class TripPlanningActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_planning);
 
+        mToolbar = findViewById(R.id.toolbar);
         submitButton = findViewById(R.id.submitbutton);
+
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         tripTitle = findViewById(R.id.trip_title);
         tripFrom = findViewById(R.id.trip_from);

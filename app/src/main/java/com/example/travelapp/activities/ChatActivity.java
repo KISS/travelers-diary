@@ -84,7 +84,11 @@ public class ChatActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
-
+        if (getIntent().getIntExtra("PARENT_PAGE", 0) == 1) {
+            bottomNavigationView.getMenu().findItem(R.id.nav_travel_history).setChecked(true);
+        } else {
+            bottomNavigationView.getMenu().findItem(R.id.nav_search).setChecked(true);
+        }
 
         Intent intent = getIntent();
         userUid = intent.getStringExtra("userUid");

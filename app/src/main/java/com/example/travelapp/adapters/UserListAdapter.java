@@ -47,11 +47,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         public void setDetails(Context ctx, String userFirstName, String userLastName ,String userEmail, String userImage) {
 
             TextView user_name = (TextView) view.findViewById(R.id.name_text);
-            TextView user_email = (TextView) view.findViewById(R.id.email_text);
+//            TextView user_email = (TextView) view.findViewById(R.id.email_text);
             ImageView user_image = (ImageView) view.findViewById(R.id.profile_image);
 
             user_name.setText(userFirstName + " " +userLastName);
-            user_email.setText(userEmail);
+//            user_email.setText(userEmail);
             Log.d(TAG, "setDetails: " + userImage);
 
             if (!userImage.isEmpty()){

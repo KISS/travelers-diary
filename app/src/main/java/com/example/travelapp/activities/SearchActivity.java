@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,8 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelapp.Fragment.ViewTripFragment;
 import com.example.travelapp.R;
+import com.example.travelapp.adapters.TravelFeedAdapter;
 import com.example.travelapp.adapters.TripListAdapter;
 import com.example.travelapp.adapters.UserListAdapter;
+import com.example.travelapp.configs.Constants;
 import com.example.travelapp.models.Trip;
 import com.example.travelapp.models.TripHitsList;
 import com.example.travelapp.models.TripHitsObject;
@@ -42,6 +45,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -57,23 +61,27 @@ import static android.app.PendingIntent.getActivity;
 public class SearchActivity extends AppCompatActivity {
 
     private final static String TAG = "Search Activity";
-    private final static String BASE_URL_USER = "http://35.245.31.8//elasticsearch/users/Users/";
-    private final static String BASE_URL_TRIP = "http://35.245.31.8//elasticsearch/trips/Trips/";
+    private final static String BASE_URL_USER = "http://35.245.210.82//elasticsearch/users/Users/";
+    private final static String BASE_URL_TRIP = "http://35.245.210.82//elasticsearch/trips/Trips/";
 
     private EditText searchField;
     private ImageButton searchButton;
+    private RelativeLayout columnUser;
+    private  RelativeLayout columnTrip;
     private RecyclerView userResultView;
     private RecyclerView tripResultView;
     private DatabaseReference UsersDatabaseReference;
     //    private FirebaseRecyclerAdapter adapter;
     private UserListAdapter userListAdapter;
-    private TripListAdapter tripListAdapter;
+//    private TripListAdapter tripListAdapter;
+    private TravelFeedAdapter adapter;
 
     //    private RecyclerView.LayoutManager layoutManager;
     private String elasticSearchPassword;
     //    private User user;
     private ArrayList<User> users;
     private ArrayList<Trip> trips;
+    private ArrayList<User> usersOfTrips;
 
     FirebaseAuth firebaseAuth;
     FirebaseUser currentUser;
@@ -91,20 +99,30 @@ public class SearchActivity extends AppCompatActivity {
         searchField = (EditText) findViewById(R.id.search_box);
         searchButton = (ImageButton) findViewById(R.id.search_btn);
 
+        columnUser = findViewById(R.id.column_user);
+        columnTrip = findViewById(R.id.column_trips);
+
         userResultView = (RecyclerView) findViewById(R.id.user_result_list);
         userResultView.setLayoutManager(new LinearLayoutManager(this));
         userResultView.setAdapter(userListAdapter);
 
         tripResultView = findViewById(R.id.trip_result_list);
         tripResultView.setLayoutManager(new LinearLayoutManager(this));
-        tripResultView.setAdapter(tripListAdapter);
+//        tripResultView.setAdapter(tripListAdapter);
+
+        trips = new ArrayList<>();
+        usersOfTrips = new ArrayList<>();
+
+        configureRecyclerView();
 
         getElasticSearchPassword();
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                columnUser.setVisibility(View.VISIBLE);
                 searchForUser();
+                columnTrip.setVisibility(View.VISIBLE);
                 searchForTrip();
             }
         });
@@ -113,7 +131,8 @@ public class SearchActivity extends AppCompatActivity {
     private void searchForTrip() {
         Log.d(TAG, "searchForTrip: Searching...");
         String searchText = searchField.getText().toString();
-        trips = new ArrayList<>();
+        trips.clear();
+        usersOfTrips.clear();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL_TRIP)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -159,11 +178,14 @@ public class SearchActivity extends AppCompatActivity {
                         for (int i = 0; i < tripHitsList.getTripIndex().size(); i++) {
                             Log.d(TAG, "onResponse: data: " + tripHitsList.getTripIndex().get(i).getTrip().toString());
                             trips.add(tripHitsList.getTripIndex().get(i).getTrip());
+                            usersOfTrips.add(null);
+                            getUserInfo(trips.get(i).getUser_id(), i);
                         }
 
                         Log.d(TAG, "onResponse: size: " + trips.size());
                         //setup the list of trips
-                        setUpTripsList();
+//                        setUpTripsList();
+                        adapter.notifyDataSetChanged();
 
                     } catch (NullPointerException e) {
                         Log.e(TAG, "onResponse: NullPointerException: " + e.getMessage());
@@ -173,7 +195,8 @@ public class SearchActivity extends AppCompatActivity {
                         Log.e(TAG, "onResponse: IOException: " + e.getMessage());
                     }
 
-                    setUpTripsList();
+//                    setUpTripsList();
+                    adapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -185,27 +208,79 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    private void setUpTripsList() {
-        tripListAdapter = new TripListAdapter(trips, this, new View.OnClickListener() {
+    private void getUserInfo(String userId, int index) {
+        Query query = FirebaseDatabase.getInstance().getReference().child(Constants.DATABASE_PATH_USERS).orderByKey().equalTo(userId);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                int position = (int) v.getTag();
-                Trip trip = tripListAdapter.getItem(position);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChildren()){
+                    DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
+                    if (singleSnapshot != null) {
+                        User user = singleSnapshot.getValue(User.class);
+                        usersOfTrips.set(index, user);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
 
-                Bundle args = new Bundle();
-                args.putString(ViewTripFragment.ARGUMENT_TRIPID, trip.getTrip_id());
-                ViewTripFragment fragment = new ViewTripFragment();
-                fragment.setArguments(args);
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container, fragment, "Trip_Info");
-                fragmentTransaction.addToBackStack("Trip_Info");
-                fragmentTransaction.commit();
             }
         });
+    }
 
-        tripResultView.setAdapter(tripListAdapter);
+//    private void setUpTripsList() {
+//        tripListAdapter = new TripListAdapter(trips, this, new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int position = (int) v.getTag();
+//                Trip trip = tripListAdapter.getItem(position);
+//
+//                Bundle args = new Bundle();
+//                args.putString(ViewTripFragment.ARGUMENT_TRIPID, trip.getTrip_id());
+//                ViewTripFragment fragment = new ViewTripFragment();
+//                fragment.setArguments(args);
+//
+//                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//                fragmentTransaction.replace(R.id.fragment_container, fragment, "Trip_Info");
+//                fragmentTransaction.addToBackStack("Trip_Info");
+//                fragmentTransaction.commit();
+//            }
+//        });
+//
+//        tripResultView.setAdapter(tripListAdapter);
+//
+//    }
 
+    private void configureRecyclerView() {
+        //creating adapter
+        adapter = new TravelFeedAdapter(getApplicationContext(), trips, usersOfTrips, v -> {
+            // Listener for click event on User Info.
+            int position = (int) v.getTag();
+            Trip trip = adapter.getItem(adapter.getItemCount() - 1 - position);
+
+            Intent intent = new Intent(SearchActivity.this, OthersProfileActivity.class);
+            intent.putExtra("USER_ID", trip.getUser_id());
+            startActivity(intent);
+        }, v -> {
+            // Listener for click event on Trip.
+            int position = (int) v.getTag();
+            Trip trip = adapter.getItem(adapter.getItemCount() - 1 - position);
+
+            Bundle args = new Bundle();
+            args.putString(ViewTripFragment.ARGUMENT_TRIPID, trip.getTrip_id());
+            ViewTripFragment fragment = new ViewTripFragment();
+            fragment.setArguments(args);
+
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, fragment, "Trip_Info");
+            fragmentTransaction.addToBackStack("Trip_Info");
+            fragmentTransaction.commit();
+        });
+
+        //adding adapter to
+        tripResultView.setAdapter(adapter);
     }
 
     private void searchForUser() {

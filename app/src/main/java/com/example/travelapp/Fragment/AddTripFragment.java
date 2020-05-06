@@ -56,6 +56,7 @@ import static android.text.TextUtils.isEmpty;
 public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPhotoSelectedListener {
 
     public interface AddTripFragmentHandler {
+        void notifyChange();
     }
 
     AddTripFragmentHandler mHandler;
@@ -233,6 +234,7 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
             @Override
             public void onClick(View v) {
                 deleteTrip(mImageUrl, mTripId, mState);
+                mHandler.notifyChange();
                 getActivity().getSupportFragmentManager().popBackStack();
                 getActivity().getSupportFragmentManager().popBackStack();
             }
@@ -399,7 +401,10 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
 
         // Update statesInfo in Users
         addVisitedState(user_id);
+
         Toast.makeText(getActivity(), R.string.toast_trip_posted, Toast.LENGTH_LONG).show();
+        getActivity().getSupportFragmentManager().popBackStack();
+        mHandler.notifyChange();
     }
 
     private void addVisitedState(String user_id) {
@@ -537,6 +542,8 @@ public class AddTripFragment extends Fragment implements SelectPhotoDialog.OnPho
 
             // Update statesInfo in Users
             updateStatesInfo(userId);
+
+            mHandler.notifyChange();
         }
 
         // Update trip date.

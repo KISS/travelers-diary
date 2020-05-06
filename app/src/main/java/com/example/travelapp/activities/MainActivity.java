@@ -11,6 +11,7 @@ import android.webkit.WebView;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
     Button plan_trip;
     long visitedStates;
 
+    public static MainActivity instance;
+
     private static final String TAG = "Travelers-diary:MainActivity";
 
     @Override
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        instance = this;
         anyChartView = findViewById(R.id.any_chart_view);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
@@ -223,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
                             intent.putExtra(StateTripActivity.EXTRA_STATE_NAME, event.getData().get("name"));
                             intent.putExtra(StateTripActivity.EXTRA_STATE_NO, index);
                             intent.putExtra(StateTripActivity.EXTRA_STATE_VALUE, Integer.parseInt(event.getData().get("value")));
-                            startActivity(intent);
+                            startActivityForResult(intent, 0);
                         }
                         break;
                     }
@@ -235,6 +239,14 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
         anyChartView.addScript("file:///android_asset/proj4.js");
         anyChartView.setChart(map);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0 && data.getBooleanExtra("HasChange", false)) {
+            notifyChange();
+        }
     }
 
     @Override
@@ -305,6 +317,18 @@ public class MainActivity extends AppCompatActivity implements AddTripFragment.A
     public void addATrip(View v) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().add(R.id.fragment_container, new AddTripFragment()).addToBackStack("Add a trip").commit();
+    }
+
+    @Override
+    public void notifyChange() {
+        finish();
+        startActivity(getIntent());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        instance = null;
     }
 }
 

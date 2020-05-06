@@ -31,6 +31,7 @@ public class StateTripActivity extends AppCompatActivity implements AddTripFragm
     private TabLayout mTabs;
     private ViewPagerAdapter mAdapter;
 
+    private boolean hasChange = false;
     public static boolean showing = false;
     private static final String TAG = "State Trip Activity";
     public static final String EXTRA_STATE_NO = "State No";
@@ -56,6 +57,9 @@ public class StateTripActivity extends AppCompatActivity implements AddTripFragm
             @Override
             public void onClick(View view) {
                 showing = false;
+                Intent intent = new Intent();
+                intent.putExtra("HasChange", hasChange);
+                setResult(0, intent);
                 finish();
             }
         });
@@ -137,6 +141,14 @@ public class StateTripActivity extends AppCompatActivity implements AddTripFragm
     @Override
     public void onBackPressed() {
         showing = false;
+        Intent intent = new Intent();
+        intent.putExtra("HasChange", hasChange);
+        setResult(0, intent);
         super.onBackPressed();
+    }
+
+    @Override
+    public void notifyChange() {
+        hasChange = true;
     }
 }

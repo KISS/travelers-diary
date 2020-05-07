@@ -732,4 +732,7 @@ public class ProfileActivity extends AppCompatActivity implements AddTripFragmen
         }
         return super.dispatchTouchEvent(ev);
     }
+
+    @Override
+    public void notifyChange() {}
 }

@@ -229,4 +229,7 @@ public class TravelHistoryActivity extends AppCompatActivity implements AddTripF
     protected void onDestroy() {
         super.onDestroy();
     }
+
+    @Override
+    public void notifyChange() {}
 }

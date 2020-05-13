@@ -226,8 +226,10 @@ public class OthersProfileActivity extends AppCompatActivity {
                                     if (dataSnapshot.hasChildren()) {
                                         DataSnapshot singleSnapshot = dataSnapshot.getChildren().iterator().next();
                                         Trip trip = singleSnapshot.getValue(Trip.class);
-                                        trips.add(trip);
-                                        adapter.notifyDataSetChanged();
+                                        if (trip.isIs_public()) {
+                                            trips.add(trip);
+                                            adapter.notifyDataSetChanged();
+                                        }
                                     }
                                 }
 
